@@ -1,0 +1,3551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Manager Dashboard</title>
+<link rel="manifest" id="pwa-manifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MoneyMgr">
+<meta name="theme-color" content="#63b3ed">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ===================== CSS VARIABLES ===================== */
+:root {
+  --bg-primary: #080c14;
+  --bg-secondary: #0d1320;
+  --bg-card: rgba(255,255,255,0.035);
+  --bg-card-hover: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.07);
+  --border-active: rgba(99,179,237,0.4);
+  --accent-blue: #63b3ed;
+  --accent-teal: #38d9a9;
+  --accent-amber: #f6ad55;
+  --accent-red: #fc8181;
+  --accent-purple: #b794f4;
+  --accent-pink: #f687b3;
+  --text-primary: #e8edf5;
+  --text-secondary: #8896a8;
+  --text-muted: #4a5568;
+  --success: #38d9a9;
+  --warning: #f6ad55;
+  --danger: #fc8181;
+  --my-color: #63b3ed;
+  --father-color: #b794f4;
+  --shared-color: #38d9a9;
+  --font-main: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --transition: 0.2s ease;
+}
+
+/* ===================== RESET & BASE ===================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(99,179,237,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(183,148,244,0.06) 0%, transparent 60%);
+}
+
+/* ===================== SCROLLBAR ===================== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* ===================== LAYOUT ===================== */
+.app-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===================== SIDEBAR ===================== */
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0; top: 0;
+  z-index: 100;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-logo {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+
+.logo-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+.logo-sub { font-size: 10px; color: var(--text-muted); font-weight: 400; }
+
+.sidebar-nav {
+  padding: 16px 12px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.nav-section-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 12px 12px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  font-weight: 500;
+  margin-bottom: 2px;
+  border: 1px solid transparent;
+}
+
+.nav-item:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(99,179,237,0.15), rgba(99,179,237,0.05));
+  color: var(--accent-blue);
+  border-color: rgba(99,179,237,0.2);
+}
+
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+.sidebar-footer {
+  padding: 16px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.balance-chip {
+  background: linear-gradient(135deg, rgba(56,217,169,0.1), rgba(99,179,237,0.1));
+  border: 1px solid rgba(56,217,169,0.2);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+
+.balance-chip-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.balance-chip-value { font-size: 18px; font-weight: 700; color: var(--accent-teal); font-family: var(--font-mono); margin-top: 2px; }
+
+/* ===================== MAIN CONTENT ===================== */
+.main-content {
+  margin-left: 240px;
+  flex: 1;
+  min-height: 100vh;
+}
+
+.topbar {
+  background: rgba(13,19,32,0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0;
+  z-index: 50;
+}
+
+.topbar-title { font-size: 18px; font-weight: 700; }
+.topbar-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+.topbar-actions { display: flex; gap: 8px; align-items: center; }
+
+.hamburger {
+  display: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.content-area {
+  padding: 28px 32px;
+}
+
+/* ===================== SECTIONS ===================== */
+.section { display: none; }
+.section.active { display: block; }
+
+/* ===================== CARDS ===================== */
+.glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  backdrop-filter: blur(8px);
+  transition: all var(--transition);
+}
+
+.glass-card:hover { background: var(--bg-card-hover); border-color: rgba(255,255,255,0.1); }
+
+/* ===================== STAT CARDS GRID ===================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition);
+  cursor: default;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--card-accent, linear-gradient(90deg, var(--accent-teal), var(--accent-blue)));
+}
+
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+.stat-icon {
+  font-size: 22px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.stat-value.positive { color: var(--accent-teal); }
+.stat-value.warning { color: var(--accent-amber); }
+.stat-value.danger { color: var(--accent-red); }
+
+.stat-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ===================== GRID LAYOUTS ===================== */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+/* ===================== SECTION HEADERS ===================== */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.section-title span { color: var(--accent-blue); }
+
+/* ===================== BUTTONS ===================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-blue), #4299e1);
+  color: #fff;
+}
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.btn-success {
+  background: linear-gradient(135deg, var(--accent-teal), #2f9e82);
+  color: #fff;
+}
+.btn-success:hover { opacity: 0.88; }
+
+.btn-warning {
+  background: linear-gradient(135deg, var(--accent-amber), #e07f2a);
+  color: #fff;
+}
+.btn-warning:hover { opacity: 0.88; }
+
+.btn-danger {
+  background: linear-gradient(135deg, var(--accent-red), #c53030);
+  color: #fff;
+}
+.btn-danger:hover { opacity: 0.88; }
+
+.btn-ghost {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.btn-ghost:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+
+.btn-sm { padding: 5px 10px; font-size: 11.5px; }
+.btn-xs { padding: 3px 8px; font-size: 11px; }
+
+/* ===================== FORMS ===================== */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+
+.form-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.form-control {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 13.5px;
+  transition: all var(--transition);
+  outline: none;
+  width: 100%;
+}
+
+.form-control:focus {
+  border-color: var(--accent-blue);
+  background: rgba(99,179,237,0.05);
+  box-shadow: 0 0 0 3px rgba(99,179,237,0.1);
+}
+
+.form-control option { background: var(--bg-secondary); }
+
+textarea.form-control { resize: vertical; min-height: 80px; }
+
+/* ===================== TABLES ===================== */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  background: rgba(255,255,255,0.04);
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+td {
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* ===================== BADGES ===================== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-mine { background: rgba(99,179,237,0.15); color: var(--my-color); }
+.badge-father { background: rgba(183,148,244,0.15); color: var(--father-color); }
+.badge-shared { background: rgba(56,217,169,0.15); color: var(--shared-color); }
+.badge-success { background: rgba(56,217,169,0.15); color: var(--success); }
+.badge-warning { background: rgba(246,173,85,0.15); color: var(--warning); }
+.badge-danger { background: rgba(252,129,129,0.15); color: var(--danger); }
+.badge-info { background: rgba(99,179,237,0.15); color: var(--accent-blue); }
+
+/* ===================== PROGRESS BAR ===================== */
+.progress-bar-wrap {
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  background: linear-gradient(90deg, var(--accent-teal), var(--accent-blue));
+}
+
+.progress-bar.danger { background: linear-gradient(90deg, var(--accent-amber), var(--accent-red)); }
+
+/* ===================== ALERT ===================== */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alert-danger { background: rgba(252,129,129,0.1); border: 1px solid rgba(252,129,129,0.25); color: var(--accent-red); }
+.alert-warning { background: rgba(246,173,85,0.1); border: 1px solid rgba(246,173,85,0.25); color: var(--accent-amber); }
+.alert-success { background: rgba(56,217,169,0.1); border: 1px solid rgba(56,217,169,0.25); color: var(--accent-teal); }
+.alert-info { background: rgba(99,179,237,0.1); border: 1px solid rgba(99,179,237,0.25); color: var(--accent-blue); }
+
+/* ===================== MODAL ===================== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-active);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+  padding: 20px 24px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title { font-size: 16px; font-weight: 700; }
+
+.modal-close {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: all var(--transition);
+}
+
+.modal-close:hover { color: var(--text-primary); background: var(--bg-card-hover); }
+
+.modal-body { padding: 20px 24px; }
+.modal-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+
+/* ===================== OWNER BREAKDOWN ===================== */
+.owner-breakdown {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.owner-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  text-align: center;
+}
+
+.owner-card .owner-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.owner-card .owner-value { font-size: 20px; font-weight: 700; font-family: var(--font-mono); margin-top: 6px; }
+.owner-mine { border-top: 2px solid var(--my-color); }
+.owner-mine .owner-value { color: var(--my-color); }
+.owner-father { border-top: 2px solid var(--father-color); }
+.owner-father .owner-value { color: var(--father-color); }
+.owner-shared { border-top: 2px solid var(--shared-color); }
+.owner-shared .owner-value { color: var(--shared-color); }
+
+/* ===================== PENDING TABLE STATUS ===================== */
+.status-received { color: var(--success); }
+.status-pending { color: var(--warning); }
+.status-overdue { color: var(--danger); }
+.status-soon { color: var(--accent-amber); }
+
+tr.row-received td { background: rgba(56,217,169,0.04); }
+tr.row-overdue td { background: rgba(252,129,129,0.04); }
+tr.row-soon td { background: rgba(246,173,85,0.04); }
+
+/* ===================== GOAL CARD ===================== */
+.goal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all var(--transition);
+}
+
+.goal-card:hover { background: var(--bg-card-hover); }
+
+.goal-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 14px; }
+.goal-name { font-size: 15px; font-weight: 700; }
+.goal-target { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+.goal-pct { font-size: 22px; font-weight: 700; font-family: var(--font-mono); color: var(--accent-teal); }
+
+.goal-amounts { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; color: var(--text-muted); }
+
+/* ===================== CHART WRAPPER ===================== */
+.chart-wrap {
+  position: relative;
+  height: 260px;
+}
+
+/* ===================== FILTER BAR ===================== */
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  align-items: flex-end;
+}
+
+.filter-bar .form-control {
+  max-width: 180px;
+}
+
+/* ===================== EMPTY STATE ===================== */
+.empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-muted);
+}
+
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-text { font-size: 14px; }
+
+/* ===================== INVESTMENT PLATFORM ===================== */
+.invest-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.invest-row:last-child { border-bottom: none; }
+.invest-platform { font-weight: 600; font-size: 14px; }
+.invest-purpose { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.invest-amount { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent-amber); }
+.invest-date { font-size: 11px; color: var(--text-muted); margin-top: 2px; text-align: right; }
+
+/* ===================== TOAST ===================== */
+.toast-container {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+  pointer-events: auto;
+  max-width: 300px;
+  box-shadow: var(--shadow);
+}
+
+.toast.success { border-left: 3px solid var(--success); }
+.toast.error { border-left: 3px solid var(--danger); }
+.toast.info { border-left: 3px solid var(--accent-blue); }
+
+@keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(100%); } }
+
+/* ===================== DIVIDER ===================== */
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+/* ===================== MOBILE ===================== */
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+  .hamburger { display: block; }
+  .content-area { padding: 20px 16px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .owner-breakdown { grid-template-columns: 1fr 1fr; }
+  .topbar { padding: 12px 16px; }
+}
+
+@media (max-width: 500px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .owner-breakdown { grid-template-columns: 1fr; }
+  .filter-bar .form-control { max-width: 100%; }
+}
+
+/* ===================== MISC UTILS ===================== */
+.mb-4 { margin-bottom: 16px; }
+.mb-6 { margin-bottom: 24px; }
+.mt-4 { margin-top: 16px; }
+.gap-2 { gap: 8px; }
+.d-flex { display: flex; }
+.align-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.text-right { text-align: right; }
+.font-mono { font-family: var(--font-mono); }
+.overlay-close { position: fixed; inset: 0; z-index: 99; display: none; }
+.overlay-close.open { display: block; }
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.section.active { animation: fadeIn 0.25s ease; }
+
+.warning-banner {
+  background: linear-gradient(135deg, rgba(252,129,129,0.12), rgba(252,129,129,0.05));
+  border: 1px solid rgba(252,129,129,0.3);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  color: var(--accent-red);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+/* ===================== MY MONEY SECTION ===================== */
+.mymoney-hero {
+  background: linear-gradient(135deg, rgba(99,179,237,0.12), rgba(56,217,169,0.08));
+  border: 1px solid rgba(99,179,237,0.3);
+  border-radius: var(--radius);
+  padding: 28px 28px 22px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.mymoney-hero::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(99,179,237,0.12), transparent 70%);
+  pointer-events: none;
+}
+.mymoney-hero-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; }
+.mymoney-hero-amount { font-size: 42px; font-weight: 800; font-family: var(--font-mono); color: var(--accent-blue); line-height: 1; margin-bottom: 6px; }
+.mymoney-hero-sub { font-size: 12px; color: var(--text-muted); }
+.mymoney-actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+
+.mymoney-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.mymoney-txn-list { display: flex; flex-direction: column; gap: 0; }
+.mymoney-txn-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+}
+.mymoney-txn-row:last-child { border-bottom: none; }
+.mymoney-txn-row:hover { background: rgba(255,255,255,0.02); }
+.mymoney-txn-icon { font-size: 18px; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; }
+.mymoney-txn-icon.spend { background: rgba(252,129,129,0.12); }
+.mymoney-txn-icon.add { background: rgba(56,217,169,0.12); }
+.mymoney-txn-icon.set { background: rgba(99,179,237,0.12); }
+.mymoney-txn-info { flex: 1; }
+.mymoney-txn-desc { font-size: 13.5px; font-weight: 600; }
+.mymoney-txn-date { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.mymoney-txn-amt { font-family: var(--font-mono); font-size: 14px; font-weight: 700; }
+.mymoney-txn-amt.spend { color: var(--accent-red); }
+.mymoney-txn-amt.add { color: var(--accent-teal); }
+.mymoney-txn-amt.set { color: var(--accent-blue); }
+
+/* ===================== PWA INSTALL BUTTON ===================== */
+.install-btn {
+  background: linear-gradient(135deg, rgba(99,179,237,0.2), rgba(56,217,169,0.15));
+  border: 1px solid rgba(99,179,237,0.35);
+  color: var(--accent-blue);
+  animation: pulseBorder 2s infinite;
+}
+.install-btn:hover { background: linear-gradient(135deg, rgba(99,179,237,0.3), rgba(56,217,169,0.25)); }
+@keyframes pulseBorder {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99,179,237,0.3); }
+  50% { box-shadow: 0 0 0 4px rgba(99,179,237,0.1); }
+}
+
+/* ===================== CURRENT BALANCE CARD ===================== */
+.cur-bal-card {
+  background: linear-gradient(135deg, rgba(56,217,169,0.08), rgba(99,179,237,0.06));
+  border: 1px solid rgba(56,217,169,0.25);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.cur-bal-left { display: flex; flex-direction: column; gap: 4px; }
+.cur-bal-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); font-weight: 600; }
+.cur-bal-amount { font-size: 28px; font-weight: 800; font-family: var(--font-mono); color: var(--accent-teal); }
+.cur-bal-note { font-size: 11px; color: var(--text-muted); }
+.cur-bal-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.cur-bal-diff { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+.cur-bal-diff.pos { background: rgba(56,217,169,0.15); color: var(--accent-teal); }
+.cur-bal-diff.neg { background: rgba(252,129,129,0.15); color: var(--accent-red); }
+.cur-bal-diff.neu { background: rgba(255,255,255,0.06); color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="overlay-close" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <a class="logo-mark">
+      <div class="logo-icon">₹</div>
+      <div>
+        <div class="logo-text">MoneyMgr</div>
+        <div class="logo-sub">Personal Finance</div>
+      </div>
+    </a>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Overview</div>
+    <div class="nav-item active" onclick="showSection('dashboard')">
+      <span class="nav-icon">📊</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="showSection('analytics')">
+      <span class="nav-icon">📈</span> Analytics
+    </div>
+
+    <div class="nav-section-label">Transactions</div>
+    <div class="nav-item" onclick="showSection('income')">
+      <span class="nav-icon">💰</span> Income
+    </div>
+    <div class="nav-item" onclick="showSection('expenses')">
+      <span class="nav-icon">💸</span> Expenses
+    </div>
+    <div class="nav-item" onclick="showSection('pending')">
+      <span class="nav-icon">⏳</span> Pending Payments
+    </div>
+    <div class="nav-item" onclick="showSection('history')">
+      <span class="nav-icon">📋</span> Transaction History
+    </div>
+
+    <div class="nav-section-label">Finance</div>
+    <div class="nav-item" onclick="showSection('mymoney')">
+      <span class="nav-icon">👤</span> My Money
+    </div>
+    <div class="nav-item" onclick="showSection('business')">
+      <span class="nav-icon">🚀</span> Business Investments
+    </div>
+    <div class="nav-item" onclick="showSection('goals')">
+      <span class="nav-icon">🎯</span> Goals & Savings
+    </div>
+
+    <div class="nav-section-label">Settings</div>
+    <div class="nav-item" onclick="showSection('backup')">
+      <span class="nav-icon">💾</span> Data Backup
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="balance-chip">
+      <div class="balance-chip-label">Available Balance</div>
+      <div class="balance-chip-value" id="sidebarBalance">₹0</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-sub" id="topbarSub">Overview of your finances</div>
+    </div>
+    <div class="topbar-actions">
+      <button id="installBtn" class="btn install-btn btn-sm" style="display:none" onclick="installPWA()">📲 Install App</button>
+      <button class="btn btn-success btn-sm" onclick="showSection('income');openIncomeModal()">+ Income</button>
+      <button class="btn btn-danger btn-sm" onclick="showSection('expenses');openExpenseModal()">+ Expense</button>
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    </div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- ==================== DASHBOARD SECTION ==================== -->
+    <div class="section active" id="section-dashboard">
+
+      <!-- Current Balance Card -->
+      <div class="cur-bal-card" id="currentBalanceCard">
+        <div class="cur-bal-left">
+          <div class="cur-bal-label">💳 Current Real Balance (Cash + Bank)</div>
+          <div class="cur-bal-amount" id="curBalDisplay">₹0</div>
+          <div class="cur-bal-note" id="curBalNote">Set your actual wallet/bank balance</div>
+        </div>
+        <div class="cur-bal-right">
+          <div id="curBalDiff" class="cur-bal-diff neu">—</div>
+          <button class="btn btn-ghost btn-sm" onclick="openBalanceModal()">✏️ Edit Balance</button>
+        </div>
+      </div>
+      <!-- Stats Grid -->
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#38d9a9,#63b3ed)">
+          <span class="stat-icon">💵</span>
+          <div class="stat-label">Total Available</div>
+          <div class="stat-value positive" id="totalAvailable">₹0</div>
+          <div class="stat-sub">Current balance</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#63b3ed,#4299e1)">
+          <span class="stat-icon">👤</span>
+          <div class="stat-label">My Money</div>
+          <div class="stat-value" style="color:var(--my-color)" id="myMoney">₹0</div>
+          <div class="stat-sub">Personal funds</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#b794f4,#9f7aea)">
+          <span class="stat-icon">👴</span>
+          <div class="stat-label">Father's Money</div>
+          <div class="stat-value" style="color:var(--father-color)" id="fatherMoney">₹0</div>
+          <div class="stat-sub">Father's funds</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#f6ad55,#ed8936)">
+          <span class="stat-icon">⏳</span>
+          <div class="stat-label">Pending Incoming</div>
+          <div class="stat-value warning" id="pendingIncoming">₹0</div>
+          <div class="stat-sub">Awaiting receipt</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#38d9a9,#2f9e82)">
+          <span class="stat-icon">🔮</span>
+          <div class="stat-label">Expected Balance</div>
+          <div class="stat-value positive" id="expectedBalance">₹0</div>
+          <div class="stat-sub">Balance + pending</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#fc8181,#e53e3e)">
+          <span class="stat-icon">📉</span>
+          <div class="stat-label">Total Expenses</div>
+          <div class="stat-value danger" id="totalExpenses">₹0</div>
+          <div class="stat-sub">All time expenses</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#f6ad55,#fc8181)">
+          <span class="stat-icon">🚀</span>
+          <div class="stat-label">Business Invested</div>
+          <div class="stat-value" id="bizInvested" style="color:var(--accent-amber)">₹0</div>
+          <div class="stat-sub" id="bizInvestedSub">of ₹10,000 budget</div>
+        </div>
+        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#38d9a9,#b794f4)">
+          <span class="stat-icon">💼</span>
+          <div class="stat-label">Business Budget Left</div>
+          <div class="stat-value" id="bizRemaining">₹0</div>
+          <div class="stat-sub">Remaining business budget</div>
+        </div>
+      </div>
+
+      <!-- Business Budget Warning -->
+      <div id="bizWarning" class="warning-banner" style="display:none">
+        ⚠️ Business investment limit exceeded! You've crossed the ₹10,000 budget.
+      </div>
+
+      <!-- Papa Money Warning -->
+      <div id="papaWarning" style="display:none;background:linear-gradient(135deg,rgba(183,148,244,0.15),rgba(183,148,244,0.05));border:1.5px solid rgba(183,148,244,0.5);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:16px;display:none;align-items:center;gap:12px;font-size:13.5px;font-weight:600;color:#b794f4">
+        <span style="font-size:20px">👴</span>
+        <span id="papaWarningText">Papa ki money negative ho rahi hai — expenses check karo!</span>
+      </div>
+      <div class="glass-card mb-6">
+        <div class="section-header">
+          <div class="section-title">Money <span>Distribution</span></div>
+        </div>
+        <div class="owner-breakdown">
+          <div class="owner-card owner-mine">
+            <div class="owner-label">My Net Worth</div>
+            <div class="owner-value" id="myNetWorth">₹0</div>
+          </div>
+          <div class="owner-card owner-father">
+            <div class="owner-label">Father's Net Worth</div>
+            <div class="owner-value" id="fatherNetWorth">₹0</div>
+          </div>
+          <div class="owner-card owner-shared">
+            <div class="owner-label">Shared Funds</div>
+            <div class="owner-value" id="sharedFunds">₹0</div>
+          </div>
+        </div>
+        <div class="divider" style="margin:0 0 16px 0"></div>
+        <div style="display:flex;gap:24px;flex-wrap:wrap">
+          <div>
+            <div class="stat-label">My Initial Balance</div>
+            <div class="font-mono" style="font-size:15px;color:var(--my-color);margin-top:3px" id="myInitial">₹21,338</div>
+          </div>
+          <div>
+            <div class="stat-label">Father's Initial Balance</div>
+            <div class="font-mono" style="font-size:15px;color:var(--father-color);margin-top:3px" id="fatherInitial">₹34,008</div>
+          </div>
+          <div>
+            <div class="stat-label">Total Initial Balance</div>
+            <div class="font-mono" style="font-size:15px;color:var(--accent-teal);margin-top:3px">₹55,346</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Transactions + Quick Pending -->
+      <div class="grid-2">
+        <div class="glass-card">
+          <div class="section-header">
+            <div class="section-title">Recent <span>Transactions</span></div>
+            <button class="btn btn-ghost btn-sm" onclick="showSection('history')">View all</button>
+          </div>
+          <div id="recentTxns"></div>
+        </div>
+        <div class="glass-card">
+          <div class="section-header">
+            <div class="section-title">Pending <span>Payments</span></div>
+            <button class="btn btn-ghost btn-sm" onclick="showSection('pending')">View all</button>
+          </div>
+          <div id="dashPending"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== INCOME SECTION ==================== -->
+    <div class="section" id="section-income">
+      <div class="d-flex justify-between align-center mb-4">
+        <h2 style="font-size:20px;font-weight:700">Income <span style="color:var(--accent-teal)">Manager</span></h2>
+        <button class="btn btn-success" onclick="openIncomeModal()">+ Add Income</button>
+      </div>
+      <!-- Summary row -->
+      <div class="stats-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));margin-bottom:20px">
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#38d9a9,#63b3ed)">
+          <div class="stat-label">Total Received</div>
+          <div class="stat-value positive font-mono" id="totalReceived">₹0</div>
+        </div>
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#f6ad55,#ed8936)">
+          <div class="stat-label">Total Pending</div>
+          <div class="stat-value warning font-mono" id="totalPendingIncome">₹0</div>
+        </div>
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#63b3ed,#b794f4)">
+          <div class="stat-label">My Income</div>
+          <div class="stat-value font-mono" style="color:var(--my-color)" id="myTotalIncome">₹0</div>
+        </div>
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#b794f4,#9f7aea)">
+          <div class="stat-label">Father's Income</div>
+          <div class="stat-value font-mono" style="color:var(--father-color)" id="fatherTotalIncome">₹0</div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th><th>Source</th><th>Amount</th><th>Owner</th><th>Status</th><th>Notes</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="incomeTableBody">
+            </tbody>
+          </table>
+        </div>
+        <div id="incomeEmpty" class="empty-state" style="display:none">
+          <div class="empty-icon">💰</div>
+          <div class="empty-text">No income entries yet</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== EXPENSES SECTION ==================== -->
+    <div class="section" id="section-expenses">
+      <div class="d-flex justify-between align-center mb-4">
+        <h2 style="font-size:20px;font-weight:700">Expense <span style="color:var(--accent-red)">Manager</span></h2>
+        <button class="btn btn-danger" onclick="openExpenseModal()">+ Add Expense</button>
+      </div>
+      <div class="stats-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));margin-bottom:20px">
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#fc8181,#e53e3e)">
+          <div class="stat-label">Total Expenses</div>
+          <div class="stat-value danger font-mono" id="expTotal">₹0</div>
+        </div>
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#63b3ed,#4299e1)">
+          <div class="stat-label">My Expenses</div>
+          <div class="stat-value font-mono" style="color:var(--my-color)" id="expMine">₹0</div>
+        </div>
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#b794f4,#9f7aea)">
+          <div class="stat-label">Father's Expenses</div>
+          <div class="stat-value font-mono" style="color:var(--father-color)" id="expFather">₹0</div>
+        </div>
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#f6ad55,#fc8181)">
+          <div class="stat-label">Business Expenses</div>
+          <div class="stat-value font-mono" style="color:var(--accent-amber)" id="expBusiness">₹0</div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Date</th><th>Category</th><th>Amount</th><th>Owner</th><th>Notes</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="expenseTableBody"></tbody>
+          </table>
+        </div>
+        <div id="expenseEmpty" class="empty-state" style="display:none">
+          <div class="empty-icon">💸</div>
+          <div class="empty-text">No expense entries yet</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== PENDING PAYMENTS SECTION ==================== -->
+    <div class="section" id="section-pending">
+      <div class="d-flex justify-between align-center mb-4">
+        <h2 style="font-size:20px;font-weight:700">Pending <span style="color:var(--accent-amber)">Payments</span></h2>
+        <button class="btn btn-warning" onclick="openPendingModal()">+ Add Pending</button>
+      </div>
+      <div class="glass-card">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Source</th><th>Amount</th><th>Owner</th><th>Expected Date</th><th>Status</th><th>Days</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="pendingTableBody"></tbody>
+          </table>
+        </div>
+        <div id="pendingEmpty" class="empty-state" style="display:none">
+          <div class="empty-icon">⏳</div>
+          <div class="empty-text">No pending payments</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== HISTORY SECTION ==================== -->
+    <div class="section" id="section-history">
+      <div class="d-flex justify-between align-center mb-4">
+        <h2 style="font-size:20px;font-weight:700">Transaction <span style="color:var(--accent-blue)">History</span></h2>
+      </div>
+      <div class="glass-card mb-4">
+        <div class="filter-bar">
+          <div class="form-group">
+            <label class="form-label">Search</label>
+            <input type="text" class="form-control" id="historySearch" placeholder="Search…" oninput="renderHistory()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Owner</label>
+            <select class="form-control" id="historyOwner" onchange="renderHistory()">
+              <option value="">All</option>
+              <option value="mine">Mine</option>
+              <option value="father">Father's</option>
+              <option value="shared">Shared</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select class="form-control" id="historyType" onchange="renderHistory()">
+              <option value="">All</option>
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-control" id="historyCategory" onchange="renderHistory()">
+              <option value="">All</option>
+              <option value="Business">🚀 Business</option>
+              <option value="Advertising">📢 Advertising</option>
+              <option value="Personal">👤 Personal</option>
+              <option value="Food">🍔 Food</option>
+              <option value="Travel">✈️ Travel</option>
+              <option value="Shopping">🛍️ Shopping</option>
+              <option value="Software">💻 Software</option>
+              <option value="Healthcare">🏥 Healthcare</option>
+              <option value="Education">📚 Education</option>
+              <option value="Utilities">⚡ Utilities</option>
+              <option value="Rent">🏠 Rent</option>
+              <option value="Entertainment">🎬 Entertainment</option>
+              <option value="Fuel">⛽ Fuel</option>
+              <option value="Subscriptions">📅 Subscriptions</option>
+              <option value="Repairs">🔧 Repairs</option>
+              <option value="Gifts">🎁 Gifts</option>
+              <option value="Other">📦 Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">From</label>
+            <input type="date" class="form-control" id="historyFrom" onchange="renderHistory()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">To</label>
+            <input type="date" class="form-control" id="historyTo" onchange="renderHistory()">
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="clearHistoryFilters()">Clear</button>
+        </div>
+      </div>
+      <div class="glass-card">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Date</th><th>Type</th><th>Source/Category</th><th>Owner</th><th>Amount</th><th>Notes</th></tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+        </div>
+        <div id="historyEmpty" class="empty-state" style="display:none">
+          <div class="empty-icon">📋</div>
+          <div class="empty-text">No transactions match filters</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== MY MONEY SECTION ==================== -->
+    <div class="section" id="section-mymoney">
+      <div class="d-flex justify-between align-center mb-4">
+        <h2 style="font-size:20px;font-weight:700">My <span style="color:var(--accent-blue)">Money</span></h2>
+      </div>
+
+      <!-- Hero Balance Card -->
+      <div class="mymoney-hero">
+        <div class="mymoney-hero-label">👤 My Current Balance</div>
+        <div class="mymoney-hero-amount" id="mmHeroAmount">₹0</div>
+        <div class="mymoney-hero-sub" id="mmHeroSub">Initial ₹14,390 + Income earned − Expenses spent</div>
+        <div class="mymoney-actions">
+          <button class="btn btn-success" onclick="openMyMoneyModal('add')">➕ Add Money</button>
+          <button class="btn btn-danger" onclick="openMyMoneyModal('spend')">💸 Record Spend</button>
+          <button class="btn btn-ghost" onclick="openMyMoneyModal('set')">✏️ Set Balance</button>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="mymoney-stats">
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#63b3ed,#4299e1)">
+          <span class="stat-icon">💰</span>
+          <div class="stat-label">Total Income</div>
+          <div class="stat-value font-mono" style="color:var(--accent-blue)" id="mmTotalIncome">₹0</div>
+          <div class="stat-sub">All received</div>
+        </div>
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#fc8181,#e53e3e)">
+          <span class="stat-icon">💸</span>
+          <div class="stat-label">Total Spent</div>
+          <div class="stat-value danger font-mono" id="mmTotalSpent">₹0</div>
+          <div class="stat-sub">All my expenses</div>
+        </div>
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#f6ad55,#ed8936)">
+          <span class="stat-icon">⏳</span>
+          <div class="stat-label">Pending Income</div>
+          <div class="stat-value warning font-mono" id="mmPendingIncome">₹0</div>
+          <div class="stat-sub">Yet to receive</div>
+        </div>
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#38d9a9,#2f9e82)">
+          <span class="stat-icon">🔮</span>
+          <div class="stat-label">Expected Total</div>
+          <div class="stat-value positive font-mono" id="mmExpected">₹0</div>
+          <div class="stat-sub">Balance + pending</div>
+        </div>
+      </div>
+
+      <!-- Transaction Log -->
+      <div class="glass-card">
+        <div class="section-header">
+          <div class="section-title">My Money <span>Log</span></div>
+          <button class="btn btn-ghost btn-sm" onclick="clearMyMoneyLog()">🗑️ Clear Log</button>
+        </div>
+        <div id="myMoneyTxnList" class="mymoney-txn-list"></div>
+        <div id="myMoneyEmpty" class="empty-state" style="display:none">
+          <div class="empty-icon">👤</div>
+          <div class="empty-text">No transactions yet. Use Add / Spend buttons above.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== BUSINESS INVESTMENT SECTION ==================== -->
+    <div class="section" id="section-business">
+      <div class="d-flex justify-between align-center mb-4">
+        <h2 style="font-size:20px;font-weight:700">Business <span style="color:var(--accent-amber)">Investments</span></h2>
+        <button class="btn btn-warning" onclick="openBizModal()">+ Add Investment</button>
+      </div>
+
+      <div id="bizOverLimitAlert" class="warning-banner" style="display:none">
+        ⚠️ BUDGET EXCEEDED! Business investments have crossed ₹10,000 limit.
+      </div>
+
+      <div class="grid-2 mb-6">
+        <div class="glass-card">
+          <div class="stat-label" style="margin-bottom:8px">Investment Progress</div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;align-items:center">
+            <span class="font-mono" id="bizProgressLabel" style="font-size:15px;font-weight:700;color:var(--accent-amber)">₹0 / ₹10,000</span>
+            <span id="bizProgressPct" style="font-size:13px;color:var(--text-muted)">0%</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="bizProgressBar" style="width:0%"></div>
+          </div>
+          <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <div class="stat-label">Total Invested</div>
+              <div class="font-mono" style="font-size:18px;font-weight:700;color:var(--accent-amber);margin-top:4px" id="bizTotalInvested">₹0</div>
+            </div>
+            <div>
+              <div class="stat-label">Remaining Budget</div>
+              <div class="font-mono" style="font-size:18px;font-weight:700;color:var(--accent-teal);margin-top:4px" id="bizBudgetLeft">₹10,000</div>
+            </div>
+          </div>
+        </div>
+        <div class="glass-card">
+          <div class="stat-label" style="margin-bottom:12px">Spending by Platform</div>
+          <div class="chart-wrap" style="height:180px">
+            <canvas id="bizPieChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <div class="section-header">
+          <div class="section-title">Investment <span>Log</span></div>
+        </div>
+        <div id="bizLogList"></div>
+        <div id="bizEmpty" class="empty-state" style="display:none">
+          <div class="empty-icon">🚀</div>
+          <div class="empty-text">No business investments yet</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== GOALS SECTION ==================== -->
+    <div class="section" id="section-goals">
+      <div class="d-flex justify-between align-center mb-4">
+        <h2 style="font-size:20px;font-weight:700">Goals & <span style="color:var(--accent-teal)">Savings</span></h2>
+        <button class="btn btn-success" onclick="openGoalModal()">+ Add Goal</button>
+      </div>
+      <div id="goalsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px"></div>
+      <div id="goalsEmpty" class="empty-state" style="display:none">
+        <div class="empty-icon">🎯</div>
+        <div class="empty-text">No goals yet. Create your first savings goal!</div>
+      </div>
+    </div>
+
+    <!-- ==================== ANALYTICS SECTION ==================== -->
+    <div class="section" id="section-analytics">
+      <div class="mb-4">
+        <h2 style="font-size:20px;font-weight:700">Monthly <span style="color:var(--accent-blue)">Analytics</span></h2>
+      </div>
+      <div class="grid-2 mb-6">
+        <div class="glass-card">
+          <div class="section-title mb-4">Income vs Expenses</div>
+          <div class="chart-wrap"><canvas id="incExpChart"></canvas></div>
+        </div>
+        <div class="glass-card">
+          <div class="section-title mb-4">Owner Distribution</div>
+          <div class="chart-wrap"><canvas id="ownerChart"></canvas></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="glass-card">
+          <div class="section-title mb-4">Business Spending</div>
+          <div class="chart-wrap"><canvas id="bizSpendChart"></canvas></div>
+        </div>
+        <div class="glass-card">
+          <div class="section-title mb-4">Cash Flow (Monthly)</div>
+          <div class="chart-wrap"><canvas id="cashFlowChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== BACKUP SECTION ==================== -->
+    <div class="section" id="section-backup">
+      <div class="mb-6">
+        <h2 style="font-size:20px;font-weight:700">Data <span style="color:var(--accent-blue)">Backup</span></h2>
+      </div>
+      <div class="grid-3">
+        <div class="glass-card" style="text-align:center;padding:32px 20px">
+          <div style="font-size:40px;margin-bottom:16px">📤</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:8px">Export Data</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px">Download all your data as a JSON file for backup</div>
+          <button class="btn btn-primary" onclick="exportData()">Export JSON</button>
+        </div>
+        <div class="glass-card" style="text-align:center;padding:32px 20px">
+          <div style="font-size:40px;margin-bottom:16px">📥</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:8px">Import Data</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px">Restore data from a previously exported JSON file</div>
+          <label class="btn btn-success" style="cursor:pointer">
+            Import JSON
+            <input type="file" accept=".json" id="importFile" style="display:none" onchange="importData(event)">
+          </label>
+        </div>
+        <div class="glass-card" style="text-align:center;padding:32px 20px">
+          <div style="font-size:40px;margin-bottom:16px">🔄</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:8px">Reset Dashboard</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px">Clear all data and start fresh (irreversible)</div>
+          <button class="btn btn-danger" onclick="confirmReset()">Reset All Data</button>
+        </div>
+      </div>
+      <div class="glass-card mt-4">
+        <div class="section-title mb-4">Data Summary</div>
+        <div id="backupSummary"></div>
+      </div>
+    </div>
+
+  </div><!-- /content-area -->
+</div><!-- /main-content -->
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- Income Modal -->
+<div class="modal-overlay" id="incomeModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="incomeModalTitle">💰 Add Income</div>
+      <button class="modal-close" onclick="closeModal('incomeModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Amount (₹)</label>
+          <input type="number" class="form-control" id="incAmount" placeholder="0.00" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Source</label>
+          <input type="text" class="form-control" id="incSource" placeholder="e.g. Razorpay, Client, Cash">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Owner</label>
+          <select class="form-control" id="incOwner">
+            <option value="mine">Mine</option>
+            <option value="father">Father's</option>
+            <option value="shared">Shared</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-control" id="incDate">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-control" id="incStatus">
+            <option value="pending">Pending</option>
+            <option value="received">Received</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <input type="text" class="form-control" id="incNotes" placeholder="Optional notes">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('incomeModal')">Cancel</button>
+      <button class="btn btn-success" id="incomeSaveBtn" onclick="saveIncome()">Save Income</button>
+    </div>
+  </div>
+</div>
+
+<!-- Expense Modal -->
+<div class="modal-overlay" id="expenseModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="expenseModalTitle">💸 Add Expense</div>
+      <button class="modal-close" onclick="closeModal('expenseModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Amount (₹)</label>
+          <input type="number" class="form-control" id="expAmount" placeholder="0.00" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-control" id="expCategory" onchange="handleExpCategoryChange()">
+            <option value="Business">🚀 Business</option>
+            <option value="Advertising">📢 Advertising</option>
+            <option value="Personal">👤 Personal</option>
+            <option value="Food">🍔 Food & Dining</option>
+            <option value="Travel">✈️ Travel</option>
+            <option value="Shopping">🛍️ Shopping</option>
+            <option value="Software">💻 Software / Tools</option>
+            <option value="Healthcare">🏥 Healthcare</option>
+            <option value="Education">📚 Education</option>
+            <option value="Utilities">⚡ Utilities</option>
+            <option value="Rent">🏠 Rent</option>
+            <option value="Entertainment">🎬 Entertainment</option>
+            <option value="Fuel">⛽ Fuel</option>
+            <option value="Subscriptions">📅 Subscriptions</option>
+            <option value="Repairs">🔧 Repairs</option>
+            <option value="Gifts">🎁 Gifts</option>
+            <option value="Other">📦 Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Owner</label>
+          <select class="form-control" id="expOwner">
+            <option value="mine">Mine</option>
+            <option value="father">Father's</option>
+            <option value="shared">Shared</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-control" id="expDate">
+        </div>
+        <!-- Business-specific fields (shown when Business/Advertising selected) -->
+        <div class="form-group" id="expBizPlatformGroup" style="display:none">
+          <label class="form-label">🚀 Platform / Channel</label>
+          <input type="text" class="form-control" id="expBizPlatform" placeholder="e.g. Facebook Ads, Google Ads">
+        </div>
+        <div class="form-group" id="expBizPurposeGroup" style="display:none">
+          <label class="form-label">Purpose</label>
+          <input type="text" class="form-control" id="expBizPurpose" placeholder="e.g. Campaign, Domain, Tool">
+        </div>
+        <div class="form-group" style="grid-column: span 2">
+          <label class="form-label">Notes</label>
+          <input type="text" class="form-control" id="expNotes" placeholder="Optional notes">
+        </div>
+      </div>
+      <div id="expBizNote" style="display:none;font-size:11.5px;color:var(--accent-amber);background:rgba(246,173,85,0.08);border:1px solid rgba(246,173,85,0.2);border-radius:6px;padding:8px 12px;margin-top:-4px">
+        ⚡ This expense will also be auto-logged in Business Investments
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('expenseModal')">Cancel</button>
+      <button class="btn btn-danger" id="expenseSaveBtn" onclick="saveExpense()">Save Expense</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pending Modal -->
+<div class="modal-overlay" id="pendingModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">⏳ Add Pending Payment</div>
+      <button class="modal-close" onclick="closeModal('pendingModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Source</label>
+          <input type="text" class="form-control" id="pendSource" placeholder="e.g. Razorpay, Client ABC">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount (₹)</label>
+          <input type="number" class="form-control" id="pendAmount" placeholder="0.00" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Owner</label>
+          <select class="form-control" id="pendOwner">
+            <option value="mine">Mine</option>
+            <option value="father">Father's</option>
+            <option value="shared">Shared</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Expected Date</label>
+          <input type="date" class="form-control" id="pendDate">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <input type="text" class="form-control" id="pendNotes" placeholder="Optional">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('pendingModal')">Cancel</button>
+      <button class="btn btn-warning" onclick="savePending()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Business Investment Modal -->
+<div class="modal-overlay" id="bizModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="bizModalTitle">🚀 Add Business Investment</div>
+      <button class="modal-close" onclick="closeModal('bizModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Amount (₹)</label>
+          <input type="number" class="form-control" id="bizAmount" placeholder="0.00" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Platform</label>
+          <input type="text" class="form-control" id="bizPlatform" placeholder="e.g. Facebook Ads, Google Ads">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Purpose</label>
+          <input type="text" class="form-control" id="bizPurpose" placeholder="e.g. Campaign, Domain, Tool">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-control" id="bizDate">
+        </div>
+        <div class="form-group" style="grid-column:span 2">
+          <label class="form-label">Notes</label>
+          <input type="text" class="form-control" id="bizNotes" placeholder="Optional notes">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('bizModal')">Cancel</button>
+      <button class="btn btn-warning" id="bizSaveBtn" onclick="saveBizInvestment()">Save Investment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Goal Modal -->
+<div class="modal-overlay" id="goalModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="goalModalTitle">🎯 Add Savings Goal</div>
+      <button class="modal-close" onclick="closeModal('goalModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Goal Name</label>
+          <input type="text" class="form-control" id="goalName" placeholder="e.g. Emergency Fund">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Amount (₹)</label>
+          <input type="number" class="form-control" id="goalTarget" placeholder="0.00" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Amount (₹)</label>
+          <input type="number" class="form-control" id="goalCurrent" placeholder="0.00" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Emoji / Icon</label>
+          <input type="text" class="form-control" id="goalIcon" placeholder="🎯" maxlength="4">
+        </div>
+        <div class="form-group" style="grid-column:span 2">
+          <label class="form-label">Description</label>
+          <input type="text" class="form-control" id="goalDesc" placeholder="Optional description">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('goalModal')">Cancel</button>
+      <button class="btn btn-success" id="goalSaveBtn" onclick="saveGoal()">Save Goal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Current Balance Modal -->
+<div class="modal-overlay" id="balanceModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">💳 Set Current Balance</div>
+      <button class="modal-close" onclick="closeModal('balanceModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.5">
+        Enter your actual current balance (cash in hand + bank). This helps you compare real balance vs calculated balance.
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Current Balance (₹)</label>
+          <input type="number" class="form-control" id="balAmount" placeholder="0.00" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Note (optional)</label>
+          <input type="text" class="form-control" id="balNote" placeholder="e.g. Cash + PhonePe">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('balanceModal')">Cancel</button>
+      <button class="btn btn-success" onclick="saveCurrentBalance()">Save Balance</button>
+    </div>
+  </div>
+</div>
+
+<!-- My Money Modal -->
+<div class="modal-overlay" id="myMoneyModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="myMoneyModalTitle">➕ Add Money</div>
+      <button class="modal-close" onclick="closeModal('myMoneyModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="myMoneyModalDesc" style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6"></div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Amount (₹)</label>
+          <input type="number" class="form-control" id="mmAmount" placeholder="0.00" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <input type="text" class="form-control" id="mmDesc" placeholder="e.g. Freelance payment, Groceries…">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-control" id="mmDate">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('myMoneyModal')">Cancel</button>
+      <button class="btn btn-success" id="myMoneySaveBtn" onclick="saveMyMoneyTxn()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Pending Modal -->
+<div class="modal-overlay" id="editPendingModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">✏️ Edit Pending Payment</div>
+      <button class="modal-close" onclick="closeModal('editPendingModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Source</label>
+          <input type="text" class="form-control" id="editPendSource" placeholder="e.g. Razorpay, Client ABC">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount (₹)</label>
+          <input type="number" class="form-control" id="editPendAmount" placeholder="0.00" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Owner</label>
+          <select class="form-control" id="editPendOwner">
+            <option value="mine">Mine</option>
+            <option value="father">Father's</option>
+            <option value="shared">Shared</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Expected Date</label>
+          <input type="date" class="form-control" id="editPendDate">
+        </div>
+        <div class="form-group" style="grid-column:span 2">
+          <label class="form-label">Notes</label>
+          <input type="text" class="form-control" id="editPendNotes" placeholder="Optional">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('editPendingModal')">Cancel</button>
+      <button class="btn btn-warning" onclick="saveEditPending()">Update Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+/* =====================================================
+   DATA STORE & PERSISTENCE
+===================================================== */
+const STORAGE_KEY = 'moneyMgr_v3';
+
+// Default starting data
+const DEFAULT_DATA = {
+  // Starting wallet amounts (initial seeded values)
+  initialMine: 21338,        // 1000 + 13000 + 2338 + 5000
+  initialFather: 34008,      // 55346 - 21338
+  initialShared: 0,
+  businessBudget: 10000,
+
+  // Current real balance (manually set by user)
+  currentBalance: 55346,
+  balanceNote: 'Total Cash + Bank',
+  balanceSet: true,
+
+  // My Money log — pre-filled breakdown
+  myMoneyLog: [
+    { id: 'mm_1000', type: 'add', amt: 1000, desc: 'Cash — ₹1,000', date: new Date().toISOString().split('T')[0], createdAt: new Date(Date.now()-4000).toISOString() },
+    { id: 'mm_13000', type: 'add', amt: 13000, desc: 'Cash — ₹13,000', date: new Date().toISOString().split('T')[0], createdAt: new Date(Date.now()-3000).toISOString() },
+    { id: 'mm_2338', type: 'add', amt: 2338, desc: 'Cash — ₹2,338', date: new Date().toISOString().split('T')[0], createdAt: new Date(Date.now()-2000).toISOString() },
+    { id: 'mm_5000', type: 'add', amt: 5000, desc: 'Cash — ₹5,000 (₹7,000 mein se ₹2,000 client pending)', date: new Date().toISOString().split('T')[0], createdAt: new Date(Date.now()-1000).toISOString() }
+  ],
+  myMoneyManualBalance: undefined,
+
+  // Income entries — 0 abhi
+  income: [
+    {
+      id: 'inc_client_pending',
+      amount: 2000,
+      source: 'Client Payment (Pending)',
+      owner: 'mine',
+      date: new Date(Date.now() + 7*24*60*60*1000).toISOString().split('T')[0],
+      status: 'pending',
+      notes: '₹7,000 mein se ₹2,000 abhi pending hai',
+      createdAt: new Date().toISOString()
+    }
+  ],
+
+  // Expense entries
+  expenses: [],
+
+  // Business investments
+  investments: [],
+
+  // Savings goals
+  goals: [
+    { id: 'goal_emergency', name: 'Emergency Fund', target: 50000, current: 0, icon: '🆘', desc: 'For unexpected expenses' },
+    { id: 'goal_business', name: 'Business Fund', target: 25000, current: 0, icon: '🚀', desc: 'Grow the business' },
+    { id: 'goal_laptop', name: 'Laptop Fund', target: 80000, current: 0, icon: '💻', desc: 'New laptop upgrade' }
+  ],
+
+  // Misc
+  editingGoalId: null
+};
+
+let state = {};
+
+// Load from localStorage or use defaults
+function loadState() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      state = JSON.parse(saved);
+      // Ensure new fields exist
+      if (!state.goals) state.goals = DEFAULT_DATA.goals;
+      if (!state.investments) state.investments = [];
+      if (!state.businessBudget) state.businessBudget = 10000;
+      if (state.currentBalance === undefined) state.currentBalance = 0;
+      if (!state.balanceNote) state.balanceNote = '';
+      if (state.balanceSet === undefined) state.balanceSet = false;
+      if (!state.myMoneyLog) state.myMoneyLog = [];
+      if (state.myMoneyManualBalance === undefined) state.myMoneyManualBalance = undefined;
+    } catch(e) {
+      state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    }
+  } else {
+    state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    // Set default expected dates for pending payments (safely)
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 7);
+    const dateStr = tomorrow.toISOString().split('T')[0];
+    state.income.forEach(inc => { if (!inc.date) inc.date = dateStr; });
+  }
+  saveState();
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+/* =====================================================
+   COMPUTED VALUES
+===================================================== */
+function compute() {
+  const receivedIncome = state.income
+    .filter(i => i.status === 'received')
+    .reduce((s, i) => s + Number(i.amount), 0);
+
+  const pendingIncome = state.income
+    .filter(i => i.status === 'pending')
+    .reduce((s, i) => s + Number(i.amount), 0);
+
+  const totalExpenses = state.expenses.reduce((s, e) => s + Number(e.amount), 0);
+
+  const bizInvested = state.investments.reduce((s, i) => s + Number(i.amount), 0);
+
+  // Available balance = initial pool + received income - expenses
+  const totalAvailable = state.initialMine + state.initialFather + state.initialShared + receivedIncome - totalExpenses;
+
+  const expectedBalance = totalAvailable + pendingIncome;
+
+  // Owner-wise income received
+  const myReceivedIncome = state.income.filter(i => i.status === 'received' && i.owner === 'mine').reduce((s,i) => s+Number(i.amount), 0);
+  const fatherReceivedIncome = state.income.filter(i => i.status === 'received' && i.owner === 'father').reduce((s,i) => s+Number(i.amount), 0);
+
+  // Owner-wise expenses
+  const myExpenses = state.expenses.filter(e => e.owner === 'mine').reduce((s,e) => s+Number(e.amount), 0);
+  const fatherExpenses = state.expenses.filter(e => e.owner === 'father').reduce((s,e) => s+Number(e.amount), 0);
+  const sharedExpenses = state.expenses.filter(e => e.owner === 'shared').reduce((s,e) => s+Number(e.amount), 0);
+
+  // My net worth = initial mine + my received income - my expenses + my pending
+  const myPending = state.income.filter(i => i.status === 'pending' && i.owner === 'mine').reduce((s,i) => s+Number(i.amount), 0);
+  const myNetWorth = state.initialMine + myReceivedIncome - myExpenses + myPending;
+  const fatherNetWorth = state.initialFather + fatherReceivedIncome - fatherExpenses;
+
+  // My money currently = initial + received - expenses
+  const myMoney = state.initialMine + myReceivedIncome - myExpenses;
+  const fatherMoney = state.initialFather + fatherReceivedIncome - fatherExpenses;
+  const sharedMoney = state.initialShared - sharedExpenses;
+
+  return {
+    receivedIncome, pendingIncome, totalExpenses, bizInvested,
+    totalAvailable, expectedBalance, myMoney, fatherMoney, sharedMoney,
+    myNetWorth, fatherNetWorth, bizRemaining: state.businessBudget - bizInvested,
+    myExpenses, fatherExpenses
+  };
+}
+
+/* =====================================================
+   FORMATTING HELPERS
+===================================================== */
+function fmt(n) {
+  return '₹' + Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function today() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function ownerBadge(owner) {
+  if (owner === 'mine') return '<span class="badge badge-mine">👤 Mine</span>';
+  if (owner === 'father') return '<span class="badge badge-father">👴 Father</span>';
+  return '<span class="badge badge-shared">🤝 Shared</span>';
+}
+
+function uid() {
+  return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+}
+
+function daysUntil(dateStr) {
+  if (!dateStr) return null;
+  const now = new Date(); now.setHours(0,0,0,0);
+  const dt = new Date(dateStr); dt.setHours(0,0,0,0);
+  return Math.round((dt - now) / 86400000);
+}
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+const sectionTitles = {
+  dashboard: ['Dashboard', 'Overview of your finances'],
+  income: ['Income Manager', 'Track incoming money'],
+  expenses: ['Expense Manager', 'Track your spending'],
+  pending: ['Pending Payments', 'Awaiting settlement'],
+  history: ['Transaction History', 'Full ledger of all transactions'],
+  business: ['Business Investments', 'Track business spending'],
+  goals: ['Goals & Savings', 'Financial targets'],
+  analytics: ['Monthly Analytics', 'Charts & insights'],
+  backup: ['Data Backup', 'Export, import, reset']
+};
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const sec = document.getElementById('section-' + id);
+  if (sec) sec.classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.textContent.trim().toLowerCase().includes(id.replace('-', ' ').toLowerCase().split(' ')[0])) {
+      n.classList.add('active');
+    }
+  });
+
+  // Set by onclick attribute
+  const nav = document.querySelector(`.nav-item[onclick="showSection('${id}')"]`);
+  if (nav) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    nav.classList.add('active');
+  }
+
+  const [title, sub] = sectionTitles[id] || ['Dashboard', ''];
+  document.getElementById('topbarTitle').textContent = title;
+  document.getElementById('topbarSub').textContent = sub;
+
+  closeSidebar();
+
+  // Render section-specific content
+  if (id === 'analytics') renderCharts();
+  if (id === 'backup') renderBackupSummary();
+  if (id === 'business') renderBizSection();
+  if (id === 'goals') renderGoals();
+  if (id === 'history') renderHistory();
+}
+
+/* =====================================================
+   SIDEBAR MOBILE
+===================================================== */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+/* =====================================================
+   MODAL HELPERS
+===================================================== */
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+let editingIncomeId = null;
+
+function openIncomeModal(id = null) {
+  editingIncomeId = id;
+  if (id) {
+    const inc = state.income.find(i => i.id === id);
+    if (!inc) return;
+    document.getElementById('incAmount').value = inc.amount;
+    document.getElementById('incSource').value = inc.source;
+    document.getElementById('incOwner').value = inc.owner;
+    document.getElementById('incDate').value = inc.date || today();
+    document.getElementById('incStatus').value = inc.status;
+    document.getElementById('incNotes').value = inc.notes || '';
+    document.getElementById('incomeModalTitle').textContent = '✏️ Edit Income';
+    document.getElementById('incomeSaveBtn').textContent = 'Update Income';
+  } else {
+    document.getElementById('incAmount').value = '';
+    document.getElementById('incSource').value = '';
+    document.getElementById('incOwner').value = 'mine';
+    document.getElementById('incDate').value = today();
+    document.getElementById('incStatus').value = 'received';
+    document.getElementById('incNotes').value = '';
+    document.getElementById('incomeModalTitle').textContent = '💰 Add Income';
+    document.getElementById('incomeSaveBtn').textContent = 'Save Income';
+  }
+  openModal('incomeModal');
+}
+
+let editingExpenseId = null;
+
+function openExpenseModal(id = null) {
+  editingExpenseId = id;
+  if (id) {
+    const exp = state.expenses.find(e => e.id === id);
+    if (!exp) return;
+    document.getElementById('expAmount').value = exp.amount;
+    document.getElementById('expCategory').value = exp.category;
+    document.getElementById('expOwner').value = exp.owner;
+    document.getElementById('expDate').value = exp.date || today();
+    document.getElementById('expNotes').value = exp.notes || '';
+    document.getElementById('expBizPlatform').value = exp.bizPlatform || '';
+    document.getElementById('expBizPurpose').value = exp.bizPurpose || '';
+    document.getElementById('expenseModalTitle').textContent = '✏️ Edit Expense';
+    document.getElementById('expenseSaveBtn').textContent = 'Update Expense';
+    handleExpCategoryChange();
+  } else {
+    document.getElementById('expAmount').value = '';
+    document.getElementById('expCategory').value = 'Personal';
+    document.getElementById('expOwner').value = 'mine';
+    document.getElementById('expDate').value = today();
+    document.getElementById('expNotes').value = '';
+    document.getElementById('expBizPlatform').value = '';
+    document.getElementById('expBizPurpose').value = '';
+    document.getElementById('expBizPlatformGroup').style.display = 'none';
+    document.getElementById('expBizPurposeGroup').style.display = 'none';
+    document.getElementById('expBizNote').style.display = 'none';
+    document.getElementById('expenseModalTitle').textContent = '💸 Add Expense';
+    document.getElementById('expenseSaveBtn').textContent = 'Save Expense';
+  }
+  openModal('expenseModal');
+}
+
+function handleExpCategoryChange() {
+  const cat = document.getElementById('expCategory').value;
+  const isBiz = cat === 'Business' || cat === 'Advertising';
+  document.getElementById('expBizPlatformGroup').style.display = isBiz ? '' : 'none';
+  document.getElementById('expBizPurposeGroup').style.display = isBiz ? '' : 'none';
+  document.getElementById('expBizNote').style.display = isBiz ? '' : 'none';
+}
+
+function openPendingModal() {
+  document.getElementById('pendSource').value = '';
+  document.getElementById('pendAmount').value = '';
+  document.getElementById('pendOwner').value = 'mine';
+  document.getElementById('pendDate').value = '';
+  document.getElementById('pendNotes').value = '';
+  openModal('pendingModal');
+}
+
+let editingBizId = null;
+
+function openBizModal(id = null) {
+  editingBizId = id;
+  if (id) {
+    const inv = state.investments.find(i => i.id === id);
+    if (!inv) return;
+    document.getElementById('bizAmount').value = inv.amount;
+    document.getElementById('bizPlatform').value = inv.platform;
+    document.getElementById('bizPurpose').value = inv.purpose || '';
+    document.getElementById('bizDate').value = inv.date || today();
+    document.getElementById('bizNotes').value = inv.notes || '';
+    document.getElementById('bizModalTitle').textContent = '✏️ Edit Investment';
+    document.getElementById('bizSaveBtn').textContent = 'Update Investment';
+  } else {
+    document.getElementById('bizAmount').value = '';
+    document.getElementById('bizPlatform').value = '';
+    document.getElementById('bizPurpose').value = '';
+    document.getElementById('bizDate').value = today();
+    document.getElementById('bizNotes').value = '';
+    document.getElementById('bizModalTitle').textContent = '🚀 Add Business Investment';
+    document.getElementById('bizSaveBtn').textContent = 'Save Investment';
+  }
+  openModal('bizModal');
+}
+
+/* Close modal on overlay click */
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+/* =====================================================
+   TOAST NOTIFICATIONS
+===================================================== */
+function toast(msg, type = 'success') {
+  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(() => el.remove(), 3100);
+}
+
+/* =====================================================
+   SAVE INCOME
+===================================================== */
+function saveIncome() {
+  const amount = parseFloat(document.getElementById('incAmount').value);
+  const source = document.getElementById('incSource').value.trim();
+  if (!amount || amount <= 0) { toast('Enter a valid amount', 'error'); return; }
+  if (!source) { toast('Enter income source', 'error'); return; }
+
+  const owner = document.getElementById('incOwner').value;
+  const status = document.getElementById('incStatus').value;
+
+  if (editingIncomeId) {
+    const idx = state.income.findIndex(i => i.id === editingIncomeId);
+    if (idx !== -1) {
+      const old = state.income[idx];
+      // If was received, reverse old amount from currentBalance
+      if (old.status === 'received') {
+        state.currentBalance = (state.currentBalance || 0) - Number(old.amount);
+      }
+      state.income[idx] = { ...old, amount, source, owner, date: document.getElementById('incDate').value || today(), status, notes: document.getElementById('incNotes').value.trim() };
+      // If now received, add new amount
+      if (status === 'received') {
+        state.currentBalance = (state.currentBalance || 0) + amount;
+        state.balanceSet = true;
+        // Log in myMoney if mine
+        if (owner === 'mine') logMyMoney('add', amount, `💰 Income: ${source}`, document.getElementById('incDate').value || today());
+      }
+    }
+    toast('Income updated ✅');
+    editingIncomeId = null;
+  } else {
+    const entry = { id: uid(), amount, source, owner, date: document.getElementById('incDate').value || today(), status, notes: document.getElementById('incNotes').value.trim(), createdAt: new Date().toISOString() };
+    state.income.push(entry);
+    // If directly received, update currentBalance
+    if (status === 'received') {
+      state.currentBalance = (state.currentBalance || 0) + amount;
+      state.balanceSet = true;
+      if (owner === 'mine') logMyMoney('add', amount, `💰 Income: ${source}`, entry.date);
+      if (owner === 'father') warnPapaChange('income added', amount);
+    }
+    toast(`Income of ${fmt(amount)} added`);
+  }
+
+  saveState();
+  renderAll();
+  renderMyMoneySection();
+  closeModal('incomeModal');
+}
+
+/* =====================================================
+   SAVE EXPENSE
+===================================================== */
+function saveExpense() {
+  const amount = parseFloat(document.getElementById('expAmount').value);
+  if (!amount || amount <= 0) { toast('Enter a valid amount', 'error'); return; }
+
+  const category = document.getElementById('expCategory').value;
+  const owner = document.getElementById('expOwner').value;
+  const isBiz = category === 'Business' || category === 'Advertising';
+  const bizPlatform = document.getElementById('expBizPlatform').value.trim();
+  const bizPurpose = document.getElementById('expBizPurpose').value.trim();
+
+  if (editingExpenseId) {
+    const idx = state.expenses.findIndex(e => e.id === editingExpenseId);
+    if (idx !== -1) {
+      const oldAmt = Number(state.expenses[idx].amount);
+      const diff = amount - oldAmt;
+      if (diff > 0) {
+        // Spending more — check my money has enough
+        const myBal = getMyMoneyBalance();
+        if (myBal < diff) {
+          toast(`❌ Nahi ho sakta! Tumhare paas sirf ${fmt(myBal)} hai, ${fmt(diff)} aur chahiye. Papa ki money use nahi hogi!`, 'error');
+          return;
+        }
+      }
+      state.currentBalance = (state.currentBalance || 0) - diff;
+      state.balanceSet = true;
+      if (diff > 0) logMyMoney('spend', diff, `✏️ Expense edit: ${category}`, document.getElementById('expDate').value || today());
+      if (diff < 0) logMyMoney('add', Math.abs(diff), `✏️ Expense reduced: ${category}`, document.getElementById('expDate').value || today());
+      state.expenses[idx] = { ...state.expenses[idx], amount, category, owner: 'mine', date: document.getElementById('expDate').value || today(), notes: document.getElementById('expNotes').value.trim(), bizPlatform: isBiz ? bizPlatform : '', bizPurpose: isBiz ? bizPurpose : '' };
+    }
+    toast('Expense updated ✅');
+    editingExpenseId = null;
+  } else {
+    // NEW EXPENSE — hard check against My Money balance
+    const myBal = getMyMoneyBalance();
+    if (myBal < amount) {
+      toast(`❌ BLOCKED! Tumhare paas sirf ${fmt(myBal)} hai — ${fmt(amount)} nahi nikal sakte. Papa ki money use nahi hogi!`, 'error');
+      // Flash the my money balance red for 2s
+      const el = document.getElementById('mmHeroAmount');
+      if (el) { el.style.color = 'var(--accent-red)'; setTimeout(() => el.style.color = '', 2000); }
+      return;
+    }
+
+    const entry = { id: uid(), amount, category, owner: 'mine', date: document.getElementById('expDate').value || today(), notes: document.getElementById('expNotes').value.trim(), bizPlatform: isBiz ? bizPlatform : '', bizPurpose: isBiz ? bizPurpose : '', createdAt: new Date().toISOString() };
+    state.expenses.push(entry);
+    state.currentBalance = (state.currentBalance || 0) - amount;
+    state.balanceSet = true;
+    logMyMoney('spend', amount, `💸 Expense: ${category}${entry.notes ? ' — ' + entry.notes : ''}`, entry.date);
+
+    if (isBiz) {
+      state.investments.push({ id: uid(), amount, platform: bizPlatform || category, purpose: bizPurpose || entry.notes || category, date: entry.date, notes: `[Auto from Expense] ${entry.notes || ''}`.trim(), createdAt: new Date().toISOString() });
+      toast(`${fmt(amount)} business mein lagaya 🚀`);
+    } else {
+      toast(`${fmt(amount)} expense record hua ✅`);
+    }
+  }
+
+  saveState();
+  renderAll();
+  renderBizSection();
+  renderMyMoneySection();
+  closeModal('expenseModal');
+}
+
+/* =====================================================
+   SAVE PENDING
+===================================================== */
+function savePending() {
+  const amount = parseFloat(document.getElementById('pendAmount').value);
+  const source = document.getElementById('pendSource').value.trim();
+  if (!amount || amount <= 0) { toast('Enter a valid amount', 'error'); return; }
+  if (!source) { toast('Enter source name', 'error'); return; }
+
+  const entry = {
+    id: uid(),
+    source,
+    amount,
+    owner: document.getElementById('pendOwner').value,
+    date: document.getElementById('pendDate').value,
+    notes: document.getElementById('pendNotes').value.trim(),
+    status: 'pending',
+    createdAt: new Date().toISOString()
+  };
+
+  // Also add as income
+  state.income.push({
+    id: uid(),
+    amount,
+    source,
+    owner: entry.owner,
+    date: entry.date,
+    status: 'pending',
+    notes: entry.notes,
+    createdAt: new Date().toISOString()
+  });
+
+  saveState();
+  renderAll();
+  closeModal('pendingModal');
+  toast('Pending payment added');
+}
+
+/* =====================================================
+   SAVE BUSINESS INVESTMENT
+===================================================== */
+function saveBizInvestment() {
+  const amount = parseFloat(document.getElementById('bizAmount').value);
+  const platform = document.getElementById('bizPlatform').value.trim();
+  if (!amount || amount <= 0) { toast('Enter a valid amount', 'error'); return; }
+  if (!platform) { toast('Enter platform name', 'error'); return; }
+
+  if (editingBizId) {
+    const idx = state.investments.findIndex(i => i.id === editingBizId);
+    if (idx !== -1) {
+      const oldAmt = Number(state.investments[idx].amount);
+      const diff = amount - oldAmt; // positive = spending more, negative = spending less
+      // Adjust currentBalance & myMoney for the difference
+      if (diff !== 0) {
+        state.currentBalance = (state.currentBalance || 0) - diff;
+        state.balanceSet = true;
+        if (!state.myMoneyLog) state.myMoneyLog = [];
+        const logDesc = diff > 0
+          ? `Business Edit: extra ${fmt(diff)} spent on [${platform}]`
+          : `Business Edit: ${fmt(Math.abs(diff))} refunded from [${platform}]`;
+        state.myMoneyLog.unshift({ id: 'mm_bizedit_' + Date.now(), type: diff > 0 ? 'spend' : 'add', amt: Math.abs(diff), desc: logDesc, date: document.getElementById('bizDate').value || today(), createdAt: new Date().toISOString() });
+      }
+      state.investments[idx] = {
+        ...state.investments[idx],
+        amount,
+        platform,
+        purpose: document.getElementById('bizPurpose').value.trim(),
+        date: document.getElementById('bizDate').value || today(),
+        notes: document.getElementById('bizNotes').value.trim()
+      };
+    }
+    toast('Investment updated ✅');
+    editingBizId = null;
+  } else {
+    // Check if My Money has enough — never touch papa's money
+    const myBal = getMyMoneyBalance();
+    if (myBal < amount) {
+      toast(`❌ BLOCKED! Tumhare paas sirf ${fmt(myBal)} hai — ${fmt(amount)} business mein nahi laga sakte. Papa ki money use nahi hogi!`, 'error');
+      return;
+    }
+
+    const entryId = uid();
+    const entry = {
+      id: entryId,
+      amount,
+      platform,
+      purpose: document.getElementById('bizPurpose').value.trim(),
+      date: document.getElementById('bizDate').value || today(),
+      notes: document.getElementById('bizNotes').value.trim(),
+      createdAt: new Date().toISOString()
+    };
+
+    // Deduct from currentBalance
+    state.currentBalance = (state.currentBalance || 0) - amount;
+    state.balanceSet = true;
+
+    // Log in myMoneyLog as spend (linked to biz entry)
+    if (!state.myMoneyLog) state.myMoneyLog = [];
+    state.myMoneyLog.unshift({
+      id: 'mm_biz_' + entryId,
+      type: 'spend',
+      amt: amount,
+      desc: `🚀 Business: [${platform}] ${entry.purpose || ''}`.trim(),
+      date: entry.date,
+      bizEntryId: entryId,
+      createdAt: new Date().toISOString()
+    });
+
+    // Also log as expense
+    state.expenses.push({
+      id: uid(),
+      amount,
+      category: 'Business',
+      owner: 'mine',
+      date: entry.date,
+      notes: `[${platform}] ${entry.purpose}`,
+      bizPlatform: platform,
+      bizPurpose: entry.purpose,
+      createdAt: new Date().toISOString()
+    });
+
+    state.investments.push(entry);
+    toast(`₹${amount.toLocaleString('en-IN')} business mein lagaya — My Money & Current Balance update ho gaya 🚀`);
+
+    const { bizInvested } = compute();
+    if (bizInvested > state.businessBudget) {
+      toast('⚠️ Business budget exceeded!', 'error');
+    }
+  }
+
+  saveState();
+  renderAll();
+  renderBizSection();
+  renderMyMoneySection();
+  closeModal('bizModal');
+}
+
+/* =====================================================
+   MARK INCOME RECEIVED
+===================================================== */
+function markReceived(id) {
+  const entry = state.income.find(i => i.id === id);
+  if (entry) {
+    entry.status = 'received';
+    state.currentBalance = (state.currentBalance || 0) + Number(entry.amount);
+    state.balanceSet = true;
+    if (entry.owner === 'mine') logMyMoney('add', Number(entry.amount), `💰 Income received: ${entry.source}`, today());
+    if (entry.owner === 'father') warnPapaChange('income received', Number(entry.amount));
+    saveState();
+    renderAll();
+    renderMyMoneySection();
+    toast(`${entry.source} received! ✅ Balance updated`);
+  }
+}
+
+/* =====================================================
+   DELETE FUNCTIONS
+===================================================== */
+/* =====================================================
+   HELPER: Log to My Money & Papa Warning
+===================================================== */
+function logMyMoney(type, amt, desc, date) {
+  if (!state.myMoneyLog) state.myMoneyLog = [];
+  state.myMoneyLog.unshift({ id: 'mm_auto_' + Date.now(), type, amt, desc, date: date || today(), createdAt: new Date().toISOString() });
+}
+
+function warnPapaChange(action, amount) {
+  // Show a prominent warning toast
+  setTimeout(() => {
+    toast(`⚠️ PAPA KI MONEY! ${fmt(amount)} ${action} — Papa ke balance mein change aa raha hai. Agar galti hai toh undo karo!`, 'error');
+  }, 300);
+}
+
+function deleteIncome(id) {
+  if (!confirm('Delete this income entry?')) return;
+  const entry = state.income.find(i => i.id === id);
+  if (entry && entry.status === 'received') {
+    // Reverse from currentBalance
+    state.currentBalance = (state.currentBalance || 0) - Number(entry.amount);
+    state.balanceSet = true;
+    if (entry.owner === 'mine') logMyMoney('spend', Number(entry.amount), `🗑️ Income deleted: ${entry.source}`, today());
+    if (entry.owner === 'father') warnPapaChange('income deleted', Number(entry.amount));
+  }
+  state.income = state.income.filter(i => i.id !== id);
+  saveState();
+  renderAll();
+  renderMyMoneySection();
+  toast('Income deleted', 'info');
+}
+
+function deleteExpense(id) {
+  if (!confirm('Delete this expense?')) return;
+  const entry = state.expenses.find(e => e.id === id);
+  if (entry) {
+    // Reverse: add amount back to currentBalance
+    state.currentBalance = (state.currentBalance || 0) + Number(entry.amount);
+    state.balanceSet = true;
+    if (entry.owner === 'mine') logMyMoney('add', Number(entry.amount), `🗑️ Expense deleted: ${entry.category}`, today());
+    if (entry.owner === 'father') warnPapaChange('expense deleted (refund)', Number(entry.amount));
+  }
+  state.expenses = state.expenses.filter(e => e.id !== id);
+  saveState();
+  renderAll();
+  renderMyMoneySection();
+  toast('Expense deleted & balance restored', 'info');
+}
+
+function deleteBiz(id) {
+  if (!confirm('Delete this investment?')) return;
+  const inv = state.investments.find(i => i.id === id);
+  if (inv) {
+    // Reverse: add amount back to currentBalance
+    state.currentBalance = (state.currentBalance || 0) + Number(inv.amount);
+    state.balanceSet = true;
+    // Remove linked myMoneyLog entry
+    state.myMoneyLog = (state.myMoneyLog || []).filter(e => e.bizEntryId !== id);
+    // Also remove linked expense
+    state.expenses = state.expenses.filter(e => !(e.bizPlatform === inv.platform && Number(e.amount) === Number(inv.amount)));
+  }
+  state.investments = state.investments.filter(i => i.id !== id);
+  saveState();
+  renderAll();
+  renderBizSection();
+  renderMyMoneySection();
+  toast('Investment deleted & balance restored ✅', 'info');
+}
+
+function deleteGoal(id) {
+  if (!confirm('Delete this goal?')) return;
+  state.goals = state.goals.filter(g => g.id !== id);
+  saveState();
+  renderGoals();
+  toast('Goal deleted', 'info');
+}
+
+/* =====================================================
+   CURRENT BALANCE
+===================================================== */
+function openBalanceModal() {
+  document.getElementById('balAmount').value = state.currentBalance || '';
+  document.getElementById('balNote').value = state.balanceNote || '';
+  openModal('balanceModal');
+}
+
+function saveCurrentBalance() {
+  const amount = parseFloat(document.getElementById('balAmount').value);
+  if (isNaN(amount) || amount < 0) { toast('Enter a valid balance', 'error'); return; }
+  state.currentBalance = amount;
+  state.balanceNote = document.getElementById('balNote').value.trim();
+  state.balanceSet = true;
+  saveState();
+  closeModal('balanceModal');
+  renderCurrentBalance();
+  toast('Balance updated ✅');
+}
+
+function renderCurrentBalance() {
+  const c = compute();
+  const cur = state.currentBalance || 0;
+  const calc = c.totalAvailable;
+
+  document.getElementById('curBalDisplay').textContent = fmt(cur);
+  document.getElementById('curBalNote').textContent = state.balanceNote || (state.balanceSet ? 'Real balance' : 'Set your actual wallet/bank balance');
+
+  const diffEl = document.getElementById('curBalDiff');
+  if (!state.balanceSet) {
+    diffEl.textContent = 'Not set yet';
+    diffEl.className = 'cur-bal-diff neu';
+    return;
+  }
+  const diff = cur - calc;
+  if (Math.abs(diff) < 1) {
+    diffEl.textContent = '✅ Matches calculated';
+    diffEl.className = 'cur-bal-diff pos';
+  } else if (diff > 0) {
+    diffEl.textContent = `+${fmt(diff)} vs calculated`;
+    diffEl.className = 'cur-bal-diff pos';
+  } else {
+    diffEl.textContent = `${fmt(diff)} vs calculated`;
+    diffEl.className = 'cur-bal-diff neg';
+  }
+}
+
+/* =====================================================
+   EDIT PENDING PAYMENT
+===================================================== */
+let editingPendingId = null;
+
+function openEditPending(id) {
+  editingPendingId = id;
+  const p = state.income.find(i => i.id === id);
+  if (!p) return;
+  document.getElementById('editPendSource').value = p.source;
+  document.getElementById('editPendAmount').value = p.amount;
+  document.getElementById('editPendOwner').value = p.owner;
+  document.getElementById('editPendDate').value = p.date || '';
+  document.getElementById('editPendNotes').value = p.notes || '';
+  openModal('editPendingModal');
+}
+
+function saveEditPending() {
+  const amount = parseFloat(document.getElementById('editPendAmount').value);
+  const source = document.getElementById('editPendSource').value.trim();
+  if (!amount || amount <= 0) { toast('Enter a valid amount', 'error'); return; }
+  if (!source) { toast('Enter source name', 'error'); return; }
+
+  const idx = state.income.findIndex(i => i.id === editingPendingId);
+  if (idx !== -1) {
+    state.income[idx] = {
+      ...state.income[idx],
+      source,
+      amount,
+      owner: document.getElementById('editPendOwner').value,
+      date: document.getElementById('editPendDate').value,
+      notes: document.getElementById('editPendNotes').value.trim()
+    };
+  }
+  saveState();
+  renderAll();
+  closeModal('editPendingModal');
+  toast('Pending payment updated ✅');
+  editingPendingId = null;
+}
+
+/* =====================================================
+   GOALS
+===================================================== */
+let editingGoalId = null;
+
+function openGoalModal(id = null) {
+  editingGoalId = id;
+  if (id) {
+    const g = state.goals.find(g => g.id === id);
+    document.getElementById('goalName').value = g.name;
+    document.getElementById('goalTarget').value = g.target;
+    document.getElementById('goalCurrent').value = g.current;
+    document.getElementById('goalIcon').value = g.icon;
+    document.getElementById('goalDesc').value = g.desc || '';
+    document.getElementById('goalModalTitle').textContent = '✏️ Edit Goal';
+    document.getElementById('goalSaveBtn').textContent = 'Update Goal';
+  } else {
+    document.getElementById('goalName').value = '';
+    document.getElementById('goalTarget').value = '';
+    document.getElementById('goalCurrent').value = '';
+    document.getElementById('goalIcon').value = '🎯';
+    document.getElementById('goalDesc').value = '';
+    document.getElementById('goalModalTitle').textContent = '🎯 Add Savings Goal';
+    document.getElementById('goalSaveBtn').textContent = 'Save Goal';
+  }
+  openModal('goalModal');
+}
+
+function saveGoal() {
+  const name = document.getElementById('goalName').value.trim();
+  const target = parseFloat(document.getElementById('goalTarget').value);
+  const current = parseFloat(document.getElementById('goalCurrent').value) || 0;
+  if (!name) { toast('Enter goal name', 'error'); return; }
+  if (!target || target <= 0) { toast('Enter target amount', 'error'); return; }
+
+  if (editingGoalId) {
+    const idx = state.goals.findIndex(g => g.id === editingGoalId);
+    if (idx !== -1) {
+      state.goals[idx] = { ...state.goals[idx], name, target, current, icon: document.getElementById('goalIcon').value || '🎯', desc: document.getElementById('goalDesc').value.trim() };
+    }
+    toast('Goal updated');
+  } else {
+    state.goals.push({ id: uid(), name, target, current, icon: document.getElementById('goalIcon').value || '🎯', desc: document.getElementById('goalDesc').value.trim() });
+    toast('Goal added!');
+  }
+  saveState();
+  closeModal('goalModal');
+  renderGoals();
+}
+
+function renderGoals() {
+  const grid = document.getElementById('goalsGrid');
+  const empty = document.getElementById('goalsEmpty');
+  if (!state.goals || state.goals.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = state.goals.map(g => {
+    const pct = Math.min(100, Math.round((g.current / g.target) * 100));
+    const isDone = pct >= 100;
+    return `
+    <div class="goal-card">
+      <div class="goal-header">
+        <div>
+          <div class="goal-name">${g.icon} ${g.name}</div>
+          <div class="goal-target">${g.desc || 'Savings goal'}</div>
+        </div>
+        <div class="goal-pct" style="${isDone ? 'color:var(--success)' : ''}">${pct}%</div>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar ${pct >= 80 && !isDone ? '' : ''}" style="width:${pct}%;${isDone ? 'background:linear-gradient(90deg,var(--accent-teal),#2f9e82)' : ''}"></div>
+      </div>
+      <div class="goal-amounts">
+        <span>${fmt(g.current)} saved</span>
+        <span>Target: ${fmt(g.target)}</span>
+      </div>
+      ${isDone ? '<div class="alert alert-success" style="margin-top:10px;margin-bottom:0;padding:8px 12px;font-size:12px">🎉 Goal achieved!</div>' : ''}
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost btn-xs" onclick="openGoalModal('${g.id}')">✏️ Edit</button>
+        <button class="btn btn-danger btn-xs" onclick="deleteGoal('${g.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* =====================================================
+   RENDER DASHBOARD
+===================================================== */
+function renderDashboard() {
+  const c = compute();
+
+  // Stat cards
+  document.getElementById('totalAvailable').textContent = fmt(c.totalAvailable);
+  document.getElementById('myMoney').textContent = fmt(c.myMoney);
+  document.getElementById('fatherMoney').textContent = fmt(c.fatherMoney);
+  document.getElementById('pendingIncoming').textContent = fmt(c.pendingIncome);
+  document.getElementById('expectedBalance').textContent = fmt(c.expectedBalance);
+  document.getElementById('totalExpenses').textContent = fmt(c.totalExpenses);
+  document.getElementById('bizInvested').textContent = fmt(c.bizInvested);
+  document.getElementById('bizRemaining').textContent = fmt(c.bizRemaining);
+  document.getElementById('sidebarBalance').textContent = fmt(c.totalAvailable);
+
+  // Business budget warning
+  const bizWarn = document.getElementById('bizWarning');
+  if (c.bizInvested > state.businessBudget) {
+    bizWarn.style.display = 'flex';
+    document.getElementById('bizRemaining').style.color = 'var(--accent-red)';
+  } else {
+    bizWarn.style.display = 'none';
+    document.getElementById('bizRemaining').style.color = 'var(--accent-teal)';
+  }
+
+  // Papa warning — show if fatherMoney is going negative or close to 0
+  const papaWarn = document.getElementById('papaWarning');
+  const papaWarnText = document.getElementById('papaWarningText');
+  if (c.fatherMoney < 0) {
+    papaWarn.style.display = 'flex';
+    papaWarnText.textContent = `⛔ RUKO! Papa ki money negative ho gayi hai (${fmt(c.fatherMoney)}) — kuch expenses papa ke naam pe hai jo unka balance kha gaya!`;
+  } else if (c.fatherMoney < 2000) {
+    papaWarn.style.display = 'flex';
+    papaWarnText.textContent = `⚠️ Papa ki money sirf ${fmt(c.fatherMoney)} bachi hai — dhyan se! Aur expenses unke naam pe mat daalna.`;
+  } else {
+    papaWarn.style.display = 'none';
+  }
+
+  // Also update sidebar to show real currentBalance
+  document.getElementById('sidebarBalance').textContent = fmt(state.currentBalance || 0);
+
+  // Owner breakdown
+  document.getElementById('myNetWorth').textContent = fmt(c.myNetWorth);
+  document.getElementById('fatherNetWorth').textContent = fmt(c.fatherNetWorth);
+  document.getElementById('sharedFunds').textContent = fmt(c.sharedMoney);
+
+  document.getElementById('myInitial').textContent = fmt(state.initialMine);
+  document.getElementById('fatherInitial').textContent = fmt(state.initialFather);
+
+  // Recent transactions
+  renderRecentTxns();
+  renderDashPending();
+  renderCurrentBalance();
+}
+
+function renderRecentTxns() {
+  const container = document.getElementById('recentTxns');
+  const allTxns = [
+    ...state.income.filter(i => i.status === 'received').map(i => ({ ...i, type: 'income' })),
+    ...state.expenses.map(e => ({ ...e, type: 'expense' }))
+  ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6);
+
+  if (allTxns.length === 0) {
+    container.innerHTML = '<div class="empty-state" style="padding:24px 0"><div class="empty-icon">📋</div><div class="empty-text">No transactions yet</div></div>';
+    return;
+  }
+
+  container.innerHTML = allTxns.map(t => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-size:13.5px;font-weight:600">${t.source || t.category}</div>
+        <div style="font-size:11px;color:var(--text-muted)">${fmtDate(t.date)} · ${ownerBadge(t.owner)}</div>
+      </div>
+      <div style="font-size:14px;font-weight:700;font-family:var(--font-mono);color:${t.type === 'income' ? 'var(--accent-teal)' : 'var(--accent-red)'}">
+        ${t.type === 'income' ? '+' : '-'}${fmt(t.amount)}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderDashPending() {
+  const container = document.getElementById('dashPending');
+  const pending = state.income.filter(i => i.status === 'pending').slice(0, 5);
+
+  if (pending.length === 0) {
+    container.innerHTML = '<div class="empty-state" style="padding:24px 0"><div class="empty-icon">⏳</div><div class="empty-text">No pending payments</div></div>';
+    return;
+  }
+
+  container.innerHTML = pending.map(p => {
+    const days = daysUntil(p.date);
+    let statusClass = 'badge-warning', statusText = 'Pending';
+    if (days !== null && days < 0) { statusClass = 'badge-danger'; statusText = 'Overdue'; }
+    else if (days !== null && days <= 3) { statusClass = 'badge-warning'; statusText = 'Due Soon'; }
+
+    return `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-size:13.5px;font-weight:600">${p.source}</div>
+        <div style="font-size:11px;color:var(--text-muted)">${p.date ? fmtDate(p.date) : 'No date set'}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:14px;font-weight:700;font-family:var(--font-mono);color:var(--accent-amber)">${fmt(p.amount)}</div>
+        <span class="badge ${statusClass}" style="font-size:10px">${statusText}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* =====================================================
+   RENDER INCOME TABLE
+===================================================== */
+function renderIncomeSection() {
+  const tbody = document.getElementById('incomeTableBody');
+  const empty = document.getElementById('incomeEmpty');
+  const c = compute();
+
+  document.getElementById('totalReceived').textContent = fmt(c.receivedIncome);
+  document.getElementById('totalPendingIncome').textContent = fmt(c.pendingIncome);
+  document.getElementById('myTotalIncome').textContent = fmt(
+    state.income.filter(i => i.owner === 'mine').reduce((s,i) => s+Number(i.amount), 0)
+  );
+  document.getElementById('fatherTotalIncome').textContent = fmt(
+    state.income.filter(i => i.owner === 'father').reduce((s,i) => s+Number(i.amount), 0)
+  );
+
+  if (state.income.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    tbody.closest('.table-wrapper').style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.closest('.table-wrapper').style.display = 'block';
+
+  const sorted = [...state.income].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  tbody.innerHTML = sorted.map(i => `
+    <tr>
+      <td>${fmtDate(i.date)}</td>
+      <td style="font-weight:600">${i.source}</td>
+      <td style="font-family:var(--font-mono);color:var(--accent-teal);font-weight:700">${fmt(i.amount)}</td>
+      <td>${ownerBadge(i.owner)}</td>
+      <td>
+        ${i.status === 'received'
+          ? '<span class="badge badge-success">✅ Received</span>'
+          : `<span class="badge badge-warning">⏳ Pending</span>`}
+      </td>
+      <td style="color:var(--text-muted);font-size:12px">${i.notes || '—'}</td>
+      <td style="white-space:nowrap">
+        ${i.status === 'pending' ? `<button class="btn btn-success btn-xs" onclick="markReceived('${i.id}')">✓</button> ` : ''}
+        <button class="btn btn-ghost btn-xs" onclick="openIncomeModal('${i.id}')">✏️</button>
+        <button class="btn btn-danger btn-xs" onclick="deleteIncome('${i.id}')">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+/* =====================================================
+   RENDER EXPENSE TABLE
+===================================================== */
+function renderExpenseSection() {
+  const tbody = document.getElementById('expenseTableBody');
+  const empty = document.getElementById('expenseEmpty');
+  const c = compute();
+
+  document.getElementById('expTotal').textContent = fmt(c.totalExpenses);
+  document.getElementById('expMine').textContent = fmt(c.myExpenses);
+  document.getElementById('expFather').textContent = fmt(c.fatherExpenses);
+  document.getElementById('expBusiness').textContent = fmt(
+    state.expenses.filter(e => e.category === 'Business').reduce((s,e) => s+Number(e.amount), 0)
+  );
+
+  if (state.expenses.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    tbody.closest('.table-wrapper').style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.closest('.table-wrapper').style.display = 'block';
+
+  const catColors = {
+    Business: 'var(--accent-amber)', Personal: 'var(--accent-blue)',
+    Food: 'var(--accent-teal)', Travel: 'var(--accent-purple)',
+    Shopping: 'var(--accent-pink)', Software: 'var(--accent-blue)',
+    Advertising: 'var(--accent-amber)', Healthcare: '#f687b3',
+    Education: '#63b3ed', Utilities: '#f6ad55', Rent: '#b794f4',
+    Entertainment: '#38d9a9', Fuel: '#fc8181', Subscriptions: '#63b3ed',
+    Repairs: '#f6ad55', Gifts: '#f687b3', Other: 'var(--text-secondary)'
+  };
+
+  const sorted = [...state.expenses].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  tbody.innerHTML = sorted.map(e => `
+    <tr>
+      <td>${fmtDate(e.date)}</td>
+      <td><span class="badge" style="background:rgba(255,255,255,0.06);color:${catColors[e.category]||'var(--text-secondary)'}">${e.category}</span></td>
+      <td style="font-family:var(--font-mono);color:var(--accent-red);font-weight:700">-${fmt(e.amount)}</td>
+      <td>${ownerBadge(e.owner)}</td>
+      <td style="color:var(--text-muted);font-size:12px">${e.notes || '—'}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-ghost btn-xs" onclick="openExpenseModal('${e.id}')">✏️</button>
+        <button class="btn btn-danger btn-xs" onclick="deleteExpense('${e.id}')">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+/* =====================================================
+   RENDER PENDING TABLE
+===================================================== */
+function renderPendingSection() {
+  const tbody = document.getElementById('pendingTableBody');
+  const empty = document.getElementById('pendingEmpty');
+  const pending = state.income.filter(i => i.status === 'pending');
+
+  if (pending.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    tbody.closest('.table-wrapper').style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.closest('.table-wrapper').style.display = 'block';
+
+  tbody.innerHTML = pending.map(p => {
+    const days = daysUntil(p.date);
+    let rowClass = '', statusHtml = '', daysHtml = '—';
+
+    if (!p.date) {
+      statusHtml = '<span class="badge badge-warning">⏳ Pending</span>';
+    } else if (days < 0) {
+      rowClass = 'row-overdue';
+      statusHtml = '<span class="badge badge-danger">🔴 Overdue</span>';
+      daysHtml = `<span style="color:var(--accent-red);font-weight:600">${Math.abs(days)}d overdue</span>`;
+    } else if (days <= 3) {
+      rowClass = 'row-soon';
+      statusHtml = '<span class="badge badge-warning">⚡ Due Soon</span>';
+      daysHtml = `<span style="color:var(--accent-amber);font-weight:600">${days}d left</span>`;
+    } else {
+      statusHtml = '<span class="badge badge-info">⏳ Pending</span>';
+      daysHtml = `${days}d`;
+    }
+
+    return `
+    <tr class="${rowClass}">
+      <td style="font-weight:600">${p.source}</td>
+      <td style="font-family:var(--font-mono);color:var(--accent-amber);font-weight:700">${fmt(p.amount)}</td>
+      <td>${ownerBadge(p.owner)}</td>
+      <td>
+        <input type="date" class="form-control" style="max-width:150px;padding:5px 8px;font-size:12px"
+          value="${p.date || ''}"
+          onchange="updatePendingDate('${p.id}', this.value)">
+      </td>
+      <td>${statusHtml}</td>
+      <td>${daysHtml}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-success btn-xs" onclick="markReceived('${p.id}')">✓ Received</button>
+        <button class="btn btn-ghost btn-xs" onclick="openEditPending('${p.id}')">✏️</button>
+        <button class="btn btn-danger btn-xs" onclick="deleteIncome('${p.id}')">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function updatePendingDate(id, date) {
+  const entry = state.income.find(i => i.id === id);
+  if (entry) {
+    entry.date = date;
+    saveState();
+    renderPendingSection();
+    renderDashPending();
+  }
+}
+
+/* =====================================================
+   RENDER HISTORY
+===================================================== */
+function renderHistory() {
+  const search = document.getElementById('historySearch').value.toLowerCase();
+  const ownerF = document.getElementById('historyOwner').value;
+  const typeF = document.getElementById('historyType').value;
+  const categoryF = document.getElementById('historyCategory').value;
+  const fromF = document.getElementById('historyFrom').value;
+  const toF = document.getElementById('historyTo').value;
+
+  let txns = [
+    ...state.income.filter(i => i.status === 'received').map(i => ({ ...i, type: 'income', displayCat: i.source })),
+    ...state.expenses.map(e => ({ ...e, type: 'expense', displayCat: e.category }))
+  ];
+
+  if (search) txns = txns.filter(t => (t.source || t.category || '').toLowerCase().includes(search) || (t.notes || '').toLowerCase().includes(search));
+  if (ownerF) txns = txns.filter(t => t.owner === ownerF);
+  if (typeF) txns = txns.filter(t => t.type === typeF);
+  if (categoryF) txns = txns.filter(t => t.category === categoryF);
+  if (fromF) txns = txns.filter(t => t.date >= fromF);
+  if (toF) txns = txns.filter(t => t.date <= toF);
+
+  txns.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const tbody = document.getElementById('historyTableBody');
+  const empty = document.getElementById('historyEmpty');
+
+  if (txns.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = txns.map(t => `
+    <tr>
+      <td>${fmtDate(t.date)}</td>
+      <td>
+        ${t.type === 'income'
+          ? '<span class="badge badge-success">Income</span>'
+          : '<span class="badge badge-danger">Expense</span>'}
+      </td>
+      <td style="font-weight:600">${t.displayCat}</td>
+      <td>${ownerBadge(t.owner)}</td>
+      <td style="font-family:var(--font-mono);font-weight:700;color:${t.type === 'income' ? 'var(--accent-teal)' : 'var(--accent-red)'}">
+        ${t.type === 'income' ? '+' : '-'}${fmt(t.amount)}
+      </td>
+      <td style="font-size:12px;color:var(--text-muted)">${t.notes || '—'}</td>
+    </tr>
+  `).join('');
+}
+
+function clearHistoryFilters() {
+  ['historySearch','historyOwner','historyType','historyCategory','historyFrom','historyTo'].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = '';
+  });
+  renderHistory();
+}
+
+/* =====================================================
+   RENDER BUSINESS SECTION
+===================================================== */
+function renderBizSection() {
+  const bizInvested = state.investments.reduce((s, i) => s + Number(i.amount), 0);
+  const bizRemaining = state.businessBudget - bizInvested;
+  const pct = Math.min(100, Math.round((bizInvested / state.businessBudget) * 100));
+
+  document.getElementById('bizProgressLabel').textContent = `${fmt(bizInvested)} / ${fmt(state.businessBudget)}`;
+  document.getElementById('bizProgressPct').textContent = `${pct}%`;
+  document.getElementById('bizProgressBar').style.width = pct + '%';
+  document.getElementById('bizProgressBar').className = 'progress-bar' + (pct >= 90 ? ' danger' : '');
+  document.getElementById('bizTotalInvested').textContent = fmt(bizInvested);
+  document.getElementById('bizBudgetLeft').textContent = fmt(bizRemaining);
+  document.getElementById('bizBudgetLeft').style.color = bizRemaining < 0 ? 'var(--accent-red)' : 'var(--accent-teal)';
+
+  const overLimit = document.getElementById('bizOverLimitAlert');
+  overLimit.style.display = bizInvested > state.businessBudget ? 'flex' : 'none';
+
+  // Log
+  const logList = document.getElementById('bizLogList');
+  const empty = document.getElementById('bizEmpty');
+
+  if (state.investments.length === 0) {
+    logList.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const sorted = [...state.investments].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  logList.innerHTML = sorted.map(i => `
+    <div class="invest-row">
+      <div>
+        <div class="invest-platform">${i.platform}</div>
+        <div class="invest-purpose">${i.purpose || i.notes || 'Business investment'}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="invest-amount">${fmt(i.amount)}</div>
+        <div class="invest-date">${fmtDate(i.date)}</div>
+        <div style="display:flex;gap:4px;margin-top:4px;justify-content:flex-end">
+          <button class="btn btn-ghost btn-xs" onclick="openBizModal('${i.id}')">✏️</button>
+          <button class="btn btn-danger btn-xs" onclick="deleteBiz('${i.id}')">🗑️</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Pie chart
+  renderBizPieChart();
+}
+
+/* =====================================================
+   CHARTS
+===================================================== */
+let charts = {};
+
+function destroyChart(key) {
+  if (charts[key]) { charts[key].destroy(); delete charts[key]; }
+}
+
+const chartDefaults = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { labels: { color: '#8896a8', font: { family: 'DM Mono', size: 11 } } }
+  }
+};
+
+function renderBizPieChart() {
+  destroyChart('bizPie');
+  if (state.investments.length === 0) return;
+
+  const platformTotals = {};
+  state.investments.forEach(i => {
+    platformTotals[i.platform] = (platformTotals[i.platform] || 0) + Number(i.amount);
+  });
+
+  const labels = Object.keys(platformTotals);
+  const data = Object.values(platformTotals);
+  const colors = ['#63b3ed','#38d9a9','#f6ad55','#fc8181','#b794f4','#f687b3'];
+
+  charts.bizPie = new Chart(document.getElementById('bizPieChart'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors.slice(0, labels.length), borderWidth: 0 }] },
+    options: { ...chartDefaults, cutout: '60%' }
+  });
+}
+
+function renderCharts() {
+  // 1. Income vs Expenses (by month)
+  destroyChart('incExp');
+  const monthlyData = buildMonthlyData();
+  const months = Object.keys(monthlyData).slice(-6);
+
+  charts.incExp = new Chart(document.getElementById('incExpChart'), {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [
+        { label: 'Income', data: months.map(m => monthlyData[m].income), backgroundColor: 'rgba(56,217,169,0.7)', borderRadius: 4 },
+        { label: 'Expenses', data: months.map(m => monthlyData[m].expenses), backgroundColor: 'rgba(252,129,129,0.7)', borderRadius: 4 }
+      ]
+    },
+    options: {
+      ...chartDefaults,
+      scales: {
+        x: { ticks: { color: '#8896a8' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: { ticks: { color: '#8896a8', callback: v => '₹' + v.toLocaleString('en-IN') }, grid: { color: 'rgba(255,255,255,0.04)' } }
+      }
+    }
+  });
+
+  // 2. Owner distribution
+  destroyChart('owner');
+  const c = compute();
+  charts.owner = new Chart(document.getElementById('ownerChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['My Money', "Father's Money", 'Shared'],
+      datasets: [{
+        data: [Math.max(0, c.myMoney), Math.max(0, c.fatherMoney), Math.max(0, c.sharedMoney)],
+        backgroundColor: ['rgba(99,179,237,0.8)', 'rgba(183,148,244,0.8)', 'rgba(56,217,169,0.8)'],
+        borderWidth: 0
+      }]
+    },
+    options: { ...chartDefaults, cutout: '55%' }
+  });
+
+  // 3. Business spending by platform
+  destroyChart('bizSpend');
+  const platformTotals = {};
+  state.investments.forEach(i => {
+    platformTotals[i.platform] = (platformTotals[i.platform] || 0) + Number(i.amount);
+  });
+
+  if (Object.keys(platformTotals).length > 0) {
+    charts.bizSpend = new Chart(document.getElementById('bizSpendChart'), {
+      type: 'bar',
+      data: {
+        labels: Object.keys(platformTotals),
+        datasets: [{
+          label: 'Investment',
+          data: Object.values(platformTotals),
+          backgroundColor: 'rgba(246,173,85,0.7)',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        ...chartDefaults,
+        scales: {
+          x: { ticks: { color: '#8896a8' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+          y: { ticks: { color: '#8896a8', callback: v => '₹' + v.toLocaleString('en-IN') }, grid: { color: 'rgba(255,255,255,0.04)' } }
+        }
+      }
+    });
+  }
+
+  // 4. Cash flow
+  destroyChart('cashFlow');
+  charts.cashFlow = new Chart(document.getElementById('cashFlowChart'), {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [{
+        label: 'Net Cash Flow',
+        data: months.map(m => monthlyData[m].income - monthlyData[m].expenses),
+        borderColor: '#63b3ed',
+        backgroundColor: 'rgba(99,179,237,0.08)',
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#63b3ed',
+        pointRadius: 4
+      }]
+    },
+    options: {
+      ...chartDefaults,
+      scales: {
+        x: { ticks: { color: '#8896a8' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: { ticks: { color: '#8896a8', callback: v => '₹' + v.toLocaleString('en-IN') }, grid: { color: 'rgba(255,255,255,0.04)' } }
+      }
+    }
+  });
+}
+
+function buildMonthlyData() {
+  const data = {};
+  const now = new Date();
+
+  // Build last 6 months
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = d.toLocaleDateString('en-IN', { month: 'short', year: '2-digit' });
+    data[key] = { income: 0, expenses: 0 };
+  }
+
+  state.income.filter(i => i.status === 'received' && i.date).forEach(i => {
+    const d = new Date(i.date);
+    const key = d.toLocaleDateString('en-IN', { month: 'short', year: '2-digit' });
+    if (data[key] !== undefined) data[key].income += Number(i.amount);
+  });
+
+  state.expenses.filter(e => e.date).forEach(e => {
+    const d = new Date(e.date);
+    const key = d.toLocaleDateString('en-IN', { month: 'short', year: '2-digit' });
+    if (data[key] !== undefined) data[key].expenses += Number(e.amount);
+  });
+
+  return data;
+}
+
+/* =====================================================
+   BACKUP
+===================================================== */
+function renderBackupSummary() {
+  const c = compute();
+  document.getElementById('backupSummary').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px">
+      <div><div class="stat-label">Income Entries</div><div class="font-mono" style="font-size:18px;margin-top:4px">${state.income.length}</div></div>
+      <div><div class="stat-label">Expense Entries</div><div class="font-mono" style="font-size:18px;margin-top:4px">${state.expenses.length}</div></div>
+      <div><div class="stat-label">Business Investments</div><div class="font-mono" style="font-size:18px;margin-top:4px">${state.investments.length}</div></div>
+      <div><div class="stat-label">Savings Goals</div><div class="font-mono" style="font-size:18px;margin-top:4px">${state.goals.length}</div></div>
+      <div><div class="stat-label">Total Balance</div><div class="font-mono" style="font-size:18px;margin-top:4px;color:var(--accent-teal)">${fmt(c.totalAvailable)}</div></div>
+      <div><div class="stat-label">Last Saved</div><div class="font-mono" style="font-size:13px;margin-top:4px;color:var(--text-muted)">${new Date().toLocaleString('en-IN')}</div></div>
+    </div>`;
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `money-manager-backup-${today()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Data exported successfully!');
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      state = imported;
+      saveState();
+      renderAll();
+      toast('Data imported successfully!');
+    } catch(err) {
+      toast('Invalid JSON file', 'error');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function confirmReset() {
+  if (confirm('⚠️ This will DELETE all your data permanently. Are you absolutely sure?')) {
+    if (confirm('Final confirmation: Reset all data?')) {
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    }
+  }
+}
+
+/* =====================================================
+   MY MONEY
+===================================================== */
+let mmModalType = 'add'; // 'add' | 'spend' | 'set'
+
+function openMyMoneyModal(type) {
+  mmModalType = type;
+  const titles = { add: '➕ Add Money', spend: '💸 Record Spend', set: '✏️ Set My Balance' };
+  const descs = {
+    add: 'Record money you have received or added to your personal funds (e.g. freelance payment, gift, cash received).',
+    spend: 'Record an amount you have spent from your personal money (e.g. food, travel, shopping).',
+    set: 'Manually override your current my-money balance. This sets an exact figure rather than calculating from history.'
+  };
+  const btnStyles = { add: 'btn-success', spend: 'btn-danger', set: 'btn-primary' };
+  document.getElementById('myMoneyModalTitle').textContent = titles[type];
+  document.getElementById('myMoneyModalDesc').textContent = descs[type];
+  const btn = document.getElementById('myMoneySaveBtn');
+  btn.className = `btn ${btnStyles[type]}`;
+  btn.textContent = type === 'set' ? 'Set Balance' : type === 'spend' ? 'Record Spend' : 'Add Money';
+  document.getElementById('mmAmount').value = '';
+  document.getElementById('mmDesc').value = '';
+  document.getElementById('mmDate').value = today();
+  document.getElementById('myMoneyModal').classList.add('open');
+}
+
+function saveMyMoneyTxn() {
+  const amt = parseFloat(document.getElementById('mmAmount').value);
+  const desc = document.getElementById('mmDesc').value.trim() || (mmModalType === 'add' ? 'Money Added' : mmModalType === 'spend' ? 'Expense' : 'Balance Set');
+  const date = document.getElementById('mmDate').value || today();
+
+  if (!amt || amt <= 0) { toast('Enter a valid amount', 'error'); return; }
+
+  if (!state.myMoneyLog) state.myMoneyLog = [];
+
+  if (mmModalType === 'set') {
+    // Set: update currentBalance difference too
+    const oldMyBal = getMyMoneyBalance();
+    const diff = amt - oldMyBal;
+    state.currentBalance = (state.currentBalance || 0) + diff;
+    state.balanceSet = true;
+    state.myMoneyManualBalance = amt;
+    state.myMoneyLog.unshift({ id: 'mm_' + Date.now(), type: 'set', amt, desc, date, createdAt: new Date().toISOString() });
+    toast('My Money balance set to ' + fmt(amt), 'success');
+
+  } else if (mmModalType === 'spend') {
+    const myBal = getMyMoneyBalance();
+    if (myBal < amt) {
+      toast(`❌ BLOCKED! Tumhare paas sirf ${fmt(myBal)} hai — ${fmt(amt)} nahi nikal sakte. Papa ki money use nahi hogi!`, 'error');
+      return;
+    }
+    state.currentBalance = (state.currentBalance || 0) - amt;
+    state.balanceSet = true;
+    state.myMoneyLog.unshift({ id: 'mm_' + Date.now(), type: 'spend', amt, desc, date, createdAt: new Date().toISOString() });
+    toast(`${fmt(amt)} deduct hua — My Money & Current Balance dono update 💸`, 'success');
+
+  } else {
+    // Add: increase currentBalance too
+    state.currentBalance = (state.currentBalance || 0) + amt;
+    state.balanceSet = true;
+    state.myMoneyLog.unshift({ id: 'mm_' + Date.now(), type: 'add', amt, desc, date, createdAt: new Date().toISOString() });
+    toast(fmt(amt) + ' added — My Money & Current Balance dono mein add hua 💰', 'success');
+  }
+
+  saveState();
+  renderMyMoneySection();
+  renderDashboard();
+  closeModal('myMoneyModal');
+}
+
+// Helper: get current My Money balance from log
+function getMyMoneyBalance() {
+  if (!state.myMoneyLog) return state.initialMine;
+  const c = compute();
+  let logBal = null;
+  const sortedLog = [...state.myMoneyLog].sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
+  for (const entry of sortedLog) {
+    if (entry.type === 'set') logBal = entry.amt;
+    else if (logBal !== null) logBal = entry.type === 'add' ? logBal + entry.amt : logBal - entry.amt;
+  }
+  return logBal !== null ? logBal : c.myMoney;
+}
+
+function clearMyMoneyLog() {
+  if (!confirm('Clear all My Money log entries?')) return;
+  state.myMoneyLog = [];
+  state.myMoneyManualBalance = undefined;
+  saveState();
+  renderMyMoneySection();
+  toast('Log cleared');
+}
+
+function renderMyMoneySection() {
+  const c = compute();
+
+  // Calculate My Money balance from log if exists, else from computed
+  let myBal = c.myMoney;
+  if (!state.myMoneyLog) state.myMoneyLog = [];
+
+  // Apply log entries on top of computed base
+  // If a 'set' entry exists, use that as the base and apply subsequent entries
+  let logBal = null;
+  const sortedLog = [...state.myMoneyLog].sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
+  for (const entry of sortedLog) {
+    if (entry.type === 'set') {
+      logBal = entry.amt;
+    } else if (logBal !== null) {
+      logBal = entry.type === 'add' ? logBal + entry.amt : logBal - entry.amt;
+    }
+  }
+  const displayBal = logBal !== null ? logBal : myBal;
+
+  // My pending
+  const myPending = state.income.filter(i => i.status === 'pending' && i.owner === 'mine').reduce((s,i) => s+Number(i.amount), 0);
+  const myIncome = state.income.filter(i => i.status === 'received' && i.owner === 'mine').reduce((s,i) => s+Number(i.amount), 0);
+  const myExpenses = state.expenses.filter(e => e.owner === 'mine').reduce((s,e) => s+Number(e.amount), 0);
+
+  document.getElementById('mmHeroAmount').textContent = fmt(displayBal);
+  document.getElementById('mmHeroSub').textContent = logBal !== null
+    ? 'Manually adjusted balance with log entries'
+    : `Initial ₹${state.initialMine.toLocaleString('en-IN')} + ₹${myIncome.toLocaleString('en-IN')} income − ₹${myExpenses.toLocaleString('en-IN')} expenses`;
+  document.getElementById('mmTotalIncome').textContent = fmt(myIncome);
+  document.getElementById('mmTotalSpent').textContent = fmt(myExpenses);
+  document.getElementById('mmPendingIncome').textContent = fmt(myPending);
+  document.getElementById('mmExpected').textContent = fmt(displayBal + myPending);
+
+  // Render log
+  const list = document.getElementById('myMoneyTxnList');
+  const empty = document.getElementById('myMoneyEmpty');
+  if (!state.myMoneyLog.length) {
+    list.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = state.myMoneyLog.map(entry => {
+    const icons = { add: '➕', spend: '💸', set: '✏️' };
+    const sign = entry.type === 'spend' ? '−' : entry.type === 'add' ? '+' : '';
+    return `
+      <div class="mymoney-txn-row">
+        <div class="mymoney-txn-icon ${entry.type}">${icons[entry.type]}</div>
+        <div class="mymoney-txn-info">
+          <div class="mymoney-txn-desc">${entry.desc}</div>
+          <div class="mymoney-txn-date">${entry.date ? new Date(entry.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—'}</div>
+        </div>
+        <div>
+          <div class="mymoney-txn-amt ${entry.type}">${entry.type === 'set' ? '= ' : sign}${fmt(entry.amt)}</div>
+          <div style="text-align:right;margin-top:4px">
+            <button class="btn btn-ghost btn-xs" onclick="deleteMyMoneyEntry('${entry.id}')">✕</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function deleteMyMoneyEntry(id) {
+  const entry = (state.myMoneyLog || []).find(e => e.id === id);
+  if (entry) {
+    // Reverse the effect on currentBalance
+    if (entry.type === 'spend') {
+      state.currentBalance = (state.currentBalance || 0) + entry.amt;
+    } else if (entry.type === 'add') {
+      state.currentBalance = (state.currentBalance || 0) - entry.amt;
+    }
+    state.balanceSet = true;
+  }
+  state.myMoneyLog = (state.myMoneyLog || []).filter(e => e.id !== id);
+  saveState();
+  renderMyMoneySection();
+  renderDashboard();
+  toast('Entry removed & balance restored');
+}
+
+/* =====================================================
+   RENDER ALL
+===================================================== */
+function renderAll() {
+  renderDashboard();
+  renderIncomeSection();
+  renderExpenseSection();
+  renderPendingSection();
+  renderHistory();
+  renderGoals();
+  renderBizSection();
+  renderMyMoneySection();
+}
+
+/* =====================================================
+   PWA SETUP
+===================================================== */
+let deferredInstallPrompt = null;
+
+function initPWA() {
+  // Inline manifest via Blob
+  const manifest = {
+    name: 'Money Manager',
+    short_name: 'MoneyMgr',
+    description: 'Personal Finance Dashboard',
+    start_url: location.href,
+    display: 'standalone',
+    orientation: 'portrait-primary',
+    background_color: '#080c14',
+    theme_color: '#63b3ed',
+    icons: [
+      {
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230d1320'/%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2338d9a9'/%3E%3Cstop offset='1' stop-color='%2363b3ed'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ctext x='50' y='72' text-anchor='middle' font-size='60' font-family='serif' fill='white'%3E%E2%82%B9%3C/text%3E%3C/svg%3E",
+        sizes: '192x192',
+        type: 'image/svg+xml',
+        purpose: 'any maskable'
+      }
+    ]
+  };
+
+  try {
+    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+    const url = URL.createObjectURL(blob);
+    document.getElementById('pwa-manifest').href = url;
+  } catch(e) {}
+
+  // Service Worker (offline cache)
+  if ('serviceWorker' in navigator) {
+    const swCode = `
+      const CACHE = 'moneymgr-v1';
+      self.addEventListener('install', e => self.skipWaiting());
+      self.addEventListener('activate', e => e.waitUntil(clients.claim()));
+      self.addEventListener('fetch', e => {
+        e.respondWith(
+          caches.match(e.request).then(r => r || fetch(e.request).then(res => {
+            if (res && res.status === 200 && e.request.method === 'GET') {
+              const clone = res.clone();
+              caches.open(CACHE).then(c => c.put(e.request, clone));
+            }
+            return res;
+          }))
+        );
+      });
+    `;
+    try {
+      const swBlob = new Blob([swCode], { type: 'application/javascript' });
+      const swURL = URL.createObjectURL(swBlob);
+      navigator.serviceWorker.register(swURL).catch(() => {});
+    } catch(e) {}
+  }
+
+  // Listen for install prompt
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    const btn = document.getElementById('installBtn');
+    if (btn) btn.style.display = 'flex';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    const btn = document.getElementById('installBtn');
+    if (btn) btn.style.display = 'none';
+    toast('App installed! 🎉 Open from home screen', 'success');
+  });
+}
+
+function installPWA() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(r => {
+      if (r.outcome === 'accepted') toast('Installing... 🎉');
+      deferredInstallPrompt = null;
+      document.getElementById('installBtn').style.display = 'none';
+    });
+  } else {
+    toast('Tap browser menu → "Add to Home Screen" / "Install App" 📲', 'info');
+  }
+}
+
+/* =====================================================
+   INIT
+===================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  // Set today's date as default for date inputs
+  const inputs = document.querySelectorAll('input[type="date"]');
+  inputs.forEach(inp => { if (!inp.value) inp.value = today(); });
+
+  loadState();
+  renderAll();
+  initPWA();
+
+  // Initial section: dashboard
+  showSection('dashboard');
+});
+</script>
+</body>
+</html>
