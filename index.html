@@ -783,6 +783,25 @@ tr.row-soon td { background: rgba(246,173,85,0.04); }
 .mymoney-txn-amt.add { color: var(--accent-teal); }
 .mymoney-txn-amt.set { color: var(--accent-blue); }
 
+/* ===================== FATHER MONEY HERO ===================== */
+.father-hero {
+  background: linear-gradient(135deg, rgba(183,148,244,0.12), rgba(159,122,234,0.08));
+  border: 1px solid rgba(183,148,244,0.3);
+  border-radius: var(--radius);
+  padding: 28px 28px 22px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.father-hero::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(183,148,244,0.12), transparent 70%);
+  pointer-events: none;
+}
+
 /* ===================== PWA INSTALL BUTTON ===================== */
 .install-btn {
   background: linear-gradient(135deg, rgba(99,179,237,0.2), rgba(56,217,169,0.15));
@@ -818,6 +837,23 @@ tr.row-soon td { background: rgba(246,173,85,0.04); }
 .cur-bal-diff.pos { background: rgba(56,217,169,0.15); color: var(--accent-teal); }
 .cur-bal-diff.neg { background: rgba(252,129,129,0.15); color: var(--accent-red); }
 .cur-bal-diff.neu { background: rgba(255,255,255,0.06); color: var(--text-muted); }
+
+/* ===================== QUICK PAY ===================== */
+.quickpay-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.qp-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; position: relative; overflow: hidden; transition: all var(--transition); }
+.qp-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #38d9a9, #63b3ed); }
+.qp-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: rgba(56,217,169,0.3); }
+.qp-avatar { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 26px; background: linear-gradient(135deg, rgba(56,217,169,0.15), rgba(99,179,237,0.15)); border: 1px solid rgba(56,217,169,0.25); }
+.qp-name { font-size: 18px; font-weight: 700; }
+.qp-upi { font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); background: rgba(255,255,255,0.04); display: inline-block; padding: 3px 8px; border-radius: 4px; }
+.qp-presets { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.qp-preset { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-family: var(--font-mono); font-size: 12px; font-weight: 600; cursor: pointer; transition: all var(--transition); }
+.qp-preset:hover, .qp-preset.active { background: rgba(56,217,169,0.15); border-color: rgba(56,217,169,0.4); color: var(--accent-teal); }
+.qp-send { background: linear-gradient(135deg, #38d9a9, #2f9e82); color: #fff; border: none; border-radius: var(--radius-sm); padding: 12px 20px; font-family: var(--font-main); font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all var(--transition); width: 100%; }
+.qp-send:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(56,217,169,0.3); }
+.qp-hist-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); transition: background var(--transition); }
+.qp-hist-item:last-child { border-bottom: none; }
+.qp-hist-item:hover { background: rgba(255,255,255,0.02); }
 </style>
 </head>
 <body>
@@ -864,11 +900,17 @@ tr.row-soon td { background: rgba(246,173,85,0.04); }
     <div class="nav-item" onclick="showSection('mymoney')">
       <span class="nav-icon">👤</span> My Money
     </div>
+    <div class="nav-item" onclick="showSection('fathermoney')">
+      <span class="nav-icon">👴</span> Father's Money
+    </div>
     <div class="nav-item" onclick="showSection('business')">
       <span class="nav-icon">🚀</span> Business Investments
     </div>
     <div class="nav-item" onclick="showSection('goals')">
       <span class="nav-icon">🎯</span> Goals & Savings
+    </div>
+    <div class="nav-item" onclick="showSection('quickpay')">
+      <span class="nav-icon">📲</span> Quick Pay
     </div>
 
     <div class="nav-section-label">Settings</div>
@@ -1190,7 +1232,7 @@ tr.row-soon td { background: rgba(246,173,85,0.04); }
               <option value="Subscriptions">📅 Subscriptions</option>
               <option value="Repairs">🔧 Repairs</option>
               <option value="Gifts">🎁 Gifts</option>
-              <option value="Other">📦 Other</option>
+              <option value="Other">📦 Other</option>\r\n              <option value="UPI Transfer">📲 UPI Transfer</option>
             </select>
           </div>
           <div class="form-group">
@@ -1280,6 +1322,66 @@ tr.row-soon td { background: rgba(246,173,85,0.04); }
       </div>
     </div>
 
+    <!-- ==================== FATHER'S MONEY SECTION ==================== -->
+    <div class="section" id="section-fathermoney">
+      <div class="d-flex justify-between align-center mb-4">
+        <h2 style="font-size:20px;font-weight:700">Father's <span style="color:var(--father-color)">Money</span></h2>
+      </div>
+
+      <!-- Hero Balance Card -->
+      <div class="father-hero">
+        <div class="mymoney-hero-label">👴 Father's Current Balance</div>
+        <div class="mymoney-hero-amount" id="fmHeroAmount" style="color:var(--father-color)">₹0</div>
+        <div class="mymoney-hero-sub" id="fmHeroSub">Initial ₹34,008 + Income − Expenses</div>
+        <div class="mymoney-actions">
+          <button class="btn btn-success" onclick="openFatherMoneyModal('add')">➕ Add Money</button>
+          <button class="btn btn-danger" onclick="openFatherMoneyModal('spend')">💸 Record Spend</button>
+          <button class="btn btn-ghost" onclick="openFatherMoneyModal('set')">✏️ Set Balance</button>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="mymoney-stats">
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#b794f4,#9f7aea)">
+          <span class="stat-icon">💰</span>
+          <div class="stat-label">Total Income</div>
+          <div class="stat-value font-mono" style="color:var(--father-color)" id="fmTotalIncome">₹0</div>
+          <div class="stat-sub">All received</div>
+        </div>
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#fc8181,#e53e3e)">
+          <span class="stat-icon">💸</span>
+          <div class="stat-label">Total Spent</div>
+          <div class="stat-value danger font-mono" id="fmTotalSpent">₹0</div>
+          <div class="stat-sub">All father's expenses</div>
+        </div>
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#f6ad55,#ed8936)">
+          <span class="stat-icon">⏳</span>
+          <div class="stat-label">Pending Income</div>
+          <div class="stat-value warning font-mono" id="fmPendingIncome">₹0</div>
+          <div class="stat-sub">Yet to receive</div>
+        </div>
+        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#38d9a9,#2f9e82)">
+          <span class="stat-icon">🔮</span>
+          <div class="stat-label">Expected Total</div>
+          <div class="stat-value positive font-mono" id="fmExpected">₹0</div>
+          <div class="stat-sub">Balance + pending</div>
+        </div>
+      </div>
+
+      <!-- Transaction Log -->
+      <div class="glass-card">
+        <div class="section-header">
+          <div class="section-title">Father's Money <span>Log</span></div>
+          <button class="btn btn-ghost btn-sm" onclick="clearFatherMoneyLog()">🗑️ Clear Log</button>
+        </div>
+        <div id="fatherMoneyTxnList" class="mymoney-txn-list"></div>
+        <div id="fatherMoneyEmpty" class="empty-state" style="display:none">
+          <div class="empty-icon">👴</div>
+          <div class="empty-text">No transactions yet. Use Add / Spend buttons above.</div>
+        </div>
+      </div>
+    </div>
+
     <!-- ==================== BUSINESS INVESTMENT SECTION ==================== -->
     <div class="section" id="section-business">
       <div class="d-flex justify-between align-center mb-4">
@@ -1342,6 +1444,25 @@ tr.row-soon td { background: rgba(246,173,85,0.04); }
       <div id="goalsEmpty" class="empty-state" style="display:none">
         <div class="empty-icon">🎯</div>
         <div class="empty-text">No goals yet. Create your first savings goal!</div>
+      </div>
+    </div>
+
+    <!-- ==================== QUICK PAY SECTION ==================== -->
+    <div class="section" id="section-quickpay">
+      <div class="d-flex justify-between align-center mb-4">
+        <h2 style="font-size:20px;font-weight:700">Quick <span style="color:var(--accent-teal)">Pay</span></h2>
+        <button class="btn btn-success" onclick="openContactModal()">+ Add Contact</button>
+      </div>
+      <div id="qpContactCards" class="quickpay-grid"></div>
+      <div class="glass-card mt-4">
+        <div class="section-header">
+          <div class="section-title">Recent <span>UPI Payments</span></div>
+        </div>
+        <div id="qpHistory"></div>
+        <div id="qpHistEmpty" class="empty-state" style="display:none">
+          <div class="empty-icon">📲</div>
+          <div class="empty-text">No UPI payments yet. Send your first payment above!</div>
+        </div>
       </div>
     </div>
 
@@ -1710,6 +1831,37 @@ tr.row-soon td { background: rgba(246,173,85,0.04); }
   </div>
 </div>
 
+<!-- Father Money Modal -->
+<div class="modal-overlay" id="fatherMoneyModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="fatherMoneyModalTitle">➕ Add Money</div>
+      <button class="modal-close" onclick="closeModal('fatherMoneyModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="fatherMoneyModalDesc" style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6"></div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Amount (₹)</label>
+          <input type="number" class="form-control" id="fmAmount" placeholder="0.00" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <input type="text" class="form-control" id="fmDesc" placeholder="e.g. Papa se mila, Groceries…">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-control" id="fmDate">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('fatherMoneyModal')">Cancel</button>
+      <button class="btn btn-success" id="fmSaveBtn" onclick="saveFatherMoneyTxn()">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- Edit Pending Modal -->
 <div class="modal-overlay" id="editPendingModal">
   <div class="modal-box">
@@ -1752,6 +1904,36 @@ tr.row-soon td { background: rgba(246,173,85,0.04); }
   </div>
 </div>
 
+<!-- UPI Contact Modal -->
+<div class="modal-overlay" id="contactModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="contactModalTitle">📲 Add UPI Contact</div>
+      <button class="modal-close" onclick="closeModal('contactModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" id="ctName" placeholder="e.g. Mummy, Papa">
+        </div>
+        <div class="form-group">
+          <label class="form-label">UPI ID</label>
+          <input type="text" class="form-control" id="ctUpi" placeholder="e.g. name@ybl">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Emoji</label>
+          <input type="text" class="form-control" id="ctEmoji" placeholder="👩" maxlength="4">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('contactModal')">Cancel</button>
+      <button class="btn btn-success" id="ctSaveBtn" onclick="saveContact()">Save Contact</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
@@ -1764,61 +1946,95 @@ const STORAGE_KEY = 'moneyMgr_v3';
 
 // Default starting data
 const DEFAULT_DATA = {
-  // Starting wallet amounts (initial seeded values)
-  initialMine: 21338,        // 1000 + 13000 + 2338 + 5000
-  initialFather: 34008,      // 55346 - 21338
+  initialMine: 21338,
+  initialFather: 34008,
   initialShared: 0,
   businessBudget: 10000,
-
-  // Current real balance (manually set by user)
-  currentBalance: 55346,
+  currentBalance: 48418,
   balanceNote: 'Total Cash + Bank',
   balanceSet: true,
-
-  // My Money log — pre-filled breakdown
   myMoneyLog: [
-    { id: 'mm_1000', type: 'add', amt: 1000, desc: 'Cash — ₹1,000', date: new Date().toISOString().split('T')[0], createdAt: new Date(Date.now()-4000).toISOString() },
-    { id: 'mm_13000', type: 'add', amt: 13000, desc: 'Cash — ₹13,000', date: new Date().toISOString().split('T')[0], createdAt: new Date(Date.now()-3000).toISOString() },
-    { id: 'mm_2338', type: 'add', amt: 2338, desc: 'Cash — ₹2,338', date: new Date().toISOString().split('T')[0], createdAt: new Date(Date.now()-2000).toISOString() },
-    { id: 'mm_5000', type: 'add', amt: 5000, desc: 'Cash — ₹5,000 (₹7,000 mein se ₹2,000 client pending)', date: new Date().toISOString().split('T')[0], createdAt: new Date(Date.now()-1000).toISOString() }
+    { id: 'mm_auto_reconciled_0', type: 'spend', amt: 30, desc: 'Biryani', date: '2026-06-04', createdAt: '2026-06-04T16:55:00Z' },
+    { id: 'mm_auto_reconciled_1', type: 'spend', amt: 2764, desc: 'Expense: Shopping — Shoes', date: '2026-06-05', createdAt: '2026-06-04T16:54:50Z' },
+    { id: 'mm_auto_reconciled_2', type: 'spend', amt: 226, desc: 'Expense: Food', date: '2026-06-03', createdAt: '2026-06-04T16:54:40Z' },
+    { id: 'mm_auto_reconciled_3', type: 'add', amt: 1000, desc: 'Income: Client', date: '2026-06-03', createdAt: '2026-06-04T16:54:30Z' },
+    { id: 'mm_auto_reconciled_4', type: 'spend', amt: 3, desc: 'Expense: Personal', date: '2026-06-03', createdAt: '2026-06-04T16:54:20Z' },
+    { id: 'mm_auto_reconciled_5', type: 'add', amt: 1000, desc: 'Income: Client', date: '2026-06-03', createdAt: '2026-06-04T16:54:10Z' },
+    { id: 'mm_auto_reconciled_6', type: 'spend', amt: 3, desc: 'Expense: Personal', date: '2026-06-03', createdAt: '2026-06-04T16:54:00Z' },
+    { id: 'mm_auto_reconciled_7', type: 'add', amt: 389, desc: 'Income: Razoapy', date: '2026-06-03', createdAt: '2026-06-04T16:53:50Z' },
+    { id: 'mm_auto_reconciled_8', type: 'add', amt: 1558, desc: 'Income: Razoapy', date: '2026-06-02', createdAt: '2026-06-04T16:53:40Z' },
+    { id: 'mm_auto_reconciled_9', type: 'spend', amt: 560, desc: 'Expense-edit: Other', date: '2026-06-01', createdAt: '2026-06-04T16:53:30Z' },
+    { id: 'mm_auto_reconciled_10', type: 'add', amt: 170, desc: 'Expense reduced: Other', date: '2026-06-01', createdAt: '2026-06-04T16:53:20Z' },
+    { id: 'mm_auto_reconciled_11', type: 'spend', amt: 730, desc: 'Expense: Other — swimming', date: '2026-06-01', createdAt: '2026-06-04T16:53:10Z' },
+    { id: 'mm_auto_reconciled_12', type: 'spend', amt: 20, desc: 'Expense edit: Personal', date: '2026-06-01', createdAt: '2026-06-04T16:53:00Z' },
+    { id: 'mm_auto_reconciled_13', type: 'spend', amt: 90, desc: 'Expense: Personal', date: '2026-06-01', createdAt: '2026-06-04T16:52:50Z' },
+    { id: 'mm_auto_reconciled_14', type: 'spend', amt: 30, desc: 'Expense: Food', date: '2026-06-01', createdAt: '2026-06-04T16:52:40Z' },
+    { id: 'mm_auto_reconciled_15', type: 'add', amt: 30, desc: 'Expense deleted: Food', date: '2026-06-01', createdAt: '2026-06-04T16:52:30Z' },
+    { id: 'mm_auto_reconciled_16', type: 'spend', amt: 30, desc: 'Expense: Food', date: '2026-06-01', createdAt: '2026-06-04T16:52:20Z' },
+    { id: 'mm_auto_reconciled_17', type: 'add', amt: 389, desc: 'Income received: Razorpay', date: '2026-06-03', createdAt: '2026-06-04T16:52:10Z' },
+    { id: 'mm_auto_reconciled_18', type: 'add', amt: 1000, desc: 'Income: Mummy', date: '2026-05-31', createdAt: '2026-06-04T16:52:00Z' },
+    { id: 'mm_auto_reconciled_19', type: 'add', amt: 2025, desc: 'Expense reduced: Shopping', date: '2026-05-31', createdAt: '2026-06-04T16:51:50Z' },
+    { id: 'mm_auto_reconciled_20', type: 'spend', amt: 6000, desc: 'Expense: Shopping', date: '2026-05-31', createdAt: '2026-06-04T16:51:40Z' },
+    { id: 'mm_auto_reconciled_21', type: 'spend', amt: 19, desc: 'Expense: Software', date: '2026-05-30', createdAt: '2026-06-04T16:51:30Z' },
+    { id: 'mm_auto_reconciled_22', type: 'add', amt: 100, desc: 'Expense reduced: Personal', date: '2026-05-31', createdAt: '2026-06-04T16:51:20Z' },
+    { id: 'mm_auto_reconciled_23', type: 'spend', amt: 500, desc: 'Expense: Personal', date: '2026-05-31', createdAt: '2026-06-04T16:51:10Z' },
+    { id: 'mm_auto_reconciled_24', type: 'spend', amt: 2000, desc: 'Expense: Business', date: '2026-05-31', createdAt: '2026-06-04T16:51:00Z' },
+    { id: 'mm_auto_reconciled_25', type: 'add', amt: 1000, desc: 'Cash — ₹1,000', date: '2026-05-31', createdAt: '2026-06-04T16:50:50Z' },
+    { id: 'mm_auto_reconciled_26', type: 'add', amt: 13000, desc: 'Cash — ₹13,000', date: '2026-05-31', createdAt: '2026-06-04T16:50:40Z' },
+    { id: 'mm_auto_reconciled_27', type: 'add', amt: 2338, desc: 'Cash — ₹2,338', date: '2026-05-31', createdAt: '2026-06-04T16:50:30Z' },
+    { id: 'mm_auto_reconciled_28', type: 'add', amt: 5000, desc: 'Cash — ₹5,000 (₹7,000 mein se ₹2,000 client pending)', date: '2026-05-31', createdAt: '2026-06-04T16:50:20Z' }
   ],
   myMoneyManualBalance: undefined,
-
-  // Income entries — 0 abhi
+  fatherMoneyLog: [],
+  fatherMoneyManualBalance: undefined,
   income: [
-    {
-      id: 'inc_client_pending',
-      amount: 2000,
-      source: 'Client Payment (Pending)',
-      owner: 'mine',
-      date: new Date(Date.now() + 7*24*60*60*1000).toISOString().split('T')[0],
-      status: 'pending',
-      notes: '₹7,000 mein se ₹2,000 abhi pending hai',
-      createdAt: new Date().toISOString()
-    }
+    { id: 'inc_1', amount: 389, source: 'Razoapy', owner: 'mine', date: '2026-06-05', status: 'pending', notes: '', createdAt: '2026-06-04T16:54:00Z' },
+    { id: 'inc_2', amount: 1000, source: 'Client', owner: 'mine', date: '2026-06-03', status: 'received', notes: '', createdAt: '2026-06-04T16:53:00Z' },
+    { id: 'inc_3', amount: 389, source: 'Razorpay', owner: 'mine', date: '2026-06-04', status: 'pending', notes: '', createdAt: '2026-06-04T16:52:00Z' },
+    { id: 'inc_4', amount: 389, source: 'Razorpay', owner: 'mine', date: '2026-06-03', status: 'received', notes: '', createdAt: '2026-06-04T16:51:00Z' },
+    { id: 'inc_5', amount: 1558, source: 'Razoapy', owner: 'mine', date: '2026-06-02', status: 'received', notes: '', createdAt: '2026-06-04T16:50:00Z' },
+    { id: 'inc_6', amount: 1000, source: 'Mummy', owner: 'mine', date: '2026-05-31', status: 'received', notes: '', createdAt: '2026-06-04T16:49:00Z' },
+    { id: 'inc_client_pending', amount: 1500, source: 'Client Payment (Pending)', owner: 'mine', date: '2026-06-06', status: 'pending', notes: '₹7,500 mein se ₹1500 abhi pending hai', createdAt: '2026-05-31T16:55:00Z' }
   ],
-
-  // Expense entries
-  expenses: [],
-
-  // Business investments
-  investments: [],
-
-  // Savings goals
+  expenses: [
+    { id: 'exp_1', amount: 30, category: 'Food', owner: 'mine', date: '2026-06-04', notes: 'Biryani', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:45:00Z' },
+    { id: 'exp_2', amount: 2764, category: 'Shopping', owner: 'mine', date: '2026-06-05', notes: 'Shoes', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:44:00Z' },
+    { id: 'exp_3', amount: 226, category: 'Food', owner: 'mine', date: '2026-06-03', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:43:00Z' },
+    { id: 'exp_4', amount: 3, category: 'Personal', owner: 'mine', date: '2026-06-03', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:42:00Z' },
+    { id: 'exp_5', amount: 730, category: 'Other', owner: 'mine', date: '2026-06-01', notes: 'swimming', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:41:00Z' },
+    { id: 'exp_6', amount: 90, category: 'Personal', owner: 'mine', date: '2026-06-01', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:40:00Z' },
+    { id: 'exp_7', amount: 30, category: 'Food', owner: 'mine', date: '2026-06-01', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:39:00Z' },
+    { id: 'exp_8', amount: 568, category: 'Food', owner: 'mine', date: '2026-05-31', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:38:00Z' },
+    { id: 'exp_9', amount: 40, category: 'Food', owner: 'mine', date: '2026-05-31', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:37:00Z' },
+    { id: 'exp_10', amount: 19, category: 'Software', owner: 'mine', date: '2026-05-30', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:36:00Z' },
+    { id: 'exp_11', amount: 3975, category: 'Shopping', owner: 'mine', date: '2026-05-31', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:35:00Z' },
+    { id: 'exp_12', amount: 400, category: 'Personal', owner: 'mine', date: '2026-05-31', notes: 'PROMOTION', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:34:00Z' },
+    { id: 'exp_13', amount: 2000, category: 'Business', owner: 'mine', date: '2026-05-31', notes: 'ADD AGENCY', bizPlatform: 'ADD AGENCY', bizPurpose: 'Business', createdAt: '2026-06-04T16:33:00Z' }
+  ],
+  investments: [
+    { id: 'inv_1', amount: 2000, platform: 'ADD AGENCY', purpose: 'Business', date: '2026-05-31', notes: '[Auto from Expense] ADD AGENCY', createdAt: '2026-06-04T16:33:00Z' }
+  ],
   goals: [
     { id: 'goal_emergency', name: 'Emergency Fund', target: 50000, current: 0, icon: '🆘', desc: 'For unexpected expenses' },
     { id: 'goal_business', name: 'Business Fund', target: 25000, current: 0, icon: '🚀', desc: 'Grow the business' },
     { id: 'goal_laptop', name: 'Laptop Fund', target: 80000, current: 0, icon: '💻', desc: 'New laptop upgrade' }
   ],
-
-  // Misc
-  editingGoalId: null
+  editingGoalId: null,
+  upiContacts: [
+    { id: 'upi_mummy', name: 'Mummy', upiId: '9891990065@ptyes', emoji: '👩' }
+  ],
+  upiPayments: []
 };
 
 let state = {};
 
 // Load from localStorage or use defaults
 function loadState() {
+  const FORCE_RESET_KEY = 'moneyMgr_v3_reconciled_v1';
+  if (!localStorage.getItem(FORCE_RESET_KEY)) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
+    localStorage.setItem(FORCE_RESET_KEY, 'true');
+  }
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
     try {
@@ -1832,6 +2048,10 @@ function loadState() {
       if (state.balanceSet === undefined) state.balanceSet = false;
       if (!state.myMoneyLog) state.myMoneyLog = [];
       if (state.myMoneyManualBalance === undefined) state.myMoneyManualBalance = undefined;
+      if (!state.upiContacts) state.upiContacts = [{id:'upi_mummy',name:'Mummy',upiId:'9891990065@ptyes',emoji:'👩'}];
+      if (!state.upiPayments) state.upiPayments = [];
+      if (!state.fatherMoneyLog) state.fatherMoneyLog = [];
+      if (state.fatherMoneyManualBalance === undefined) state.fatherMoneyManualBalance = undefined;
     } catch(e) {
       state = JSON.parse(JSON.stringify(DEFAULT_DATA));
     }
@@ -1943,7 +2163,9 @@ const sectionTitles = {
   history: ['Transaction History', 'Full ledger of all transactions'],
   business: ['Business Investments', 'Track business spending'],
   goals: ['Goals & Savings', 'Financial targets'],
+  fathermoney: ["Father's Money", "Track father's finances"],
   analytics: ['Monthly Analytics', 'Charts & insights'],
+  quickpay: ['Quick Pay', 'Send money via UPI'],
   backup: ['Data Backup', 'Export, import, reset']
 };
 
@@ -1979,6 +2201,8 @@ function showSection(id) {
   if (id === 'business') renderBizSection();
   if (id === 'goals') renderGoals();
   if (id === 'history') renderHistory();
+  if (id === 'quickpay') renderQuickPay();
+  if (id === 'fathermoney') renderFatherMoneySection();
 }
 
 /* =====================================================
@@ -3432,11 +3656,397 @@ function deleteMyMoneyEntry(id) {
 }
 
 /* =====================================================
+   FATHER'S MONEY
+===================================================== */
+let fmModalType = 'add';
+
+function openFatherMoneyModal(type) {
+  fmModalType = type;
+  const titles = { add: '➕ Add Money (Father)', spend: '💸 Record Spend (Father)', set: "✏️ Set Father's Balance" };
+  const descs = {
+    add: "Record money added to father's funds (e.g. salary, pension, received cash).",
+    spend: "Record an expense from father's money (e.g. bills, groceries, medical).",
+    set: "Manually set father's current balance to an exact figure."
+  };
+  const btnStyles = { add: 'btn-success', spend: 'btn-danger', set: 'btn-primary' };
+  document.getElementById('fatherMoneyModalTitle').textContent = titles[type];
+  document.getElementById('fatherMoneyModalDesc').textContent = descs[type];
+  const btn = document.getElementById('fmSaveBtn');
+  btn.className = `btn ${btnStyles[type]}`;
+  btn.textContent = type === 'set' ? 'Set Balance' : type === 'spend' ? 'Record Spend' : 'Add Money';
+  document.getElementById('fmAmount').value = '';
+  document.getElementById('fmDesc').value = '';
+  document.getElementById('fmDate').value = today();
+  document.getElementById('fatherMoneyModal').classList.add('open');
+}
+
+function getFatherMoneyBalance() {
+  if (!state.fatherMoneyLog || state.fatherMoneyLog.length === 0) {
+    const c = compute();
+    return c.fatherMoney;
+  }
+  const c = compute();
+  let logBal = null;
+  const sortedLog = [...state.fatherMoneyLog].sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
+  for (const entry of sortedLog) {
+    if (entry.type === 'set') logBal = entry.amt;
+    else if (logBal !== null) logBal = entry.type === 'add' ? logBal + entry.amt : logBal - entry.amt;
+  }
+  return logBal !== null ? logBal : c.fatherMoney;
+}
+
+function saveFatherMoneyTxn() {
+  const amt = parseFloat(document.getElementById('fmAmount').value);
+  const desc = document.getElementById('fmDesc').value.trim() || (fmModalType === 'add' ? 'Money Added' : fmModalType === 'spend' ? 'Expense' : 'Balance Set');
+  const date = document.getElementById('fmDate').value || today();
+
+  if (!amt || amt <= 0) { toast('Enter a valid amount', 'error'); return; }
+
+  if (!state.fatherMoneyLog) state.fatherMoneyLog = [];
+
+  if (fmModalType === 'set') {
+    const oldBal = getFatherMoneyBalance();
+    const diff = amt - oldBal;
+    state.currentBalance = (state.currentBalance || 0) + diff;
+    state.balanceSet = true;
+    state.fatherMoneyManualBalance = amt;
+    state.fatherMoneyLog.unshift({ id: 'fm_' + Date.now(), type: 'set', amt, desc, date, createdAt: new Date().toISOString() });
+    toast("Father's balance set to " + fmt(amt), 'success');
+
+  } else if (fmModalType === 'spend') {
+    const fBal = getFatherMoneyBalance();
+    if (fBal < amt) {
+      toast(`❌ Father ke paas sirf ${fmt(fBal)} hai — ${fmt(amt)} nahi nikal sakte!`, 'error');
+      return;
+    }
+    state.currentBalance = (state.currentBalance || 0) - amt;
+    state.balanceSet = true;
+    // Also log as expense under father
+    state.expenses.push({
+      id: uid(), amount: amt, category: 'Personal', owner: 'father',
+      date, notes: `👴 ${desc}`, createdAt: new Date().toISOString()
+    });
+    state.fatherMoneyLog.unshift({ id: 'fm_' + Date.now(), type: 'spend', amt, desc, date, createdAt: new Date().toISOString() });
+    toast(`${fmt(amt)} deducted from Father's Money 💸`, 'success');
+
+  } else {
+    state.currentBalance = (state.currentBalance || 0) + amt;
+    state.balanceSet = true;
+    // Also log as income under father
+    state.income.push({
+      id: uid(), amount: amt, source: desc, owner: 'father',
+      date, status: 'received', notes: '👴 Father income',
+      createdAt: new Date().toISOString()
+    });
+    state.fatherMoneyLog.unshift({ id: 'fm_' + Date.now(), type: 'add', amt, desc, date, createdAt: new Date().toISOString() });
+    toast(fmt(amt) + " added to Father's Money 💰", 'success');
+  }
+
+  saveState();
+  renderFatherMoneySection();
+  renderDashboard();
+  renderAll();
+  closeModal('fatherMoneyModal');
+}
+
+function clearFatherMoneyLog() {
+  if (!confirm("Clear all Father's Money log entries?")) return;
+  state.fatherMoneyLog = [];
+  state.fatherMoneyManualBalance = undefined;
+  saveState();
+  renderFatherMoneySection();
+  toast('Log cleared');
+}
+
+function deleteFatherMoneyEntry(id) {
+  const entry = (state.fatherMoneyLog || []).find(e => e.id === id);
+  if (entry) {
+    if (entry.type === 'spend') {
+      state.currentBalance = (state.currentBalance || 0) + entry.amt;
+    } else if (entry.type === 'add') {
+      state.currentBalance = (state.currentBalance || 0) - entry.amt;
+    }
+    state.balanceSet = true;
+  }
+  state.fatherMoneyLog = (state.fatherMoneyLog || []).filter(e => e.id !== id);
+  saveState();
+  renderFatherMoneySection();
+  renderDashboard();
+  toast('Entry removed & balance restored');
+}
+
+function renderFatherMoneySection() {
+  const c = compute();
+
+  let fatherBal = c.fatherMoney;
+  if (!state.fatherMoneyLog) state.fatherMoneyLog = [];
+
+  let logBal = null;
+  const sortedLog = [...state.fatherMoneyLog].sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
+  for (const entry of sortedLog) {
+    if (entry.type === 'set') logBal = entry.amt;
+    else if (logBal !== null) logBal = entry.type === 'add' ? logBal + entry.amt : logBal - entry.amt;
+  }
+  const displayBal = logBal !== null ? logBal : fatherBal;
+
+  const fatherPending = state.income.filter(i => i.status === 'pending' && i.owner === 'father').reduce((s,i) => s+Number(i.amount), 0);
+  const fatherIncome = state.income.filter(i => i.status === 'received' && i.owner === 'father').reduce((s,i) => s+Number(i.amount), 0);
+  const fatherExpenses = state.expenses.filter(e => e.owner === 'father').reduce((s,e) => s+Number(e.amount), 0);
+
+  const heroEl = document.getElementById('fmHeroAmount');
+  if (heroEl) heroEl.textContent = fmt(displayBal);
+  const subEl = document.getElementById('fmHeroSub');
+  if (subEl) subEl.textContent = logBal !== null
+    ? 'Manually adjusted balance with log entries'
+    : `Initial ₹${state.initialFather.toLocaleString('en-IN')} + ₹${fatherIncome.toLocaleString('en-IN')} income − ₹${fatherExpenses.toLocaleString('en-IN')} expenses`;
+
+  const tiEl = document.getElementById('fmTotalIncome');
+  if (tiEl) tiEl.textContent = fmt(fatherIncome);
+  const tsEl = document.getElementById('fmTotalSpent');
+  if (tsEl) tsEl.textContent = fmt(fatherExpenses);
+  const piEl = document.getElementById('fmPendingIncome');
+  if (piEl) piEl.textContent = fmt(fatherPending);
+  const exEl = document.getElementById('fmExpected');
+  if (exEl) exEl.textContent = fmt(displayBal + fatherPending);
+
+  // Render log
+  const list = document.getElementById('fatherMoneyTxnList');
+  const empty = document.getElementById('fatherMoneyEmpty');
+  if (!list) return;
+  if (!state.fatherMoneyLog.length) {
+    list.innerHTML = '';
+    if (empty) empty.style.display = '';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  list.innerHTML = state.fatherMoneyLog.map(entry => {
+    const icons = { add: '➕', spend: '💸', set: '✏️' };
+    const sign = entry.type === 'spend' ? '−' : entry.type === 'add' ? '+' : '';
+    return `
+      <div class="mymoney-txn-row">
+        <div class="mymoney-txn-icon ${entry.type}">${icons[entry.type]}</div>
+        <div class="mymoney-txn-info">
+          <div class="mymoney-txn-desc">${entry.desc}</div>
+          <div class="mymoney-txn-date">${entry.date ? new Date(entry.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—'}</div>
+        </div>
+        <div>
+          <div class="mymoney-txn-amt ${entry.type}">${entry.type === 'set' ? '= ' : sign}${fmt(entry.amt)}</div>
+          <div style="text-align:right;margin-top:4px">
+            <button class="btn btn-ghost btn-xs" onclick="deleteFatherMoneyEntry('${entry.id}')">✕</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* =====================================================
+   QUICK PAY — UPI PAYMENTS
+===================================================== */
+let editingContactId = null;
+
+function openContactModal(id = null) {
+  editingContactId = id;
+  if (id) {
+    const c = (state.upiContacts || []).find(x => x.id === id);
+    if (!c) return;
+    document.getElementById('ctName').value = c.name;
+    document.getElementById('ctUpi').value = c.upiId;
+    document.getElementById('ctEmoji').value = c.emoji || '👤';
+    document.getElementById('contactModalTitle').textContent = '✏️ Edit Contact';
+    document.getElementById('ctSaveBtn').textContent = 'Update Contact';
+  } else {
+    document.getElementById('ctName').value = '';
+    document.getElementById('ctUpi').value = '';
+    document.getElementById('ctEmoji').value = '👤';
+    document.getElementById('contactModalTitle').textContent = '📲 Add UPI Contact';
+    document.getElementById('ctSaveBtn').textContent = 'Save Contact';
+  }
+  openModal('contactModal');
+}
+
+function saveContact() {
+  const name = document.getElementById('ctName').value.trim();
+  const upiId = document.getElementById('ctUpi').value.trim();
+  const emoji = document.getElementById('ctEmoji').value.trim() || '👤';
+  if (!name) { toast('Name daalo!', 'error'); return; }
+  if (!upiId || !upiId.includes('@')) { toast('Valid UPI ID daalo (e.g. name@ybl)', 'error'); return; }
+
+  if (!state.upiContacts) state.upiContacts = [];
+
+  if (editingContactId) {
+    const idx = state.upiContacts.findIndex(c => c.id === editingContactId);
+    if (idx !== -1) state.upiContacts[idx] = { ...state.upiContacts[idx], name, upiId, emoji };
+    toast('Contact updated ✅');
+    editingContactId = null;
+  } else {
+    state.upiContacts.push({ id: 'upi_' + Date.now(), name, upiId, emoji });
+    toast(`${name} added! 📲`);
+  }
+  saveState();
+  renderQuickPay();
+  closeModal('contactModal');
+}
+
+function deleteContact(id) {
+  if (!confirm('Delete this contact?')) return;
+  state.upiContacts = (state.upiContacts || []).filter(c => c.id !== id);
+  saveState();
+  renderQuickPay();
+  toast('Contact deleted', 'info');
+}
+
+function setQuickPayAmt(contactId, amt) {
+  const inp = document.getElementById('qpAmt_' + contactId);
+  if (inp) inp.value = amt;
+  // Highlight active preset
+  document.querySelectorAll('.qp-preset').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('qpp_' + contactId + '_' + amt);
+  if (btn) btn.classList.add('active');
+}
+
+function sendUpiPayment(contactId) {
+  const contact = (state.upiContacts || []).find(c => c.id === contactId);
+  if (!contact) return;
+
+  const amt = parseFloat(document.getElementById('qpAmt_' + contactId).value);
+  const note = document.getElementById('qpNote_' + contactId).value.trim() || 'Transfer';
+  const shouldLog = document.getElementById('qpLog_' + contactId).checked;
+
+  if (!amt || amt <= 0) { toast('Pehle amount daalo! 💰', 'error'); return; }
+
+  // Check balance if logging
+  if (shouldLog) {
+    const myBal = getMyMoneyBalance();
+    if (myBal < amt) {
+      toast(`❌ Tumhare paas sirf ${fmt(myBal)} hai — ${fmt(amt)} nahi bhej sakte!`, 'error');
+      return;
+    }
+  }
+
+  // Build UPI deep link
+  const upiUrl = `upi://pay?pa=${encodeURIComponent(contact.upiId)}&pn=${encodeURIComponent(contact.name)}&am=${amt}&cu=INR&tn=${encodeURIComponent(note)}`;
+
+  // Open UPI app
+  window.location.href = upiUrl;
+
+  // Log if checked
+  if (shouldLog) {
+    state.expenses.push({
+      id: uid(), amount: amt, category: 'UPI Transfer', owner: 'mine',
+      date: today(), notes: `📲 UPI → ${contact.name}: ${note}`,
+      createdAt: new Date().toISOString()
+    });
+    state.currentBalance = (state.currentBalance || 0) - amt;
+    state.balanceSet = true;
+    logMyMoney('spend', amt, `📲 UPI → ${contact.name}: ${note}`, today());
+
+    if (!state.upiPayments) state.upiPayments = [];
+    state.upiPayments.unshift({
+      id: uid(), contactId, contactName: contact.name, contactEmoji: contact.emoji,
+      amount: amt, note, date: today(), createdAt: new Date().toISOString()
+    });
+
+    saveState();
+    renderAll();
+  }
+
+  setTimeout(() => {
+    toast(`📲 ${fmt(amt)} → ${contact.name} — UPI app opened! ✅`, 'success');
+  }, 500);
+}
+
+function renderQuickPay() {
+  const container = document.getElementById('qpContactCards');
+  if (!container) return;
+
+  if (!state.upiContacts || state.upiContacts.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📲</div><div class="empty-text">No contacts yet. Click "+ Add Contact" above!</div></div>';
+    renderUpiHistory();
+    return;
+  }
+
+  container.innerHTML = state.upiContacts.map(c => {
+    const recentPay = (state.upiPayments || []).filter(p => p.contactId === c.id);
+    const lastPay = recentPay.length > 0 ? recentPay[0] : null;
+    const totalSent = recentPay.reduce((s, p) => s + Number(p.amount), 0);
+
+    return `
+    <div class="qp-card">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px">
+        <div class="qp-avatar">${c.emoji || '👤'}</div>
+        <div>
+          <div class="qp-name">${c.name}</div>
+          <div class="qp-upi">${c.upiId}</div>
+        </div>
+      </div>
+      ${lastPay ? `<div style="font-size:11px;color:var(--text-muted);margin-bottom:14px">Last: ${fmt(lastPay.amount)} on ${fmtDate(lastPay.date)} · Total sent: ${fmt(totalSent)}</div>` : '<div style="margin-bottom:14px"></div>'}
+
+      <div class="qp-presets">
+        ${[100, 200, 500, 1000, 2000, 5000].map(a =>
+          `<button class="qp-preset" id="qpp_${c.id}_${a}" onclick="setQuickPayAmt('${c.id}',${a})">₹${a.toLocaleString('en-IN')}</button>`
+        ).join('')}
+      </div>
+
+      <div class="form-group" style="margin-bottom:10px">
+        <input type="number" class="form-control" id="qpAmt_${c.id}" placeholder="₹ Amount" min="1" style="font-size:16px;padding:12px;font-weight:700">
+      </div>
+      <div class="form-group" style="margin-bottom:10px">
+        <input type="text" class="form-control" id="qpNote_${c.id}" placeholder="Note — e.g. Monthly pocket money">
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <input type="checkbox" id="qpLog_${c.id}" checked style="accent-color:var(--accent-teal);width:16px;height:16px">
+        <label for="qpLog_${c.id}" style="font-size:12px;color:var(--text-muted);cursor:pointer">Auto-log as expense in Money Manager</label>
+      </div>
+
+      <button class="qp-send" onclick="sendUpiPayment('${c.id}')">
+        📲 Pay ${c.name} via UPI
+      </button>
+
+      <div style="display:flex;gap:6px;margin-top:14px;justify-content:flex-end">
+        <button class="btn btn-ghost btn-xs" onclick="openContactModal('${c.id}')">✏️ Edit</button>
+        <button class="btn btn-danger btn-xs" onclick="deleteContact('${c.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  renderUpiHistory();
+}
+
+function renderUpiHistory() {
+  const histDiv = document.getElementById('qpHistory');
+  const emptyDiv = document.getElementById('qpHistEmpty');
+  if (!histDiv) return;
+
+  const payments = (state.upiPayments || []).slice(0, 15);
+  if (payments.length === 0) {
+    histDiv.innerHTML = '';
+    if (emptyDiv) emptyDiv.style.display = '';
+    return;
+  }
+  if (emptyDiv) emptyDiv.style.display = 'none';
+
+  histDiv.innerHTML = payments.map(p => `
+    <div class="qp-hist-item">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;background:rgba(56,217,169,0.12)">${p.contactEmoji || '📲'}</div>
+        <div>
+          <div style="font-size:13.5px;font-weight:600">→ ${p.contactName}</div>
+          <div style="font-size:11px;color:var(--text-muted)">${fmtDate(p.date)}${p.note ? ' · ' + p.note : ''}</div>
+        </div>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--accent-red)">−${fmt(p.amount)}</div>
+    </div>
+  `).join('');
+}
+
+/* =====================================================
    RENDER ALL
 ===================================================== */
 function renderAll() {
   renderDashboard();
   renderIncomeSection();
+  renderQuickPay();
   renderExpenseSection();
   renderPendingSection();
   renderHistory();
