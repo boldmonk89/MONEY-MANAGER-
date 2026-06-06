@@ -2020,91 +2020,478 @@ const STORAGE_KEY = 'moneyMgr_v3';
 
 // Default starting data
 const DEFAULT_DATA = {
-  initialMine: 21338,
-  initialFather: 34008,
-  initialShared: 0,
-  businessBudget: 10000,
-  currentBalance: 48418,
-  balanceNote: 'Total Cash + Bank',
-  balanceSet: true,
-  myMoneyLog: [
-    { id: 'mm_auto_reconciled_0', type: 'spend', amt: 30, desc: 'Biryani', date: '2026-06-04', createdAt: '2026-06-04T16:55:00Z' },
-    { id: 'mm_auto_reconciled_1', type: 'spend', amt: 2764, desc: 'Expense: Shopping — Shoes', date: '2026-06-05', createdAt: '2026-06-04T16:54:50Z' },
-    { id: 'mm_auto_reconciled_2', type: 'spend', amt: 226, desc: 'Expense: Food', date: '2026-06-03', createdAt: '2026-06-04T16:54:40Z' },
-    { id: 'mm_auto_reconciled_3', type: 'add', amt: 1000, desc: 'Income: Client', date: '2026-06-03', createdAt: '2026-06-04T16:54:30Z' },
-    { id: 'mm_auto_reconciled_4', type: 'spend', amt: 3, desc: 'Expense: Personal', date: '2026-06-03', createdAt: '2026-06-04T16:54:20Z' },
-    { id: 'mm_auto_reconciled_5', type: 'add', amt: 1000, desc: 'Income: Client', date: '2026-06-03', createdAt: '2026-06-04T16:54:10Z' },
-    { id: 'mm_auto_reconciled_6', type: 'spend', amt: 3, desc: 'Expense: Personal', date: '2026-06-03', createdAt: '2026-06-04T16:54:00Z' },
-    { id: 'mm_auto_reconciled_7', type: 'add', amt: 389, desc: 'Income: Razoapy', date: '2026-06-03', createdAt: '2026-06-04T16:53:50Z' },
-    { id: 'mm_auto_reconciled_8', type: 'add', amt: 1558, desc: 'Income: Razoapy', date: '2026-06-02', createdAt: '2026-06-04T16:53:40Z' },
-    { id: 'mm_auto_reconciled_9', type: 'spend', amt: 560, desc: 'Expense-edit: Other', date: '2026-06-01', createdAt: '2026-06-04T16:53:30Z' },
-    { id: 'mm_auto_reconciled_10', type: 'add', amt: 170, desc: 'Expense reduced: Other', date: '2026-06-01', createdAt: '2026-06-04T16:53:20Z' },
-    { id: 'mm_auto_reconciled_11', type: 'spend', amt: 730, desc: 'Expense: Other — swimming', date: '2026-06-01', createdAt: '2026-06-04T16:53:10Z' },
-    { id: 'mm_auto_reconciled_12', type: 'spend', amt: 20, desc: 'Expense edit: Personal', date: '2026-06-01', createdAt: '2026-06-04T16:53:00Z' },
-    { id: 'mm_auto_reconciled_13', type: 'spend', amt: 90, desc: 'Expense: Personal', date: '2026-06-01', createdAt: '2026-06-04T16:52:50Z' },
-    { id: 'mm_auto_reconciled_14', type: 'spend', amt: 30, desc: 'Expense: Food', date: '2026-06-01', createdAt: '2026-06-04T16:52:40Z' },
-    { id: 'mm_auto_reconciled_15', type: 'add', amt: 30, desc: 'Expense deleted: Food', date: '2026-06-01', createdAt: '2026-06-04T16:52:30Z' },
-    { id: 'mm_auto_reconciled_16', type: 'spend', amt: 30, desc: 'Expense: Food', date: '2026-06-01', createdAt: '2026-06-04T16:52:20Z' },
-    { id: 'mm_auto_reconciled_17', type: 'add', amt: 389, desc: 'Income received: Razorpay', date: '2026-06-03', createdAt: '2026-06-04T16:52:10Z' },
-    { id: 'mm_auto_reconciled_18', type: 'add', amt: 1000, desc: 'Income: Mummy', date: '2026-05-31', createdAt: '2026-06-04T16:52:00Z' },
-    { id: 'mm_auto_reconciled_19', type: 'add', amt: 2025, desc: 'Expense reduced: Shopping', date: '2026-05-31', createdAt: '2026-06-04T16:51:50Z' },
-    { id: 'mm_auto_reconciled_20', type: 'spend', amt: 6000, desc: 'Expense: Shopping', date: '2026-05-31', createdAt: '2026-06-04T16:51:40Z' },
-    { id: 'mm_auto_reconciled_21', type: 'spend', amt: 19, desc: 'Expense: Software', date: '2026-05-30', createdAt: '2026-06-04T16:51:30Z' },
-    { id: 'mm_auto_reconciled_22', type: 'add', amt: 100, desc: 'Expense reduced: Personal', date: '2026-05-31', createdAt: '2026-06-04T16:51:20Z' },
-    { id: 'mm_auto_reconciled_23', type: 'spend', amt: 500, desc: 'Expense: Personal', date: '2026-05-31', createdAt: '2026-06-04T16:51:10Z' },
-    { id: 'mm_auto_reconciled_24', type: 'spend', amt: 2000, desc: 'Expense: Business', date: '2026-05-31', createdAt: '2026-06-04T16:51:00Z' },
-    { id: 'mm_auto_reconciled_25', type: 'add', amt: 1000, desc: 'Cash — ₹1,000', date: '2026-05-31', createdAt: '2026-06-04T16:50:50Z' },
-    { id: 'mm_auto_reconciled_26', type: 'add', amt: 13000, desc: 'Cash — ₹13,000', date: '2026-05-31', createdAt: '2026-06-04T16:50:40Z' },
-    { id: 'mm_auto_reconciled_27', type: 'add', amt: 2338, desc: 'Cash — ₹2,338', date: '2026-05-31', createdAt: '2026-06-04T16:50:30Z' },
-    { id: 'mm_auto_reconciled_28', type: 'add', amt: 5000, desc: 'Cash — ₹5,000 (₹7,000 mein se ₹2,000 client pending)', date: '2026-05-31', createdAt: '2026-06-04T16:50:20Z' }
+  "initialMine": 21338,
+  "initialFather": 34008,
+  "initialShared": 0,
+  "businessBudget": 10000,
+  "currentBalance": 38401,
+  "balanceNote": "Total Cash + Bank",
+  "balanceSet": true,
+  "myMoneyLog": [
+    {
+      "id": "mm_auto_exp_exp_1",
+      "type": "spend",
+      "amt": 19,
+      "desc": "Expense: Personal",
+      "date": "2026-06-05",
+      "createdAt": "2026-06-05T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_2",
+      "type": "spend",
+      "amt": 19,
+      "desc": "Expense: Personal",
+      "date": "2026-06-05",
+      "createdAt": "2026-06-05T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_3",
+      "type": "spend",
+      "amt": 352,
+      "desc": "Expense: Food",
+      "date": "2026-06-05",
+      "createdAt": "2026-06-05T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_4",
+      "type": "spend",
+      "amt": 13,
+      "desc": "Expense: Personal",
+      "date": "2026-06-05",
+      "createdAt": "2026-06-05T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_5",
+      "type": "spend",
+      "amt": 2000,
+      "desc": "Expense: Business",
+      "date": "2026-06-05",
+      "createdAt": "2026-06-05T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_r2",
+      "type": "add",
+      "amt": 389,
+      "desc": "Income: Razorpay",
+      "date": "2026-06-04",
+      "createdAt": "2026-06-04T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_6",
+      "type": "spend",
+      "amt": 30,
+      "desc": "Expense: Food",
+      "date": "2026-06-04",
+      "createdAt": "2026-06-04T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_p1",
+      "type": "add",
+      "amt": 779,
+      "desc": "Income: Razorpay",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_p2",
+      "type": "add",
+      "amt": 1000,
+      "desc": "Income: Client",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_r1",
+      "type": "add",
+      "amt": 1000,
+      "desc": "Income: Client",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_r3",
+      "type": "add",
+      "amt": 389,
+      "desc": "Income: Razorpay",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_7",
+      "type": "spend",
+      "amt": 2764,
+      "desc": "Expense: Shopping",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_8",
+      "type": "spend",
+      "amt": 226,
+      "desc": "Expense: Food",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_9",
+      "type": "spend",
+      "amt": 3,
+      "desc": "Expense: Personal",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_r4",
+      "type": "add",
+      "amt": 1558,
+      "desc": "Income: Razoapy",
+      "date": "2026-06-02",
+      "createdAt": "2026-06-02T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_10",
+      "type": "spend",
+      "amt": 730,
+      "desc": "Expense: Other",
+      "date": "2026-06-01",
+      "createdAt": "2026-06-01T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_11",
+      "type": "spend",
+      "amt": 50,
+      "desc": "Expense: Personal",
+      "date": "2026-06-01",
+      "createdAt": "2026-06-01T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_12",
+      "type": "spend",
+      "amt": 30,
+      "desc": "Expense: Food",
+      "date": "2026-06-01",
+      "createdAt": "2026-06-01T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_r5",
+      "type": "add",
+      "amt": 1000,
+      "desc": "Income: Mummy",
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_13",
+      "type": "spend",
+      "amt": 568,
+      "desc": "Expense: Food",
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_14",
+      "type": "spend",
+      "amt": 40,
+      "desc": "Expense: Food",
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_16",
+      "type": "spend",
+      "amt": 3975,
+      "desc": "Expense: Shopping",
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_17",
+      "type": "spend",
+      "amt": 443,
+      "desc": "Expense: Personal",
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_15",
+      "type": "spend",
+      "amt": 19,
+      "desc": "Expense: Software",
+      "date": "2026-05-30",
+      "createdAt": "2026-05-30T12:00:00Z"
+    }
   ],
-  myMoneyManualBalance: undefined,
-  fatherMoneyLog: [],
-  fatherMoneyManualBalance: undefined,
-  income: [
-    { id: 'inc_1', amount: 389, source: 'Razoapy', owner: 'mine', date: '2026-06-05', status: 'pending', notes: '', createdAt: '2026-06-04T16:54:00Z' },
-    { id: 'inc_2', amount: 1000, source: 'Client', owner: 'mine', date: '2026-06-03', status: 'received', notes: '', createdAt: '2026-06-04T16:53:00Z' },
-    { id: 'inc_3', amount: 389, source: 'Razorpay', owner: 'mine', date: '2026-06-04', status: 'pending', notes: '', createdAt: '2026-06-04T16:52:00Z' },
-    { id: 'inc_4', amount: 389, source: 'Razorpay', owner: 'mine', date: '2026-06-03', status: 'received', notes: '', createdAt: '2026-06-04T16:51:00Z' },
-    { id: 'inc_5', amount: 1558, source: 'Razoapy', owner: 'mine', date: '2026-06-02', status: 'received', notes: '', createdAt: '2026-06-04T16:50:00Z' },
-    { id: 'inc_6', amount: 1000, source: 'Mummy', owner: 'mine', date: '2026-05-31', status: 'received', notes: '', createdAt: '2026-06-04T16:49:00Z' },
-    { id: 'inc_client_pending', amount: 1500, source: 'Client Payment (Pending)', owner: 'mine', date: '2026-06-06', status: 'pending', notes: '₹7,500 mein se ₹1500 abhi pending hai', createdAt: '2026-05-31T16:55:00Z' }
+  "myMoneyManualBalance": null,
+  "fatherMoneyLog": [
+    {
+      "id": "mm_auto_exp_exp_f1",
+      "type": "spend",
+      "amt": 8000,
+      "desc": "Expense: UPI Transfer",
+      "date": "2026-06-04",
+      "createdAt": "2026-06-04T12:00:00Z"
+    }
   ],
-  expenses: [
-    { id: 'exp_1', amount: 30, category: 'Food', owner: 'mine', date: '2026-06-04', notes: 'Biryani', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:45:00Z' },
-    { id: 'exp_2', amount: 2764, category: 'Shopping', owner: 'mine', date: '2026-06-05', notes: 'Shoes', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:44:00Z' },
-    { id: 'exp_3', amount: 226, category: 'Food', owner: 'mine', date: '2026-06-03', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:43:00Z' },
-    { id: 'exp_4', amount: 3, category: 'Personal', owner: 'mine', date: '2026-06-03', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:42:00Z' },
-    { id: 'exp_5', amount: 730, category: 'Other', owner: 'mine', date: '2026-06-01', notes: 'swimming', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:41:00Z' },
-    { id: 'exp_6', amount: 90, category: 'Personal', owner: 'mine', date: '2026-06-01', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:40:00Z' },
-    { id: 'exp_7', amount: 30, category: 'Food', owner: 'mine', date: '2026-06-01', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:39:00Z' },
-    { id: 'exp_8', amount: 568, category: 'Food', owner: 'mine', date: '2026-05-31', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:38:00Z' },
-    { id: 'exp_9', amount: 40, category: 'Food', owner: 'mine', date: '2026-05-31', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:37:00Z' },
-    { id: 'exp_10', amount: 19, category: 'Software', owner: 'mine', date: '2026-05-30', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:36:00Z' },
-    { id: 'exp_11', amount: 3975, category: 'Shopping', owner: 'mine', date: '2026-05-31', notes: '', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:35:00Z' },
-    { id: 'exp_12', amount: 400, category: 'Personal', owner: 'mine', date: '2026-05-31', notes: 'PROMOTION', bizPlatform: '', bizPurpose: '', createdAt: '2026-06-04T16:34:00Z' },
-    { id: 'exp_13', amount: 2000, category: 'Business', owner: 'mine', date: '2026-05-31', notes: 'ADD AGENCY', bizPlatform: 'ADD AGENCY', bizPurpose: 'Business', createdAt: '2026-06-04T16:33:00Z' }
+  "fatherMoneyManualBalance": null,
+  "income": [
+    {
+      "id": "inc_p1",
+      "amount": 779,
+      "source": "Razorpay",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "inc_p2",
+      "amount": 1000,
+      "source": "Client",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "inc_r1",
+      "amount": 1000,
+      "source": "Client",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "status": "received",
+      "notes": ""
+    },
+    {
+      "id": "inc_r2",
+      "amount": 389,
+      "source": "Razorpay",
+      "owner": "mine",
+      "date": "2026-06-04",
+      "status": "received",
+      "notes": ""
+    },
+    {
+      "id": "inc_r3",
+      "amount": 389,
+      "source": "Razorpay",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "status": "received",
+      "notes": ""
+    },
+    {
+      "id": "inc_r4",
+      "amount": 1558,
+      "source": "Razoapy",
+      "owner": "mine",
+      "date": "2026-06-02",
+      "status": "received",
+      "notes": ""
+    },
+    {
+      "id": "inc_r5",
+      "amount": 1000,
+      "source": "Mummy",
+      "owner": "mine",
+      "date": "2026-05-31",
+      "status": "received",
+      "notes": ""
+    }
   ],
-  investments: [
-    { id: 'inv_1', amount: 2000, platform: 'ADD AGENCY', purpose: 'Business', date: '2026-05-31', notes: '[Auto from Expense] ADD AGENCY', createdAt: '2026-06-04T16:33:00Z' }
+  "expenses": [
+    {
+      "id": "exp_f1",
+      "amount": 8000,
+      "category": "UPI Transfer",
+      "owner": "father",
+      "date": "2026-06-04",
+      "notes": "quick pay to mummy"
+    },
+    {
+      "id": "exp_1",
+      "amount": 19,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-06-05",
+      "notes": ""
+    },
+    {
+      "id": "exp_2",
+      "amount": 19,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-06-05",
+      "notes": ""
+    },
+    {
+      "id": "exp_3",
+      "amount": 352,
+      "category": "Food",
+      "owner": "mine",
+      "date": "2026-06-05",
+      "notes": ""
+    },
+    {
+      "id": "exp_4",
+      "amount": 13,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-06-05",
+      "notes": ""
+    },
+    {
+      "id": "exp_5",
+      "amount": 2000,
+      "category": "Business",
+      "owner": "mine",
+      "date": "2026-06-05",
+      "notes": "ADD AGENCY",
+      "bizPlatform": "ADD AGENCY",
+      "bizPurpose": "Business"
+    },
+    {
+      "id": "exp_6",
+      "amount": 30,
+      "category": "Food",
+      "owner": "mine",
+      "date": "2026-06-04",
+      "notes": ""
+    },
+    {
+      "id": "exp_7",
+      "amount": 2764,
+      "category": "Shopping",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "notes": ""
+    },
+    {
+      "id": "exp_8",
+      "amount": 226,
+      "category": "Food",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "notes": ""
+    },
+    {
+      "id": "exp_9",
+      "amount": 3,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "notes": ""
+    },
+    {
+      "id": "exp_10",
+      "amount": 730,
+      "category": "Other",
+      "owner": "mine",
+      "date": "2026-06-01",
+      "notes": ""
+    },
+    {
+      "id": "exp_11",
+      "amount": 50,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-06-01",
+      "notes": ""
+    },
+    {
+      "id": "exp_12",
+      "amount": 30,
+      "category": "Food",
+      "owner": "mine",
+      "date": "2026-06-01",
+      "notes": ""
+    },
+    {
+      "id": "exp_13",
+      "amount": 568,
+      "category": "Food",
+      "owner": "mine",
+      "date": "2026-05-31",
+      "notes": ""
+    },
+    {
+      "id": "exp_14",
+      "amount": 40,
+      "category": "Food",
+      "owner": "mine",
+      "date": "2026-05-31",
+      "notes": ""
+    },
+    {
+      "id": "exp_15",
+      "amount": 19,
+      "category": "Software",
+      "owner": "mine",
+      "date": "2026-05-30",
+      "notes": ""
+    },
+    {
+      "id": "exp_16",
+      "amount": 3975,
+      "category": "Shopping",
+      "owner": "mine",
+      "date": "2026-05-31",
+      "notes": ""
+    },
+    {
+      "id": "exp_17",
+      "amount": 443,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-05-31",
+      "notes": ""
+    }
   ],
-  goals: [
-    { id: 'goal_emergency', name: 'Emergency Fund', target: 50000, current: 0, icon: '🆘', desc: 'For unexpected expenses' },
-    { id: 'goal_business', name: 'Business Fund', target: 25000, current: 0, icon: '🚀', desc: 'Grow the business' },
-    { id: 'goal_laptop', name: 'Laptop Fund', target: 80000, current: 0, icon: '💻', desc: 'New laptop upgrade' }
+  "investments": [
+    {
+      "id": "inv_1",
+      "amount": 2000,
+      "platform": "ADD AGENCY",
+      "purpose": "Business",
+      "date": "2026-06-05",
+      "notes": "Auto from Expense"
+    }
   ],
-  editingGoalId: null,
-  upiContacts: [
-    { id: 'upi_mummy', name: 'Mummy', upiId: '9891990065@ptyes', emoji: '👩' }
+  "goals": [
+    {
+      "id": "goal_emergency",
+      "name": "Emergency Fund",
+      "target": 50000,
+      "current": 0,
+      "icon": "\ud83d\udee1\ufe0f",
+      "desc": "For unexpected expenses"
+    },
+    {
+      "id": "goal_business",
+      "name": "Business Fund",
+      "target": 25000,
+      "current": 0,
+      "icon": "\ud83d\udcbc",
+      "desc": "Grow the business"
+    },
+    {
+      "id": "goal_laptop",
+      "name": "Laptop Fund",
+      "target": 80000,
+      "current": 0,
+      "icon": "\ud83d\udcbb",
+      "desc": "New laptop upgrade"
+    }
   ],
-  upiPayments: []
+  "editingGoalId": null,
+  "upiContacts": [],
+  "upiPayments": []
 };
 
 let state = {};
 
 // Load from localStorage or use defaults
 function loadState() {
-  const FORCE_RESET_KEY = 'moneyMgr_v3_reconciled_v1';
+  const FORCE_RESET_KEY = 'moneyMgr_v3_reconciled_1780772700';
   if (!localStorage.getItem(FORCE_RESET_KEY)) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
     localStorage.setItem(FORCE_RESET_KEY, 'true');
@@ -2148,47 +2535,73 @@ function saveState() {
    COMPUTED VALUES
 ===================================================== */
 function compute() {
-  const receivedIncome = state.income
-    .filter(i => i.status === 'received')
-    .reduce((s, i) => s + Number(i.amount), 0);
+  const myIncome = state.income.filter(i => i.owner === 'mine' && i.status === 'received').reduce((sum, i) => sum + Number(i.amount), 0);
+  const myPendingIncome = state.income.filter(i => i.owner === 'mine' && i.status === 'pending').reduce((sum, i) => sum + Number(i.amount), 0);
+  const myExpense = state.expenses.filter(e => e.owner === 'mine' && e.status !== 'pending').reduce((sum, e) => sum + Number(e.amount), 0);
+  
+  const fatherIncome = state.income.filter(i => i.owner === 'father' && i.status === 'received').reduce((sum, i) => sum + Number(i.amount), 0);
+  const fatherPendingIncome = state.income.filter(i => i.owner === 'father' && i.status === 'pending').reduce((sum, i) => sum + Number(i.amount), 0);
+  const fatherExpense = state.expenses.filter(e => e.owner === 'father' && e.status !== 'pending').reduce((sum, e) => sum + Number(e.amount), 0);
+  
+  const totalIncome = myIncome + fatherIncome;
+  const pendingIncome = myPendingIncome + fatherPendingIncome;
+  const totalExpense = myExpense + fatherExpense;
+  const totalInvested = state.investments.reduce((sum, i) => sum + Number(i.amount), 0);
+  
+  const myMoney = Number(state.initialMine || 0) + myIncome - myExpense;
+  const fatherMoney = Number(state.initialFather || 0) + fatherIncome - fatherExpense;
+  
+  state.currentBalance = myMoney + fatherMoney;
 
-  const pendingIncome = state.income
-    .filter(i => i.status === 'pending')
-    .reduce((s, i) => s + Number(i.amount), 0);
+  let remaining = state.currentBalance;
+  if (state.banks && state.banks.length > 0) {
+    for (let i = 1; i < state.banks.length; i++) {
+      remaining -= Number(state.banks[i].balance || 0);
+    }
+    state.banks[0].balance = Math.max(0, remaining);
+  }
 
-  const totalExpenses = state.expenses.reduce((s, e) => s + Number(e.amount), 0);
+  const myNetWorth = myMoney + myPendingIncome;
+  const fatherNetWorth = fatherMoney + fatherPendingIncome;
+  const expectedBalance = state.currentBalance + pendingIncome;
+  const bizBudgetLeft = (state.businessBudget || 10000) - totalInvested;
 
-  const bizInvested = state.investments.reduce((s, i) => s + Number(i.amount), 0);
+  const elCurBal = document.getElementById('dashCurBal');
+  if (elCurBal) elCurBal.innerText = '₹' + state.currentBalance.toLocaleString('en-IN', {minimumFractionDigits: 0});
+  
+  const elTotAvailable = document.getElementById('dashTotAvailable');
+  if (elTotAvailable) elTotAvailable.innerText = '₹' + state.currentBalance.toLocaleString('en-IN', {minimumFractionDigits: 0});
+  
+  const elExpected = document.getElementById('dashExpected');
+  if (elExpected) elExpected.innerText = '₹' + expectedBalance.toLocaleString('en-IN', {minimumFractionDigits: 0});
+  
+  const elTotExp = document.getElementById('dashTotExp');
+  if (elTotExp) elTotExp.innerText = '₹' + totalExpense.toLocaleString('en-IN', {minimumFractionDigits: 0});
+  
+  const elPendInc = document.getElementById('dashPendInc');
+  if (elPendInc) elPendInc.innerText = '₹' + pendingIncome.toLocaleString('en-IN', {minimumFractionDigits: 0});
+  
+  const elBizInvested = document.getElementById('dashBizInvested');
+  if (elBizInvested) elBizInvested.innerText = '₹' + totalInvested.toLocaleString('en-IN', {minimumFractionDigits: 0});
+  
+  const elBizLeft = document.getElementById('bizBudgetLeft');
+  if (elBizLeft) elBizLeft.innerText = '₹' + Math.max(0, bizBudgetLeft).toLocaleString('en-IN', {minimumFractionDigits: 0});
+  
+  const elMyMoney = document.getElementById('dashMyMoney');
+  if (elMyMoney) elMyMoney.innerText = '₹' + myMoney.toLocaleString('en-IN', {minimumFractionDigits: 0});
 
-  // Available balance = initial pool + received income - expenses
-  const totalAvailable = state.initialMine + state.initialFather + state.initialShared + receivedIncome - totalExpenses;
+  const elMyNetWorth = document.getElementById('myNetWorth');
+  if (elMyNetWorth) elMyNetWorth.innerText = '₹' + myNetWorth.toLocaleString('en-IN', {minimumFractionDigits: 0});
 
-  const expectedBalance = totalAvailable + pendingIncome;
-
-  // Owner-wise income received
-  const myReceivedIncome = state.income.filter(i => i.status === 'received' && i.owner === 'mine').reduce((s,i) => s+Number(i.amount), 0);
-  const fatherReceivedIncome = state.income.filter(i => i.status === 'received' && i.owner === 'father').reduce((s,i) => s+Number(i.amount), 0);
-
-  // Owner-wise expenses
-  const myExpenses = state.expenses.filter(e => e.owner === 'mine').reduce((s,e) => s+Number(e.amount), 0);
-  const fatherExpenses = state.expenses.filter(e => e.owner === 'father').reduce((s,e) => s+Number(e.amount), 0);
-  const sharedExpenses = state.expenses.filter(e => e.owner === 'shared').reduce((s,e) => s+Number(e.amount), 0);
-
-  // My net worth = initial mine + my received income - my expenses + my pending
-  const myPending = state.income.filter(i => i.status === 'pending' && i.owner === 'mine').reduce((s,i) => s+Number(i.amount), 0);
-  const myNetWorth = state.initialMine + myReceivedIncome - myExpenses + myPending;
-  const fatherNetWorth = state.initialFather + fatherReceivedIncome - fatherExpenses;
-
-  // My money currently = initial + received - expenses
-  const myMoney = state.initialMine + myReceivedIncome - myExpenses;
-  const fatherMoney = state.initialFather + fatherReceivedIncome - fatherExpenses;
-  const sharedMoney = state.initialShared - sharedExpenses;
+  const elFatherNetWorth = document.getElementById('fatherNetWorth');
+  if (elFatherNetWorth) elFatherNetWorth.innerText = '₹' + fatherNetWorth.toLocaleString('en-IN', {minimumFractionDigits: 0});
 
   return {
-    receivedIncome, pendingIncome, totalExpenses, bizInvested,
-    totalAvailable, expectedBalance, myMoney, fatherMoney, sharedMoney,
-    myNetWorth, fatherNetWorth, bizRemaining: state.businessBudget - bizInvested,
-    myExpenses, fatherExpenses
+    receivedIncome: totalIncome, pendingIncome, totalExpenses: totalExpense, bizInvested: totalInvested,
+    totalAvailable: state.currentBalance, expectedBalance,
+    myMoney, fatherMoney, sharedMoney: 0,
+    myNetWorth, fatherNetWorth, bizRemaining: bizBudgetLeft,
+    myExpenses: myExpense, fatherExpenses: fatherExpense
   };
 }
 
