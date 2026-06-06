@@ -2061,10 +2061,10 @@ const DEFAULT_DATA = {
       "createdAt": "2026-06-05T12:00:00Z"
     },
     {
-      "id": "mm_auto_exp_exp_5",
+      "id": "mm_auto_exp_exp_5a",
       "type": "spend",
       "amt": 2000,
-      "desc": "Expense: Business",
+      "desc": "Expense: Personal",
       "date": "2026-06-05",
       "createdAt": "2026-06-05T12:00:00Z"
     },
@@ -2177,6 +2177,14 @@ const DEFAULT_DATA = {
       "type": "add",
       "amt": 1000,
       "desc": "Income: Mummy",
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_5b",
+      "type": "spend",
+      "amt": 2000,
+      "desc": "Expense: Business",
       "date": "2026-05-31",
       "createdAt": "2026-05-31T12:00:00Z"
     },
@@ -2340,11 +2348,19 @@ const DEFAULT_DATA = {
       "notes": ""
     },
     {
-      "id": "exp_5",
+      "id": "exp_5a",
+      "amount": 2000,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-06-05",
+      "notes": ""
+    },
+    {
+      "id": "exp_5b",
       "amount": 2000,
       "category": "Business",
       "owner": "mine",
-      "date": "2026-06-05",
+      "date": "2026-05-31",
       "notes": "ADD AGENCY",
       "bizPlatform": "ADD AGENCY",
       "bizPurpose": "Business"
@@ -2452,7 +2468,7 @@ const DEFAULT_DATA = {
       "amount": 2000,
       "platform": "ADD AGENCY",
       "purpose": "Business",
-      "date": "2026-06-05",
+      "date": "2026-05-31",
       "notes": "Auto from Expense"
     }
   ],
@@ -2483,15 +2499,34 @@ const DEFAULT_DATA = {
     }
   ],
   "editingGoalId": null,
-  "upiContacts": [],
-  "upiPayments": []
+  "upiContacts": [
+    {
+      "id": "cont_mummy",
+      "name": "Mummy",
+      "upiId": "9891990065@ptyes",
+      "createdAt": "2026-06-01T12:00:00Z"
+    }
+  ],
+  "upiPayments": [
+    {
+      "id": "upi_pay_mummy",
+      "contactId": "cont_mummy",
+      "contactName": "Mummy",
+      "amount": 8000,
+      "note": "Transfer",
+      "owner": "father",
+      "status": "completed",
+      "date": "2026-06-04",
+      "createdAt": "2026-06-04T12:00:00Z"
+    }
+  ]
 };
 
 let state = {};
 
 // Load from localStorage or use defaults
 function loadState() {
-  const FORCE_RESET_KEY = 'moneyMgr_v3_reconciled_1780772700';
+  const FORCE_RESET_KEY = 'moneyMgr_v3_reconciled_1780773021';
   if (!localStorage.getItem(FORCE_RESET_KEY)) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
     localStorage.setItem(FORCE_RESET_KEY, 'true');
