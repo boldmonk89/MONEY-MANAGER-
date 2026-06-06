@@ -1,0 +1,502 @@
+{
+  "initialMine": 21338,
+  "initialFather": 34008,
+  "initialShared": 0,
+  "businessBudget": 10000,
+  "currentBalance": 38401,
+  "balanceNote": "Total Cash + Bank",
+  "balanceSet": true,
+  "myMoneyLog": [
+    {
+      "id": "mm_auto_exp_exp_1",
+      "type": "spend",
+      "amt": 19,
+      "desc": "Expense: Personal",
+      "date": "2026-06-05",
+      "createdAt": "2026-06-05T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_2",
+      "type": "spend",
+      "amt": 19,
+      "desc": "Expense: Personal",
+      "date": "2026-06-05",
+      "createdAt": "2026-06-05T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_3",
+      "type": "spend",
+      "amt": 352,
+      "desc": "Expense: Food",
+      "date": "2026-06-05",
+      "createdAt": "2026-06-05T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_4",
+      "type": "spend",
+      "amt": 13,
+      "desc": "Expense: Personal",
+      "date": "2026-06-05",
+      "createdAt": "2026-06-05T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_5a",
+      "type": "spend",
+      "amt": 2000,
+      "desc": "Expense: Personal",
+      "date": "2026-06-05",
+      "createdAt": "2026-06-05T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_r2",
+      "type": "add",
+      "amt": 389,
+      "desc": "Income: Razorpay",
+      "date": "2026-06-04",
+      "createdAt": "2026-06-04T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_6",
+      "type": "spend",
+      "amt": 30,
+      "desc": "Expense: Food",
+      "date": "2026-06-04",
+      "createdAt": "2026-06-04T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_p1",
+      "type": "add",
+      "amt": 779,
+      "desc": "Income: Razorpay",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_p2",
+      "type": "add",
+      "amt": 1000,
+      "desc": "Income: Client",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_r1",
+      "type": "add",
+      "amt": 1000,
+      "desc": "Income: Client",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_r3",
+      "type": "add",
+      "amt": 389,
+      "desc": "Income: Razorpay",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_7",
+      "type": "spend",
+      "amt": 2764,
+      "desc": "Expense: Shopping",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_8",
+      "type": "spend",
+      "amt": 226,
+      "desc": "Expense: Food",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_9",
+      "type": "spend",
+      "amt": 3,
+      "desc": "Expense: Personal",
+      "date": "2026-06-03",
+      "createdAt": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_r4",
+      "type": "add",
+      "amt": 1558,
+      "desc": "Income: Razoapy",
+      "date": "2026-06-02",
+      "createdAt": "2026-06-02T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_10",
+      "type": "spend",
+      "amt": 730,
+      "desc": "Expense: Other",
+      "date": "2026-06-01",
+      "createdAt": "2026-06-01T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_11",
+      "type": "spend",
+      "amt": 50,
+      "desc": "Expense: Personal",
+      "date": "2026-06-01",
+      "createdAt": "2026-06-01T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_12",
+      "type": "spend",
+      "amt": 30,
+      "desc": "Expense: Food",
+      "date": "2026-06-01",
+      "createdAt": "2026-06-01T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_inc_inc_r5",
+      "type": "add",
+      "amt": 1000,
+      "desc": "Income: Mummy",
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_5b",
+      "type": "spend",
+      "amt": 2000,
+      "desc": "Expense: Business",
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_13",
+      "type": "spend",
+      "amt": 568,
+      "desc": "Expense: Food",
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_14",
+      "type": "spend",
+      "amt": 40,
+      "desc": "Expense: Food",
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_16",
+      "type": "spend",
+      "amt": 3975,
+      "desc": "Expense: Shopping",
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_17",
+      "type": "spend",
+      "amt": 443,
+      "desc": "Expense: Personal",
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T12:00:00Z"
+    },
+    {
+      "id": "mm_auto_exp_exp_15",
+      "type": "spend",
+      "amt": 19,
+      "desc": "Expense: Software",
+      "date": "2026-05-30",
+      "createdAt": "2026-05-30T12:00:00Z"
+    }
+  ],
+  "myMoneyManualBalance": null,
+  "fatherMoneyLog": [
+    {
+      "id": "mm_auto_exp_exp_f1",
+      "type": "spend",
+      "amt": 8000,
+      "desc": "Expense: UPI Transfer",
+      "date": "2026-06-04",
+      "createdAt": "2026-06-04T12:00:00Z"
+    }
+  ],
+  "fatherMoneyManualBalance": null,
+  "income": [
+    {
+      "id": "inc_p1",
+      "amount": 779,
+      "source": "Razorpay",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "inc_p2",
+      "amount": 1000,
+      "source": "Client",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "inc_r1",
+      "amount": 1000,
+      "source": "Client",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "status": "received",
+      "notes": ""
+    },
+    {
+      "id": "inc_r2",
+      "amount": 389,
+      "source": "Razorpay",
+      "owner": "mine",
+      "date": "2026-06-04",
+      "status": "received",
+      "notes": ""
+    },
+    {
+      "id": "inc_r3",
+      "amount": 389,
+      "source": "Razorpay",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "status": "received",
+      "notes": ""
+    },
+    {
+      "id": "inc_r4",
+      "amount": 1558,
+      "source": "Razoapy",
+      "owner": "mine",
+      "date": "2026-06-02",
+      "status": "received",
+      "notes": ""
+    },
+    {
+      "id": "inc_r5",
+      "amount": 1000,
+      "source": "Mummy",
+      "owner": "mine",
+      "date": "2026-05-31",
+      "status": "received",
+      "notes": ""
+    }
+  ],
+  "expenses": [
+    {
+      "id": "exp_f1",
+      "amount": 8000,
+      "category": "UPI Transfer",
+      "owner": "father",
+      "date": "2026-06-04",
+      "notes": "quick pay to mummy"
+    },
+    {
+      "id": "exp_1",
+      "amount": 19,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-06-05",
+      "notes": ""
+    },
+    {
+      "id": "exp_2",
+      "amount": 19,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-06-05",
+      "notes": ""
+    },
+    {
+      "id": "exp_3",
+      "amount": 352,
+      "category": "Food",
+      "owner": "mine",
+      "date": "2026-06-05",
+      "notes": ""
+    },
+    {
+      "id": "exp_4",
+      "amount": 13,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-06-05",
+      "notes": ""
+    },
+    {
+      "id": "exp_5a",
+      "amount": 2000,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-06-05",
+      "notes": ""
+    },
+    {
+      "id": "exp_5b",
+      "amount": 2000,
+      "category": "Business",
+      "owner": "mine",
+      "date": "2026-05-31",
+      "notes": "ADD AGENCY",
+      "bizPlatform": "ADD AGENCY",
+      "bizPurpose": "Business"
+    },
+    {
+      "id": "exp_6",
+      "amount": 30,
+      "category": "Food",
+      "owner": "mine",
+      "date": "2026-06-04",
+      "notes": ""
+    },
+    {
+      "id": "exp_7",
+      "amount": 2764,
+      "category": "Shopping",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "notes": ""
+    },
+    {
+      "id": "exp_8",
+      "amount": 226,
+      "category": "Food",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "notes": ""
+    },
+    {
+      "id": "exp_9",
+      "amount": 3,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-06-03",
+      "notes": ""
+    },
+    {
+      "id": "exp_10",
+      "amount": 730,
+      "category": "Other",
+      "owner": "mine",
+      "date": "2026-06-01",
+      "notes": ""
+    },
+    {
+      "id": "exp_11",
+      "amount": 50,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-06-01",
+      "notes": ""
+    },
+    {
+      "id": "exp_12",
+      "amount": 30,
+      "category": "Food",
+      "owner": "mine",
+      "date": "2026-06-01",
+      "notes": ""
+    },
+    {
+      "id": "exp_13",
+      "amount": 568,
+      "category": "Food",
+      "owner": "mine",
+      "date": "2026-05-31",
+      "notes": ""
+    },
+    {
+      "id": "exp_14",
+      "amount": 40,
+      "category": "Food",
+      "owner": "mine",
+      "date": "2026-05-31",
+      "notes": ""
+    },
+    {
+      "id": "exp_15",
+      "amount": 19,
+      "category": "Software",
+      "owner": "mine",
+      "date": "2026-05-30",
+      "notes": ""
+    },
+    {
+      "id": "exp_16",
+      "amount": 3975,
+      "category": "Shopping",
+      "owner": "mine",
+      "date": "2026-05-31",
+      "notes": ""
+    },
+    {
+      "id": "exp_17",
+      "amount": 443,
+      "category": "Personal",
+      "owner": "mine",
+      "date": "2026-05-31",
+      "notes": ""
+    }
+  ],
+  "investments": [
+    {
+      "id": "inv_1",
+      "amount": 2000,
+      "platform": "ADD AGENCY",
+      "purpose": "Business",
+      "date": "2026-05-31",
+      "notes": "Auto from Expense"
+    }
+  ],
+  "goals": [
+    {
+      "id": "goal_emergency",
+      "name": "Emergency Fund",
+      "target": 50000,
+      "current": 0,
+      "icon": "\ud83d\udee1\ufe0f",
+      "desc": "For unexpected expenses"
+    },
+    {
+      "id": "goal_business",
+      "name": "Business Fund",
+      "target": 25000,
+      "current": 0,
+      "icon": "\ud83d\udcbc",
+      "desc": "Grow the business"
+    },
+    {
+      "id": "goal_laptop",
+      "name": "Laptop Fund",
+      "target": 80000,
+      "current": 0,
+      "icon": "\ud83d\udcbb",
+      "desc": "New laptop upgrade"
+    }
+  ],
+  "editingGoalId": null,
+  "upiContacts": [
+    {
+      "id": "cont_mummy",
+      "name": "Mummy",
+      "upiId": "9891990065@ptyes",
+      "createdAt": "2026-06-01T12:00:00Z"
+    }
+  ],
+  "upiPayments": [
+    {
+      "id": "upi_pay_mummy",
+      "contactId": "cont_mummy",
+      "contactName": "Mummy",
+      "amount": 8000,
+      "note": "Transfer",
+      "owner": "father",
+      "status": "completed",
+      "date": "2026-06-04",
+      "createdAt": "2026-06-04T12:00:00Z"
+    }
+  ]
+}
