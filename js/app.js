@@ -1,2022 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Money Manager Dashboard</title>
-<link rel="manifest" id="pwa-manifest">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MoneyMgr">
-<meta name="theme-color" content="#63b3ed">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<style>
-/* ===================== CSS VARIABLES ===================== */
-:root {
-  --bg-primary: #080c14;
-  --bg-secondary: #0d1320;
-  --bg-card: rgba(255,255,255,0.035);
-  --bg-card-hover: rgba(255,255,255,0.06);
-  --border: rgba(255,255,255,0.07);
-  --border-active: rgba(99,179,237,0.4);
-  --accent-blue: #63b3ed;
-  --accent-teal: #38d9a9;
-  --accent-amber: #f6ad55;
-  --accent-red: #fc8181;
-  --accent-purple: #b794f4;
-  --accent-pink: #f687b3;
-  --text-primary: #e8edf5;
-  --text-secondary: #8896a8;
-  --text-muted: #4a5568;
-  --success: #38d9a9;
-  --warning: #f6ad55;
-  --danger: #fc8181;
-  --my-color: #63b3ed;
-  --father-color: #b794f4;
-  --shared-color: #38d9a9;
-  --font-main: 'Syne', sans-serif;
-  --font-mono: 'DM Mono', monospace;
-  --radius: 14px;
-  --radius-sm: 8px;
-  --shadow: 0 8px 32px rgba(0,0,0,0.4);
-  --transition: 0.2s ease;
-}
-
-/* ===================== RESET & BASE ===================== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: var(--font-main);
-  min-height: 100vh;
-  overflow-x: hidden;
-  background-image:
-    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(99,179,237,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(183,148,244,0.06) 0%, transparent 60%);
-}
-
-/* ===================== SCROLLBAR ===================== */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-
-/* ===================== LAYOUT ===================== */
-.app-wrapper {
-  display: flex;
-  min-height: 100vh;
-}
-
-/* ===================== SIDEBAR ===================== */
-.sidebar {
-  width: 240px;
-  height: 100vh;
-  background: var(--bg-secondary);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  left: 0; top: 0;
-  z-index: 100;
-  transition: transform 0.3s ease;
-}
-
-.sidebar-logo {
-  padding: 28px 24px 20px;
-  border-bottom: 1px solid var(--border);
-}
-
-.logo-mark {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-}
-
-.logo-icon {
-  width: 36px; height: 36px;
-  background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-}
-
-.logo-text {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.3px;
-  line-height: 1.2;
-}
-.logo-sub { font-size: 10px; color: var(--text-muted); font-weight: 400; }
-
-.sidebar-nav {
-  padding: 16px 12px;
-  flex: 1;
-  overflow-y: auto;
-}
-
-.nav-section-label {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  padding: 12px 12px 6px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all var(--transition);
-  color: var(--text-secondary);
-  font-size: 13.5px;
-  font-weight: 500;
-  margin-bottom: 2px;
-  border: 1px solid transparent;
-}
-
-.nav-item:hover {
-  background: var(--bg-card);
-  color: var(--text-primary);
-}
-
-.nav-item.active {
-  background: linear-gradient(135deg, rgba(99,179,237,0.15), rgba(99,179,237,0.05));
-  color: var(--accent-blue);
-  border-color: rgba(99,179,237,0.2);
-}
-
-.nav-icon { font-size: 16px; width: 20px; text-align: center; }
-
-.sidebar-footer {
-  padding: 16px 12px;
-  border-top: 1px solid var(--border);
-}
-
-.balance-chip {
-  background: linear-gradient(135deg, rgba(56,217,169,0.1), rgba(99,179,237,0.1));
-  border: 1px solid rgba(56,217,169,0.2);
-  border-radius: var(--radius-sm);
-  padding: 10px 14px;
-}
-
-.balance-chip-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-.balance-chip-value { font-size: 18px; font-weight: 700; color: var(--accent-teal); font-family: var(--font-mono); margin-top: 2px; }
-
-/* ===================== MAIN CONTENT ===================== */
-.main-content {
-  margin-left: 240px;
-  flex: 1;
-  min-height: 100vh;
-}
-
-.topbar {
-  background: rgba(13,19,32,0.8);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky; top: 0;
-  z-index: 50;
-}
-
-.topbar-title { font-size: 18px; font-weight: 700; }
-.topbar-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
-
-.topbar-actions { display: flex; gap: 8px; align-items: center; }
-
-.hamburger {
-  display: none;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  padding: 6px 10px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.content-area {
-  padding: 28px 32px;
-}
-
-/* ===================== SECTIONS ===================== */
-.section { display: none; }
-.section.active { display: block; }
-
-/* ===================== CARDS ===================== */
-.glass-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 22px;
-  backdrop-filter: blur(8px);
-  transition: all var(--transition);
-}
-
-.glass-card:hover { background: var(--bg-card-hover); border-color: rgba(255,255,255,0.1); }
-
-/* ===================== STAT CARDS GRID ===================== */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-  transition: all var(--transition);
-  cursor: default;
-}
-
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--card-accent, linear-gradient(90deg, var(--accent-teal), var(--accent-blue)));
-}
-
-.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-
-.stat-icon {
-  font-size: 22px;
-  margin-bottom: 12px;
-  display: block;
-}
-
-.stat-label {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 6px;
-}
-
-.stat-value {
-  font-size: 22px;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  color: var(--text-primary);
-}
-
-.stat-value.positive { color: var(--accent-teal); }
-.stat-value.warning { color: var(--accent-amber); }
-.stat-value.danger { color: var(--accent-red); }
-
-.stat-sub {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
-
-/* ===================== GRID LAYOUTS ===================== */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-
-/* ===================== SECTION HEADERS ===================== */
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.section-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.section-title span { color: var(--accent-blue); }
-
-/* ===================== BUTTONS ===================== */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  border: none;
-  cursor: pointer;
-  font-family: var(--font-main);
-  font-size: 13px;
-  font-weight: 600;
-  transition: all var(--transition);
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent-blue), #4299e1);
-  color: #fff;
-}
-.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
-
-.btn-success {
-  background: linear-gradient(135deg, var(--accent-teal), #2f9e82);
-  color: #fff;
-}
-.btn-success:hover { opacity: 0.88; }
-
-.btn-warning {
-  background: linear-gradient(135deg, var(--accent-amber), #e07f2a);
-  color: #fff;
-}
-.btn-warning:hover { opacity: 0.88; }
-
-.btn-danger {
-  background: linear-gradient(135deg, var(--accent-red), #c53030);
-  color: #fff;
-}
-.btn-danger:hover { opacity: 0.88; }
-
-.btn-ghost {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-}
-.btn-ghost:hover { background: var(--bg-card-hover); color: var(--text-primary); }
-
-.btn-sm { padding: 5px 10px; font-size: 11.5px; }
-.btn-xs { padding: 3px 8px; font-size: 11px; }
-
-/* ===================== FORMS ===================== */
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-
-.form-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-}
-
-.form-control {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 9px 12px;
-  color: var(--text-primary);
-  font-family: var(--font-main);
-  font-size: 13.5px;
-  transition: all var(--transition);
-  outline: none;
-  width: 100%;
-}
-
-.form-control:focus {
-  border-color: var(--accent-blue);
-  background: rgba(99,179,237,0.05);
-  box-shadow: 0 0 0 3px rgba(99,179,237,0.1);
-}
-
-.form-control option { background: var(--bg-secondary); }
-
-textarea.form-control { resize: vertical; min-height: 80px; }
-
-/* ===================== TABLES ===================== */
-.table-wrapper {
-  overflow-x: auto;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-th {
-  background: rgba(255,255,255,0.04);
-  padding: 10px 14px;
-  text-align: left;
-  font-size: 10.5px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
-}
-
-td {
-  padding: 11px 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  color: var(--text-primary);
-  vertical-align: middle;
-}
-
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(255,255,255,0.02); }
-
-/* ===================== BADGES ===================== */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 9px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.badge-mine { background: rgba(99,179,237,0.15); color: var(--my-color); }
-.badge-father { background: rgba(183,148,244,0.15); color: var(--father-color); }
-.badge-shared { background: rgba(56,217,169,0.15); color: var(--shared-color); }
-.badge-success { background: rgba(56,217,169,0.15); color: var(--success); }
-.badge-warning { background: rgba(246,173,85,0.15); color: var(--warning); }
-.badge-danger { background: rgba(252,129,129,0.15); color: var(--danger); }
-.badge-info { background: rgba(99,179,237,0.15); color: var(--accent-blue); }
-
-/* ===================== PROGRESS BAR ===================== */
-.progress-bar-wrap {
-  background: rgba(255,255,255,0.06);
-  border-radius: 10px;
-  height: 8px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  height: 100%;
-  border-radius: 10px;
-  transition: width 0.5s ease;
-  background: linear-gradient(90deg, var(--accent-teal), var(--accent-blue));
-}
-
-.progress-bar.danger { background: linear-gradient(90deg, var(--accent-amber), var(--accent-red)); }
-
-/* ===================== ALERT ===================== */
-.alert {
-  padding: 12px 16px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.alert-danger { background: rgba(252,129,129,0.1); border: 1px solid rgba(252,129,129,0.25); color: var(--accent-red); }
-.alert-warning { background: rgba(246,173,85,0.1); border: 1px solid rgba(246,173,85,0.25); color: var(--accent-amber); }
-.alert-success { background: rgba(56,217,169,0.1); border: 1px solid rgba(56,217,169,0.25); color: var(--accent-teal); }
-.alert-info { background: rgba(99,179,237,0.1); border: 1px solid rgba(99,179,237,0.25); color: var(--accent-blue); }
-
-/* ===================== MODAL ===================== */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(6px);
-  z-index: 999;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.modal-overlay.open { display: flex; }
-
-.modal-box {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-active);
-  border-radius: var(--radius);
-  width: 100%;
-  max-width: 560px;
-  max-height: 90vh;
-  overflow-y: auto;
-  animation: modalIn 0.2s ease;
-}
-
-@keyframes modalIn {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.modal-header {
-  padding: 20px 24px 14px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.modal-title { font-size: 16px; font-weight: 700; }
-
-.modal-close {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  width: 28px; height: 28px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-  transition: all var(--transition);
-}
-
-.modal-close:hover { color: var(--text-primary); background: var(--bg-card-hover); }
-
-.modal-body { padding: 20px 24px; }
-.modal-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
-
-/* ===================== OWNER BREAKDOWN ===================== */
-.owner-breakdown {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.owner-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 16px;
-  text-align: center;
-}
-
-.owner-card .owner-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-.owner-card .owner-value { font-size: 20px; font-weight: 700; font-family: var(--font-mono); margin-top: 6px; }
-.owner-mine { border-top: 2px solid var(--my-color); }
-.owner-mine .owner-value { color: var(--my-color); }
-.owner-father { border-top: 2px solid var(--father-color); }
-.owner-father .owner-value { color: var(--father-color); }
-.owner-shared { border-top: 2px solid var(--shared-color); }
-.owner-shared .owner-value { color: var(--shared-color); }
-
-/* ===================== PENDING TABLE STATUS ===================== */
-.status-received { color: var(--success); }
-.status-pending { color: var(--warning); }
-.status-overdue { color: var(--danger); }
-.status-soon { color: var(--accent-amber); }
-
-tr.row-received td { background: rgba(56,217,169,0.04); }
-tr.row-overdue td { background: rgba(252,129,129,0.04); }
-tr.row-soon td { background: rgba(246,173,85,0.04); }
-
-/* ===================== GOAL CARD ===================== */
-.goal-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  transition: all var(--transition);
-}
-
-.goal-card:hover { background: var(--bg-card-hover); }
-
-.goal-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 14px; }
-.goal-name { font-size: 15px; font-weight: 700; }
-.goal-target { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
-.goal-pct { font-size: 22px; font-weight: 700; font-family: var(--font-mono); color: var(--accent-teal); }
-
-.goal-amounts { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; color: var(--text-muted); }
-
-/* ===================== CHART WRAPPER ===================== */
-.chart-wrap {
-  position: relative;
-  height: 260px;
-}
-
-/* ===================== FILTER BAR ===================== */
-.filter-bar {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-  align-items: flex-end;
-}
-
-.filter-bar .form-control {
-  max-width: 180px;
-}
-
-/* ===================== EMPTY STATE ===================== */
-.empty-state {
-  text-align: center;
-  padding: 48px 20px;
-  color: var(--text-muted);
-}
-
-.empty-icon { font-size: 40px; margin-bottom: 12px; }
-.empty-text { font-size: 14px; }
-
-/* ===================== INVESTMENT PLATFORM ===================== */
-.invest-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-.invest-row:last-child { border-bottom: none; }
-.invest-platform { font-weight: 600; font-size: 14px; }
-.invest-purpose { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-.invest-amount { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent-amber); }
-.invest-date { font-size: 11px; color: var(--text-muted); margin-top: 2px; text-align: right; }
-
-/* ===================== TOAST ===================== */
-.toast-container {
-  position: fixed;
-  bottom: 20px; right: 20px;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  pointer-events: none;
-}
-
-.toast {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
-  pointer-events: auto;
-  max-width: 300px;
-  box-shadow: var(--shadow);
-}
-
-.toast.success { border-left: 3px solid var(--success); }
-.toast.error { border-left: 3px solid var(--danger); }
-.toast.info { border-left: 3px solid var(--accent-blue); }
-
-@keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(100%); } }
-
-/* ===================== DIVIDER ===================== */
-.divider { height: 1px; background: var(--border); margin: 20px 0; }
-
-/* ===================== MOBILE ===================== */
-@media (max-width: 900px) {
-  .sidebar {
-    transform: translateX(-100%);
-  }
-  .sidebar.open { transform: translateX(0); }
-  .main-content { margin-left: 0; }
-  .hamburger { display: block; }
-  .content-area { padding: 20px 16px; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .grid-2, .grid-3 { grid-template-columns: 1fr; }
-  .owner-breakdown { grid-template-columns: 1fr 1fr; }
-  .topbar { padding: 12px 16px; }
-}
-
-@media (max-width: 500px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .owner-breakdown { grid-template-columns: 1fr; }
-  .filter-bar .form-control { max-width: 100%; }
-}
-
-/* ===================== MISC UTILS ===================== */
-.mb-4 { margin-bottom: 16px; }
-.mb-6 { margin-bottom: 24px; }
-.mt-4 { margin-top: 16px; }
-.gap-2 { gap: 8px; }
-.d-flex { display: flex; }
-.align-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.text-right { text-align: right; }
-.font-mono { font-family: var(--font-mono); }
-.overlay-close { position: fixed; inset: 0; z-index: 99; display: none; }
-.overlay-close.open { display: block; }
-
-/* Animations */
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-.section.active { animation: fadeIn 0.25s ease; }
-
-.warning-banner {
-  background: linear-gradient(135deg, rgba(252,129,129,0.12), rgba(252,129,129,0.05));
-  border: 1px solid rgba(252,129,129,0.3);
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
-  color: var(--accent-red);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-  font-size: 13.5px;
-  font-weight: 600;
-}
-
-/* ===================== MY MONEY SECTION ===================== */
-.mymoney-hero {
-  background: linear-gradient(135deg, rgba(99,179,237,0.12), rgba(56,217,169,0.08));
-  border: 1px solid rgba(99,179,237,0.3);
-  border-radius: var(--radius);
-  padding: 28px 28px 22px;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
-}
-.mymoney-hero::before {
-  content: '';
-  position: absolute;
-  top: -40px; right: -40px;
-  width: 180px; height: 180px;
-  background: radial-gradient(circle, rgba(99,179,237,0.12), transparent 70%);
-  pointer-events: none;
-}
-.mymoney-hero-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; }
-.mymoney-hero-amount { font-size: 42px; font-weight: 800; font-family: var(--font-mono); color: var(--accent-blue); line-height: 1; margin-bottom: 6px; }
-.mymoney-hero-sub { font-size: 12px; color: var(--text-muted); }
-.mymoney-actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
-
-.mymoney-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 14px;
-  margin-bottom: 20px;
-}
-
-.mymoney-txn-list { display: flex; flex-direction: column; gap: 0; }
-.mymoney-txn-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 13px 16px;
-  border-bottom: 1px solid var(--border);
-  transition: background var(--transition);
-}
-.mymoney-txn-row:last-child { border-bottom: none; }
-.mymoney-txn-row:hover { background: rgba(255,255,255,0.02); }
-.mymoney-txn-icon { font-size: 18px; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; }
-.mymoney-txn-icon.spend { background: rgba(252,129,129,0.12); }
-.mymoney-txn-icon.add { background: rgba(56,217,169,0.12); }
-.mymoney-txn-icon.set { background: rgba(99,179,237,0.12); }
-.mymoney-txn-info { flex: 1; }
-.mymoney-txn-desc { font-size: 13.5px; font-weight: 600; }
-.mymoney-txn-date { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-.mymoney-txn-amt { font-family: var(--font-mono); font-size: 14px; font-weight: 700; }
-.mymoney-txn-amt.spend { color: var(--accent-red); }
-.mymoney-txn-amt.add { color: var(--accent-teal); }
-.mymoney-txn-amt.set { color: var(--accent-blue); }
-
-/* ===================== FATHER MONEY HERO ===================== */
-.father-hero {
-  background: linear-gradient(135deg, rgba(183,148,244,0.12), rgba(159,122,234,0.08));
-  border: 1px solid rgba(183,148,244,0.3);
-  border-radius: var(--radius);
-  padding: 28px 28px 22px;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
-}
-.father-hero::before {
-  content: '';
-  position: absolute;
-  top: -40px; right: -40px;
-  width: 180px; height: 180px;
-  background: radial-gradient(circle, rgba(183,148,244,0.12), transparent 70%);
-  pointer-events: none;
-}
-
-/* ===================== PWA INSTALL BUTTON ===================== */
-.install-btn {
-  background: linear-gradient(135deg, rgba(99,179,237,0.2), rgba(56,217,169,0.15));
-  border: 1px solid rgba(99,179,237,0.35);
-  color: var(--accent-blue);
-  animation: pulseBorder 2s infinite;
-}
-.install-btn:hover { background: linear-gradient(135deg, rgba(99,179,237,0.3), rgba(56,217,169,0.25)); }
-@keyframes pulseBorder {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(99,179,237,0.3); }
-  50% { box-shadow: 0 0 0 4px rgba(99,179,237,0.1); }
-}
-
-/* ===================== CURRENT BALANCE CARD ===================== */
-.cur-bal-card {
-  background: linear-gradient(135deg, rgba(56,217,169,0.08), rgba(99,179,237,0.06));
-  border: 1px solid rgba(56,217,169,0.25);
-  border-radius: var(--radius);
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-}
-.cur-bal-left { display: flex; flex-direction: column; gap: 4px; }
-.cur-bal-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); font-weight: 600; }
-.cur-bal-amount { font-size: 28px; font-weight: 800; font-family: var(--font-mono); color: var(--accent-teal); }
-.cur-bal-note { font-size: 11px; color: var(--text-muted); }
-.cur-bal-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.cur-bal-diff { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
-.cur-bal-diff.pos { background: rgba(56,217,169,0.15); color: var(--accent-teal); }
-.cur-bal-diff.neg { background: rgba(252,129,129,0.15); color: var(--accent-red); }
-.cur-bal-diff.neu { background: rgba(255,255,255,0.06); color: var(--text-muted); }
-
-/* ===================== QUICK PAY ===================== */
-.quickpay-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px; }
-.qp-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; position: relative; overflow: hidden; transition: all var(--transition); }
-.qp-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #38d9a9, #63b3ed); }
-.qp-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: rgba(56,217,169,0.3); }
-.qp-avatar { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 26px; background: linear-gradient(135deg, rgba(56,217,169,0.15), rgba(99,179,237,0.15)); border: 1px solid rgba(56,217,169,0.25); }
-.qp-name { font-size: 18px; font-weight: 700; }
-.qp-upi { font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); background: rgba(255,255,255,0.04); display: inline-block; padding: 3px 8px; border-radius: 4px; }
-.qp-presets { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-.qp-preset { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-family: var(--font-mono); font-size: 12px; font-weight: 600; cursor: pointer; transition: all var(--transition); }
-.qp-preset:hover, .qp-preset.active { background: rgba(56,217,169,0.15); border-color: rgba(56,217,169,0.4); color: var(--accent-teal); }
-.qp-send { background: linear-gradient(135deg, #38d9a9, #2f9e82); color: #fff; border: none; border-radius: var(--radius-sm); padding: 12px 20px; font-family: var(--font-main); font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all var(--transition); width: 100%; }
-.qp-send:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(56,217,169,0.3); }
-.qp-hist-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); transition: background var(--transition); }
-.qp-hist-item:last-child { border-bottom: none; }
-.qp-hist-item:hover { background: rgba(255,255,255,0.02); }
-</style>
-</head>
-<body>
-
-<!-- Sidebar Overlay (mobile) -->
-<div class="overlay-close" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <a class="logo-mark">
-      <div class="logo-icon">₹</div>
-      <div>
-        <div class="logo-text">MoneyMgr</div>
-        <div class="logo-sub">Personal Finance</div>
-      </div>
-    </a>
-  </div>
-
-  <nav class="sidebar-nav">
-    <div class="nav-section-label">Overview</div>
-    <div class="nav-item active" onclick="showSection('dashboard')">
-      <span class="nav-icon">📊</span> Dashboard
-    </div>
-    <div class="nav-item" onclick="showSection('analytics')">
-      <span class="nav-icon">📈</span> Analytics
-    </div>
-
-    <div class="nav-section-label">Transactions</div>
-    <div class="nav-item" onclick="showSection('income')">
-      <span class="nav-icon">💰</span> Income
-    </div>
-    <div class="nav-item" onclick="showSection('expenses')">
-      <span class="nav-icon">💸</span> Expenses
-    </div>
-    <div class="nav-item" onclick="showSection('pending')">
-      <span class="nav-icon">⏳</span> Pending Payments
-    </div>
-    <div class="nav-item" onclick="showSection('history')">
-      <span class="nav-icon">📋</span> Transaction History
-    </div>
-
-    <div class="nav-section-label">Finance</div>
-    <div class="nav-item" onclick="showSection('mymoney')">
-      <span class="nav-icon">👤</span> My Money
-    </div>
-    <div class="nav-item" onclick="showSection('fathermoney')">
-      <span class="nav-icon">👴</span> Father's Money
-    </div>
-    <div class="nav-item" onclick="showSection('business')">
-      <span class="nav-icon">🚀</span> Business Investments
-    </div>
-    <div class="nav-item" onclick="showSection('goals')">
-      <span class="nav-icon">🎯</span> Goals & Savings
-    </div>
-    <div class="nav-item" onclick="showSection('quickpay')">
-      <span class="nav-icon">📲</span> Quick Pay
-    </div>
-
-    <div class="nav-section-label">Settings</div>
-    <div class="nav-item" onclick="showSection('backup')">
-      <span class="nav-icon">💾</span> Data Backup
-    </div>
-  </nav>
-
-  <div class="sidebar-footer">
-    <div class="balance-chip">
-      <div class="balance-chip-label">Available Balance</div>
-      <div class="balance-chip-value" id="sidebarBalance">₹0</div>
-    </div>
-  </div>
-</div>
-
-<!-- Main Content -->
-<div class="main-content">
-  <!-- Topbar -->
-  <div class="topbar">
-    <div>
-      <div class="topbar-title" id="topbarTitle">Dashboard</div>
-      <div class="topbar-sub" id="topbarSub">Overview of your finances</div>
-    </div>
-    <div class="topbar-actions">
-      <button id="installBtn" class="btn install-btn btn-sm" style="display:none" onclick="installPWA()">📲 Install App</button>
-      <button class="btn btn-success btn-sm" onclick="promptOwnerSelection('income')">+ Income</button>
-      <button class="btn btn-danger btn-sm" onclick="promptOwnerSelection('expense')">+ Expense</button>
-      <button class="hamburger" onclick="toggleSidebar()">☰</button>
-    </div>
-  </div>
-
-  <div class="content-area">
-
-    <!-- ==================== DASHBOARD SECTION ==================== -->
-    <div class="section active" id="section-dashboard">
-
-      <!-- Current Balance Card -->
-      <div class="cur-bal-card" id="currentBalanceCard">
-        <div class="cur-bal-left">
-          <div class="cur-bal-label">💳 Current Real Balance (Cash + Bank)</div>
-          <div class="cur-bal-amount" id="curBalDisplay">₹0</div>
-          <div class="cur-bal-note" id="curBalNote">Set your actual wallet/bank balance</div>
-        </div>
-        <div class="cur-bal-right">
-          <div id="curBalDiff" class="cur-bal-diff neu">—</div>
-          <button class="btn btn-ghost btn-sm" onclick="openBalanceModal()">✏️ Edit Balance</button>
-        </div>
-      </div>
-      <!-- Stats Grid -->
-      <div class="stats-grid" id="statsGrid">
-        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#38d9a9,#63b3ed)">
-          <span class="stat-icon">💵</span>
-          <div class="stat-label">Total Available</div>
-          <div class="stat-value positive" id="totalAvailable">₹0</div>
-          <div class="stat-sub">Current balance</div>
-        </div>
-        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#63b3ed,#4299e1)">
-          <span class="stat-icon">👤</span>
-          <div class="stat-label">My Money</div>
-          <div class="stat-value" style="color:var(--my-color)" id="myMoney">₹0</div>
-          <div class="stat-sub">Personal funds</div>
-        </div>
-        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#b794f4,#9f7aea)">
-          <span class="stat-icon">👴</span>
-          <div class="stat-label">Father's Money</div>
-          <div class="stat-value" style="color:var(--father-color)" id="fatherMoney">₹0</div>
-          <div class="stat-sub">Father's funds</div>
-        </div>
-        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#f6ad55,#ed8936)">
-          <span class="stat-icon">⏳</span>
-          <div class="stat-label">Pending Incoming</div>
-          <div class="stat-value warning" id="pendingIncoming">₹0</div>
-          <div class="stat-sub">Awaiting receipt</div>
-        </div>
-        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#38d9a9,#2f9e82)">
-          <span class="stat-icon">🔮</span>
-          <div class="stat-label">Expected Balance</div>
-          <div class="stat-value positive" id="expectedBalance">₹0</div>
-          <div class="stat-sub">Balance + pending</div>
-        </div>
-        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#fc8181,#e53e3e)">
-          <span class="stat-icon">📉</span>
-          <div class="stat-label">Total Expenses</div>
-          <div class="stat-value danger" id="totalExpenses">₹0</div>
-          <div class="stat-sub">All time expenses</div>
-        </div>
-        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#f6ad55,#fc8181)">
-          <span class="stat-icon">🚀</span>
-          <div class="stat-label">Business Invested</div>
-          <div class="stat-value" id="bizInvested" style="color:var(--accent-amber)">₹0</div>
-          <div class="stat-sub" id="bizInvestedSub">of ₹10,000 budget</div>
-        </div>
-        <div class="stat-card" style="--card-accent: linear-gradient(90deg,#38d9a9,#b794f4)">
-          <span class="stat-icon">💼</span>
-          <div class="stat-label">Business Budget Left</div>
-          <div class="stat-value" id="bizRemaining">₹0</div>
-          <div class="stat-sub">Remaining business budget</div>
-        </div>
-      </div>
-
-      <!-- Business Budget Warning -->
-      <div id="bizWarning" class="warning-banner" style="display:none">
-        ⚠️ Business investment limit exceeded! You've crossed the ₹10,000 budget.
-      </div>
-
-      <!-- Papa Money Warning -->
-      <div id="papaWarning" style="display:none;background:linear-gradient(135deg,rgba(183,148,244,0.15),rgba(183,148,244,0.05));border:1.5px solid rgba(183,148,244,0.5);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:16px;display:none;align-items:center;gap:12px;font-size:13.5px;font-weight:600;color:#b794f4">
-        <span style="font-size:20px">👴</span>
-        <span id="papaWarningText">Papa ki money negative ho rahi hai — expenses check karo!</span>
-      </div>
-      <div class="glass-card mb-6">
-        <div class="section-header">
-          <div class="section-title">Money <span>Distribution</span></div>
-        </div>
-        <div class="owner-breakdown">
-          <div class="owner-card owner-mine">
-            <div class="owner-label">My Net Worth</div>
-            <div class="owner-value" id="myNetWorth">₹0</div>
-          </div>
-          <div class="owner-card owner-father">
-            <div class="owner-label">Father's Net Worth</div>
-            <div class="owner-value" id="fatherNetWorth">₹0</div>
-          </div>
-          <div class="owner-card owner-shared">
-            <div class="owner-label">Shared Funds</div>
-            <div class="owner-value" id="sharedFunds">₹0</div>
-          </div>
-        </div>
-        <div class="divider" style="margin:0 0 16px 0"></div>
-        <div style="display:flex;gap:24px;flex-wrap:wrap">
-          <div>
-            <div class="stat-label">My Initial Balance</div>
-            <div class="font-mono" style="font-size:15px;color:var(--my-color);margin-top:3px" id="myInitial">₹21,338</div>
-          </div>
-          <div>
-            <div class="stat-label">Father's Initial Balance</div>
-            <div class="font-mono" style="font-size:15px;color:var(--father-color);margin-top:3px" id="fatherInitial">₹34,008</div>
-          </div>
-          <div>
-            <div class="stat-label">Total Initial Balance</div>
-            <div class="font-mono" style="font-size:15px;color:var(--accent-teal);margin-top:3px">₹55,346</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Recent Transactions + Quick Pending -->
-      <div class="grid-2">
-        <div class="glass-card">
-          <div class="section-header">
-            <div class="section-title">Recent <span>Transactions</span></div>
-            <button class="btn btn-ghost btn-sm" onclick="showSection('history')">View all</button>
-          </div>
-          <div id="recentTxns"></div>
-        </div>
-        <div class="glass-card">
-          <div class="section-header">
-            <div class="section-title">Pending <span>Payments</span></div>
-            <button class="btn btn-ghost btn-sm" onclick="showSection('pending')">View all</button>
-          </div>
-          <div id="dashPending"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== INCOME SECTION ==================== -->
-    <div class="section" id="section-income">
-      <div class="d-flex justify-between align-center mb-4">
-        <h2 style="font-size:20px;font-weight:700">Income <span style="color:var(--accent-teal)">Manager</span></h2>
-        <button class="btn btn-success" onclick="openIncomeModal()">+ Add Income</button>
-      </div>
-      <!-- Summary row -->
-      <div class="stats-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));margin-bottom:20px">
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#38d9a9,#63b3ed)">
-          <div class="stat-label">Total Received</div>
-          <div class="stat-value positive font-mono" id="totalReceived">₹0</div>
-        </div>
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#f6ad55,#ed8936)">
-          <div class="stat-label">Total Pending</div>
-          <div class="stat-value warning font-mono" id="totalPendingIncome">₹0</div>
-        </div>
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#63b3ed,#b794f4)">
-          <div class="stat-label">My Income</div>
-          <div class="stat-value font-mono" style="color:var(--my-color)" id="myTotalIncome">₹0</div>
-        </div>
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#b794f4,#9f7aea)">
-          <div class="stat-label">Father's Income</div>
-          <div class="stat-value font-mono" style="color:var(--father-color)" id="fatherTotalIncome">₹0</div>
-        </div>
-      </div>
-
-      <div class="glass-card">
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th><th>Source</th><th>Amount</th><th>Owner</th><th>Status</th><th>Notes</th><th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="incomeTableBody">
-            </tbody>
-          </table>
-        </div>
-        <div id="incomeEmpty" class="empty-state" style="display:none">
-          <div class="empty-icon">💰</div>
-          <div class="empty-text">No income entries yet</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== EXPENSES SECTION ==================== -->
-    <div class="section" id="section-expenses">
-      <div class="d-flex justify-between align-center mb-4">
-        <h2 style="font-size:20px;font-weight:700">Expense <span style="color:var(--accent-red)">Manager</span></h2>
-        <button class="btn btn-danger" onclick="openExpenseModal()">+ Add Expense</button>
-      </div>
-      <div class="stats-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));margin-bottom:20px">
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#fc8181,#e53e3e)">
-          <div class="stat-label">Total Expenses</div>
-          <div class="stat-value danger font-mono" id="expTotal">₹0</div>
-        </div>
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#63b3ed,#4299e1)">
-          <div class="stat-label">My Expenses</div>
-          <div class="stat-value font-mono" style="color:var(--my-color)" id="expMine">₹0</div>
-        </div>
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#b794f4,#9f7aea)">
-          <div class="stat-label">Father's Expenses</div>
-          <div class="stat-value font-mono" style="color:var(--father-color)" id="expFather">₹0</div>
-        </div>
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#f6ad55,#fc8181)">
-          <div class="stat-label">Business Expenses</div>
-          <div class="stat-value font-mono" style="color:var(--accent-amber)" id="expBusiness">₹0</div>
-        </div>
-      </div>
-
-      <div class="glass-card">
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Date</th><th>Category</th><th>Amount</th><th>Owner</th><th>Notes</th><th>Actions</th></tr>
-            </thead>
-            <tbody id="expenseTableBody"></tbody>
-          </table>
-        </div>
-        <div id="expenseEmpty" class="empty-state" style="display:none">
-          <div class="empty-icon">💸</div>
-          <div class="empty-text">No expense entries yet</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== PENDING PAYMENTS SECTION ==================== -->
-    <div class="section" id="section-pending">
-      <div class="d-flex justify-between align-center mb-4">
-        <h2 style="font-size:20px;font-weight:700">Pending <span style="color:var(--accent-amber)">Payments</span></h2>
-        <button class="btn btn-warning" onclick="openPendingModal()">+ Add Pending</button>
-      </div>
-      <div class="glass-card">
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Source</th><th>Amount</th><th>Owner</th><th>Expected Date</th><th>Status</th><th>Days</th><th>Actions</th></tr>
-            </thead>
-            <tbody id="pendingTableBody"></tbody>
-          </table>
-        </div>
-        <div id="pendingEmpty" class="empty-state" style="display:none">
-          <div class="empty-icon">⏳</div>
-          <div class="empty-text">No pending payments</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== HISTORY SECTION ==================== -->
-    <div class="section" id="section-history">
-      <div class="d-flex justify-between align-center mb-4">
-        <h2 style="font-size:20px;font-weight:700">Transaction <span style="color:var(--accent-blue)">History</span></h2>
-      </div>
-      <div class="glass-card mb-4">
-        <div class="filter-bar">
-          <div class="form-group">
-            <label class="form-label">Search</label>
-            <input type="text" class="form-control" id="historySearch" placeholder="Search…" oninput="renderHistory()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Owner</label>
-            <select class="form-control" id="historyOwner" onchange="renderHistory()">
-              <option value="">All</option>
-              <option value="mine">Mine</option>
-              <option value="father">Father's</option>
-              <option value="shared">Shared</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Type</label>
-            <select class="form-control" id="historyType" onchange="renderHistory()">
-              <option value="">All</option>
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Category</label>
-            <select class="form-control" id="historyCategory" onchange="renderHistory()">
-              <option value="">All</option>
-              <option value="Business">🚀 Business</option>
-              <option value="Advertising">📢 Advertising</option>
-              <option value="Personal">👤 Personal</option>
-              <option value="Food">🍔 Food</option>
-              <option value="Travel">✈️ Travel</option>
-              <option value="Shopping">🛍️ Shopping</option>
-              <option value="Software">💻 Software</option>
-              <option value="Healthcare">🏥 Healthcare</option>
-              <option value="Education">📚 Education</option>
-              <option value="Utilities">⚡ Utilities</option>
-              <option value="Rent">🏠 Rent</option>
-              <option value="Entertainment">🎬 Entertainment</option>
-              <option value="Fuel">⛽ Fuel</option>
-              <option value="Subscriptions">📅 Subscriptions</option>
-              <option value="Repairs">🔧 Repairs</option>
-              <option value="Gifts">🎁 Gifts</option>
-              <option value="Other">📦 Other</option>\r\n              <option value="UPI Transfer">📲 UPI Transfer</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">From</label>
-            <input type="date" class="form-control" id="historyFrom" onchange="renderHistory()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">To</label>
-            <input type="date" class="form-control" id="historyTo" onchange="renderHistory()">
-          </div>
-          <button class="btn btn-ghost btn-sm" onclick="clearHistoryFilters()">Clear</button>
-        </div>
-      </div>
-      <div class="glass-card">
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr><th>Date</th><th>Type</th><th>Source/Category</th><th>Owner</th><th>Amount</th><th>Notes</th></tr>
-            </thead>
-            <tbody id="historyTableBody"></tbody>
-          </table>
-        </div>
-        <div id="historyEmpty" class="empty-state" style="display:none">
-          <div class="empty-icon">📋</div>
-          <div class="empty-text">No transactions match filters</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== MY MONEY SECTION ==================== -->
-    <div class="section" id="section-mymoney">
-      <div class="d-flex justify-between align-center mb-4">
-        <h2 style="font-size:20px;font-weight:700">My <span style="color:var(--accent-blue)">Money</span></h2>
-      </div>
-
-      <!-- Hero Balance Card -->
-      <div class="mymoney-hero">
-        <div class="mymoney-hero-label">👤 My Current Balance</div>
-        <div class="mymoney-hero-amount" id="mmHeroAmount">₹0</div>
-        <div class="mymoney-hero-sub" id="mmHeroSub">Initial ₹14,390 + Income earned − Expenses spent</div>
-        <div class="mymoney-actions">
-          <button class="btn btn-success" onclick="openMyMoneyModal('add')">➕ Add Money</button>
-          <button class="btn btn-danger" onclick="openMyMoneyModal('spend')">💸 Record Spend</button>
-          <button class="btn btn-ghost" onclick="openMyMoneyModal('set')">✏️ Set Balance</button>
-        </div>
-      </div>
-
-      <!-- Stats Row -->
-      <div class="mymoney-stats">
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#63b3ed,#4299e1)">
-          <span class="stat-icon">💰</span>
-          <div class="stat-label">Total Income</div>
-          <div class="stat-value font-mono" style="color:var(--accent-blue)" id="mmTotalIncome">₹0</div>
-          <div class="stat-sub">All received</div>
-        </div>
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#fc8181,#e53e3e)">
-          <span class="stat-icon">💸</span>
-          <div class="stat-label">Total Spent</div>
-          <div class="stat-value danger font-mono" id="mmTotalSpent">₹0</div>
-          <div class="stat-sub">All my expenses</div>
-        </div>
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#f6ad55,#ed8936)">
-          <span class="stat-icon">⏳</span>
-          <div class="stat-label">Pending Income</div>
-          <div class="stat-value warning font-mono" id="mmPendingIncome">₹0</div>
-          <div class="stat-sub">Yet to receive</div>
-        </div>
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#38d9a9,#2f9e82)">
-          <span class="stat-icon">🔮</span>
-          <div class="stat-label">Expected Total</div>
-          <div class="stat-value positive font-mono" id="mmExpected">₹0</div>
-          <div class="stat-sub">Balance + pending</div>
-        </div>
-      </div>
-
-      <!-- Transaction Log -->
-      <div class="glass-card">
-        <div class="section-header">
-          <div class="section-title">My Money <span>Log</span></div>
-          <button class="btn btn-ghost btn-sm" onclick="clearMyMoneyLog()">🗑️ Clear Log</button>
-        </div>
-        <div id="myMoneyTxnList" class="mymoney-txn-list"></div>
-        <div id="myMoneyEmpty" class="empty-state" style="display:none">
-          <div class="empty-icon">👤</div>
-          <div class="empty-text">No transactions yet. Use Add / Spend buttons above.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== FATHER'S MONEY SECTION ==================== -->
-    <div class="section" id="section-fathermoney">
-      <div class="d-flex justify-between align-center mb-4">
-        <h2 style="font-size:20px;font-weight:700">Father's <span style="color:var(--father-color)">Money</span></h2>
-      </div>
-
-      <!-- Hero Balance Card -->
-      <div class="father-hero">
-        <div class="mymoney-hero-label">👴 Father's Current Balance</div>
-        <div class="mymoney-hero-amount" id="fmHeroAmount" style="color:var(--father-color)">₹0</div>
-        <div class="mymoney-hero-sub" id="fmHeroSub">Initial ₹34,008 + Income − Expenses</div>
-        <div class="mymoney-actions">
-          <button class="btn btn-success" onclick="openFatherMoneyModal('add')">➕ Add Money</button>
-          <button class="btn btn-danger" onclick="openFatherMoneyModal('spend')">💸 Record Spend</button>
-          <button class="btn btn-ghost" onclick="openFatherMoneyModal('set')">✏️ Set Balance</button>
-        </div>
-      </div>
-
-      <!-- Stats Row -->
-      <div class="mymoney-stats">
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#b794f4,#9f7aea)">
-          <span class="stat-icon">💰</span>
-          <div class="stat-label">Total Income</div>
-          <div class="stat-value font-mono" style="color:var(--father-color)" id="fmTotalIncome">₹0</div>
-          <div class="stat-sub">All received</div>
-        </div>
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#fc8181,#e53e3e)">
-          <span class="stat-icon">💸</span>
-          <div class="stat-label">Total Spent</div>
-          <div class="stat-value danger font-mono" id="fmTotalSpent">₹0</div>
-          <div class="stat-sub">All father's expenses</div>
-        </div>
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#f6ad55,#ed8936)">
-          <span class="stat-icon">⏳</span>
-          <div class="stat-label">Pending Income</div>
-          <div class="stat-value warning font-mono" id="fmPendingIncome">₹0</div>
-          <div class="stat-sub">Yet to receive</div>
-        </div>
-        <div class="stat-card" style="--card-accent:linear-gradient(90deg,#38d9a9,#2f9e82)">
-          <span class="stat-icon">🔮</span>
-          <div class="stat-label">Expected Total</div>
-          <div class="stat-value positive font-mono" id="fmExpected">₹0</div>
-          <div class="stat-sub">Balance + pending</div>
-        </div>
-      </div>
-
-      <!-- Transaction Log -->
-      <div class="glass-card">
-        <div class="section-header">
-          <div class="section-title">Father's Money <span>Log</span></div>
-          <button class="btn btn-ghost btn-sm" onclick="clearFatherMoneyLog()">🗑️ Clear Log</button>
-        </div>
-        <div id="fatherMoneyTxnList" class="mymoney-txn-list"></div>
-        <div id="fatherMoneyEmpty" class="empty-state" style="display:none">
-          <div class="empty-icon">👴</div>
-          <div class="empty-text">No transactions yet. Use Add / Spend buttons above.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== BUSINESS INVESTMENT SECTION ==================== -->
-    <div class="section" id="section-business">
-      <div class="d-flex justify-between align-center mb-4">
-        <h2 style="font-size:20px;font-weight:700">Business <span style="color:var(--accent-amber)">Investments</span></h2>
-        <button class="btn btn-warning" onclick="openBizModal()">+ Add Investment</button>
-      </div>
-
-      <div id="bizOverLimitAlert" class="warning-banner" style="display:none">
-        ⚠️ BUDGET EXCEEDED! Business investments have crossed ₹10,000 limit.
-      </div>
-
-      <div class="grid-2 mb-6">
-        <div class="glass-card">
-          <div class="stat-label" style="margin-bottom:8px">Investment Progress</div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:8px;align-items:center">
-            <span class="font-mono" id="bizProgressLabel" style="font-size:15px;font-weight:700;color:var(--accent-amber)">₹0 / ₹10,000</span>
-            <span id="bizProgressPct" style="font-size:13px;color:var(--text-muted)">0%</span>
-          </div>
-          <div class="progress-bar-wrap">
-            <div class="progress-bar" id="bizProgressBar" style="width:0%"></div>
-          </div>
-          <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
-            <div>
-              <div class="stat-label">Total Invested</div>
-              <div class="font-mono" style="font-size:18px;font-weight:700;color:var(--accent-amber);margin-top:4px" id="bizTotalInvested">₹0</div>
-            </div>
-            <div>
-              <div class="stat-label">Remaining Budget</div>
-              <div class="font-mono" style="font-size:18px;font-weight:700;color:var(--accent-teal);margin-top:4px" id="bizBudgetLeft">₹10,000</div>
-            </div>
-          </div>
-        </div>
-        <div class="glass-card">
-          <div class="stat-label" style="margin-bottom:12px">Spending by Platform</div>
-          <div class="chart-wrap" style="height:180px">
-            <canvas id="bizPieChart"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <div class="glass-card">
-        <div class="section-header">
-          <div class="section-title">Investment <span>Log</span></div>
-        </div>
-        <div id="bizLogList"></div>
-        <div id="bizEmpty" class="empty-state" style="display:none">
-          <div class="empty-icon">🚀</div>
-          <div class="empty-text">No business investments yet</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== GOALS SECTION ==================== -->
-    <div class="section" id="section-goals">
-      <div class="d-flex justify-between align-center mb-4">
-        <h2 style="font-size:20px;font-weight:700">Goals & <span style="color:var(--accent-teal)">Savings</span></h2>
-        <button class="btn btn-success" onclick="openGoalModal()">+ Add Goal</button>
-      </div>
-      <div id="goalsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px"></div>
-      <div id="goalsEmpty" class="empty-state" style="display:none">
-        <div class="empty-icon">🎯</div>
-        <div class="empty-text">No goals yet. Create your first savings goal!</div>
-      </div>
-    </div>
-
-    <!-- ==================== QUICK PAY SECTION ==================== -->
-    <div class="section" id="section-quickpay">
-      <div class="d-flex justify-between align-center mb-4">
-        <h2 style="font-size:20px;font-weight:700">Quick <span style="color:var(--accent-teal)">Pay</span></h2>
-        <button class="btn btn-success" onclick="openContactModal()">+ Add Contact</button>
-      </div>
-      <div id="qpContactCards" class="quickpay-grid"></div>
-      <div class="glass-card mt-4">
-        <div class="section-header">
-          <div class="section-title">Recent <span>UPI Payments</span></div>
-        </div>
-        <div id="qpHistory"></div>
-        <div id="qpHistEmpty" class="empty-state" style="display:none">
-          <div class="empty-icon">📲</div>
-          <div class="empty-text">No UPI payments yet. Send your first payment above!</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== ANALYTICS SECTION ==================== -->
-    <div class="section" id="section-analytics">
-      <div class="mb-4">
-        <h2 style="font-size:20px;font-weight:700">Monthly <span style="color:var(--accent-blue)">Analytics</span></h2>
-      </div>
-      <div class="grid-2 mb-6">
-        <div class="glass-card">
-          <div class="section-title mb-4">Income vs Expenses</div>
-          <div class="chart-wrap"><canvas id="incExpChart"></canvas></div>
-        </div>
-        <div class="glass-card">
-          <div class="section-title mb-4">Owner Distribution</div>
-          <div class="chart-wrap"><canvas id="ownerChart"></canvas></div>
-        </div>
-      </div>
-      <div class="grid-2">
-        <div class="glass-card">
-          <div class="section-title mb-4">Business Spending</div>
-          <div class="chart-wrap"><canvas id="bizSpendChart"></canvas></div>
-        </div>
-        <div class="glass-card">
-          <div class="section-title mb-4">Cash Flow (Monthly)</div>
-          <div class="chart-wrap"><canvas id="cashFlowChart"></canvas></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== BACKUP SECTION ==================== -->
-    <div class="section" id="section-backup">
-      <div class="mb-6">
-        <h2 style="font-size:20px;font-weight:700">Data <span style="color:var(--accent-blue)">Backup</span></h2>
-      </div>
-      <div class="grid-3">
-        <div class="glass-card" style="text-align:center;padding:32px 20px">
-          <div style="font-size:40px;margin-bottom:16px">📤</div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:8px">Export Data</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px">Download all your data as a JSON file for backup</div>
-          <button class="btn btn-primary" onclick="exportData()">Export JSON</button>
-        </div>
-        <div class="glass-card" style="text-align:center;padding:32px 20px">
-          <div style="font-size:40px;margin-bottom:16px">📥</div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:8px">Import Data</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px">Restore data from a previously exported JSON file</div>
-          <label class="btn btn-success" style="cursor:pointer">
-            Import JSON
-            <input type="file" accept=".json" id="importFile" style="display:none" onchange="importData(event)">
-          </label>
-        </div>
-        <div class="glass-card" style="text-align:center;padding:32px 20px">
-          <div style="font-size:40px;margin-bottom:16px">🔄</div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:8px">Reset Dashboard</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px">Clear all data and start fresh (irreversible)</div>
-          <button class="btn btn-danger" onclick="confirmReset()">Reset All Data</button>
-        </div>
-      </div>
-      <div class="glass-card mt-4">
-        <div class="section-title mb-4">Data Summary</div>
-        <div id="backupSummary"></div>
-      </div>
-    </div>
-
-  </div><!-- /content-area -->
-</div><!-- /main-content -->
-
-<!-- ==================== MODALS ==================== -->
-
-<!-- Income Modal -->
-<div class="modal-overlay" id="incomeModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title" id="incomeModalTitle">💰 Add Income</div>
-      <button class="modal-close" onclick="closeModal('incomeModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Amount (₹)</label>
-          <input type="number" class="form-control" id="incAmount" placeholder="0.00" min="0" step="0.01">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Source</label>
-          <input type="text" class="form-control" id="incSource" placeholder="e.g. Razorpay, Client, Cash">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Owner</label>
-          <select class="form-control" id="incOwner">
-            <option value="mine">Mine</option>
-            <option value="father">Father's</option>
-            <option value="shared">Shared</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Date</label>
-          <input type="date" class="form-control" id="incDate">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Status</label>
-          <select class="form-control" id="incStatus">
-            <option value="pending">Pending</option>
-            <option value="received">Received</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Notes</label>
-          <input type="text" class="form-control" id="incNotes" placeholder="Optional notes">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('incomeModal')">Cancel</button>
-      <button class="btn btn-success" id="incomeSaveBtn" onclick="saveIncome()">Save Income</button>
-    </div>
-  </div>
-</div>
-
-<!-- Expense Modal -->
-<div class="modal-overlay" id="expenseModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title" id="expenseModalTitle">💸 Add Expense</div>
-      <button class="modal-close" onclick="closeModal('expenseModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Amount (₹)</label>
-          <input type="number" class="form-control" id="expAmount" placeholder="0.00" min="0" step="0.01">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Category</label>
-          <select class="form-control" id="expCategory" onchange="handleExpCategoryChange()">
-            <option value="Business">🚀 Business</option>
-            <option value="Advertising">📢 Advertising</option>
-            <option value="Personal">👤 Personal</option>
-            <option value="Food">🍔 Food & Dining</option>
-            <option value="Travel">✈️ Travel</option>
-            <option value="Shopping">🛍️ Shopping</option>
-            <option value="Software">💻 Software / Tools</option>
-            <option value="Healthcare">🏥 Healthcare</option>
-            <option value="Education">📚 Education</option>
-            <option value="Utilities">⚡ Utilities</option>
-            <option value="Rent">🏠 Rent</option>
-            <option value="Entertainment">🎬 Entertainment</option>
-            <option value="Fuel">⛽ Fuel</option>
-            <option value="Subscriptions">📅 Subscriptions</option>
-            <option value="Repairs">🔧 Repairs</option>
-            <option value="Gifts">🎁 Gifts</option>
-            <option value="Other">📦 Other</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Owner</label>
-          <select class="form-control" id="expOwner">
-            <option value="mine">Mine</option>
-            <option value="father">Father's</option>
-            <option value="shared">Shared</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Date</label>
-          <input type="date" class="form-control" id="expDate">
-        </div>
-        <!-- Business-specific fields (shown when Business/Advertising selected) -->
-        <div class="form-group" id="expBizPlatformGroup" style="display:none">
-          <label class="form-label">🚀 Platform / Channel</label>
-          <input type="text" class="form-control" id="expBizPlatform" placeholder="e.g. Facebook Ads, Google Ads">
-        </div>
-        <div class="form-group" id="expBizPurposeGroup" style="display:none">
-          <label class="form-label">Purpose</label>
-          <input type="text" class="form-control" id="expBizPurpose" placeholder="e.g. Campaign, Domain, Tool">
-        </div>
-        <div class="form-group" style="grid-column: span 2">
-          <label class="form-label">Notes</label>
-          <input type="text" class="form-control" id="expNotes" placeholder="Optional notes">
-        </div>
-      </div>
-      <div id="expBizNote" style="display:none;font-size:11.5px;color:var(--accent-amber);background:rgba(246,173,85,0.08);border:1px solid rgba(246,173,85,0.2);border-radius:6px;padding:8px 12px;margin-top:-4px">
-        ⚡ This expense will also be auto-logged in Business Investments
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('expenseModal')">Cancel</button>
-      <button class="btn btn-danger" id="expenseSaveBtn" onclick="saveExpense()">Save Expense</button>
-    </div>
-  </div>
-</div>
-
-<!-- Pending Modal -->
-<div class="modal-overlay" id="pendingModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title">⏳ Add Pending Payment</div>
-      <button class="modal-close" onclick="closeModal('pendingModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Source</label>
-          <input type="text" class="form-control" id="pendSource" placeholder="e.g. Razorpay, Client ABC">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Amount (₹)</label>
-          <input type="number" class="form-control" id="pendAmount" placeholder="0.00" min="0" step="0.01">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Owner</label>
-          <select class="form-control" id="pendOwner">
-            <option value="mine">Mine</option>
-            <option value="father">Father's</option>
-            <option value="shared">Shared</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Expected Date</label>
-          <input type="date" class="form-control" id="pendDate">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Notes</label>
-          <input type="text" class="form-control" id="pendNotes" placeholder="Optional">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('pendingModal')">Cancel</button>
-      <button class="btn btn-warning" onclick="savePending()">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Business Investment Modal -->
-<div class="modal-overlay" id="bizModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title" id="bizModalTitle">🚀 Add Business Investment</div>
-      <button class="modal-close" onclick="closeModal('bizModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Amount (₹)</label>
-          <input type="number" class="form-control" id="bizAmount" placeholder="0.00" min="0" step="0.01">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Platform</label>
-          <input type="text" class="form-control" id="bizPlatform" placeholder="e.g. Facebook Ads, Google Ads">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Purpose</label>
-          <input type="text" class="form-control" id="bizPurpose" placeholder="e.g. Campaign, Domain, Tool">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Date</label>
-          <input type="date" class="form-control" id="bizDate">
-        </div>
-        <div class="form-group" style="grid-column:span 2">
-          <label class="form-label">Notes</label>
-          <input type="text" class="form-control" id="bizNotes" placeholder="Optional notes">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('bizModal')">Cancel</button>
-      <button class="btn btn-warning" id="bizSaveBtn" onclick="saveBizInvestment()">Save Investment</button>
-    </div>
-  </div>
-</div>
-
-<!-- Goal Modal -->
-<div class="modal-overlay" id="goalModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title" id="goalModalTitle">🎯 Add Savings Goal</div>
-      <button class="modal-close" onclick="closeModal('goalModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Goal Name</label>
-          <input type="text" class="form-control" id="goalName" placeholder="e.g. Emergency Fund">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Target Amount (₹)</label>
-          <input type="number" class="form-control" id="goalTarget" placeholder="0.00" min="0" step="0.01">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Current Amount (₹)</label>
-          <input type="number" class="form-control" id="goalCurrent" placeholder="0.00" min="0" step="0.01">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Emoji / Icon</label>
-          <input type="text" class="form-control" id="goalIcon" placeholder="🎯" maxlength="4">
-        </div>
-        <div class="form-group" style="grid-column:span 2">
-          <label class="form-label">Description</label>
-          <input type="text" class="form-control" id="goalDesc" placeholder="Optional description">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('goalModal')">Cancel</button>
-      <button class="btn btn-success" id="goalSaveBtn" onclick="saveGoal()">Save Goal</button>
-    </div>
-  </div>
-</div>
-
-<!-- Current Balance Modal -->
-<div class="modal-overlay" id="balanceModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title">💳 Set Current Balance</div>
-      <button class="modal-close" onclick="closeModal('balanceModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.5">
-        Enter your actual current balance (cash in hand + bank). This helps you compare real balance vs calculated balance.
-      </div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Current Balance (₹)</label>
-          <input type="number" class="form-control" id="balAmount" placeholder="0.00" min="0" step="0.01">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Note (optional)</label>
-          <input type="text" class="form-control" id="balNote" placeholder="e.g. Cash + PhonePe">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('balanceModal')">Cancel</button>
-      <button class="btn btn-success" onclick="saveCurrentBalance()">Save Balance</button>
-    </div>
-  </div>
-</div>
-
-<!-- My Money Modal -->
-<div class="modal-overlay" id="myMoneyModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title" id="myMoneyModalTitle">➕ Add Money</div>
-      <button class="modal-close" onclick="closeModal('myMoneyModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div id="myMoneyModalDesc" style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6"></div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Amount (₹)</label>
-          <input type="number" class="form-control" id="mmAmount" placeholder="0.00" min="0" step="0.01">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Description</label>
-          <input type="text" class="form-control" id="mmDesc" placeholder="e.g. Freelance payment, Groceries…">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Date</label>
-          <input type="date" class="form-control" id="mmDate">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('myMoneyModal')">Cancel</button>
-      <button class="btn btn-success" id="myMoneySaveBtn" onclick="saveMyMoneyTxn()">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Father Money Modal -->
-<div class="modal-overlay" id="fatherMoneyModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title" id="fatherMoneyModalTitle">➕ Add Money</div>
-      <button class="modal-close" onclick="closeModal('fatherMoneyModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div id="fatherMoneyModalDesc" style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6"></div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Amount (₹)</label>
-          <input type="number" class="form-control" id="fmAmount" placeholder="0.00" min="0" step="0.01">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Description</label>
-          <input type="text" class="form-control" id="fmDesc" placeholder="e.g. Papa se mila, Groceries…">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Date</label>
-          <input type="date" class="form-control" id="fmDate">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('fatherMoneyModal')">Cancel</button>
-      <button class="btn btn-success" id="fmSaveBtn" onclick="saveFatherMoneyTxn()">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Edit Pending Modal -->
-<div class="modal-overlay" id="editPendingModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title">✏️ Edit Pending Payment</div>
-      <button class="modal-close" onclick="closeModal('editPendingModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Source</label>
-          <input type="text" class="form-control" id="editPendSource" placeholder="e.g. Razorpay, Client ABC">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Amount (₹)</label>
-          <input type="number" class="form-control" id="editPendAmount" placeholder="0.00" min="0" step="0.01">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Owner</label>
-          <select class="form-control" id="editPendOwner">
-            <option value="mine">Mine</option>
-            <option value="father">Father's</option>
-            <option value="shared">Shared</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Expected Date</label>
-          <input type="date" class="form-control" id="editPendDate">
-        </div>
-        <div class="form-group" style="grid-column:span 2">
-          <label class="form-label">Notes</label>
-          <input type="text" class="form-control" id="editPendNotes" placeholder="Optional">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('editPendingModal')">Cancel</button>
-      <button class="btn btn-warning" onclick="saveEditPending()">Update Payment</button>
-    </div>
-  </div>
-</div>
-
-<!-- UPI Contact Modal -->
-<div class="modal-overlay" id="contactModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title" id="contactModalTitle">📲 Add UPI Contact</div>
-      <button class="modal-close" onclick="closeModal('contactModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Name</label>
-          <input type="text" class="form-control" id="ctName" placeholder="e.g. Mummy, Papa">
-        </div>
-        <div class="form-group">
-          <label class="form-label">UPI ID</label>
-          <input type="text" class="form-control" id="ctUpi" placeholder="e.g. name@ybl">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Emoji</label>
-          <input type="text" class="form-control" id="ctEmoji" placeholder="👩" maxlength="4">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('contactModal')">Cancel</button>
-      <button class="btn btn-success" id="ctSaveBtn" onclick="saveContact()">Save Contact</button>
-    </div>
-  </div>
-</div>
-
-<!-- UPI Source Selection Modal -->
-<div class="modal-overlay" id="qpSourceModal">
-  <div class="modal-box" style="max-width: 400px;">
-    <div class="modal-header">
-      <div class="modal-title">📲 Select Funding Source</div>
-      <button class="modal-close" onclick="closeModal('qpSourceModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px; line-height:1.5">Select which account to deduct this UPI payment from:</p>
-      
-      <div style="display:flex; flex-direction:column; gap:12px">
-        <button id="qpSelectMineBtn" class="btn btn-success" style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-radius:12px; background: rgba(99,179,237,0.1); border: 1px solid rgba(99,179,237,0.3); color: var(--text-primary); text-align:left; cursor:pointer; width:100%" onmouseover="this.style.background='rgba(99,179,237,0.2)'" onmouseout="this.style.background='rgba(99,179,237,0.1)'">
-          <div style="display:flex; align-items:center; gap:12px">
-            <span style="font-size:24px">👤</span>
-            <div>
-              <div style="font-weight:700; font-size:15px; color: var(--accent-blue)">My Money</div>
-              <div style="font-size:11px; color: var(--text-muted)">Personal account</div>
-            </div>
-          </div>
-          <span style="font-family:var(--font-mono); font-weight:700; font-size:16px; color: var(--accent-blue)" id="qpMineBalanceShow">₹0</span>
-        </button>
-
-        <button id="qpSelectFatherBtn" class="btn btn-success" style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-radius:12px; background: rgba(183,148,244,0.1); border: 1px solid rgba(183,148,244,0.3); color: var(--text-primary); text-align:left; cursor:pointer; width:100%" onmouseover="this.style.background='rgba(183,148,244,0.2)'" onmouseout="this.style.background='rgba(183,148,244,0.1)'">
-          <div style="display:flex; align-items:center; gap:12px">
-            <span style="font-size:24px">👴</span>
-            <div>
-              <div style="font-weight:700; font-size:15px; color: var(--accent-purple)">Father's Money</div>
-              <div style="font-size:11px; color: var(--text-muted)">Father's account</div>
-            </div>
-          </div>
-          <span style="font-family:var(--font-mono); font-weight:700; font-size:16px; color: var(--accent-purple)" id="qpFatherBalanceShow">₹0</span>
-        </button>
-      </div>
-    </div>
-    <div class="modal-footer" style="justify-content: flex-end; padding-top: 10px;">
-      <button class="btn btn-ghost" onclick="closeModal('qpSourceModal')">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- Owner Selection Modal for Quick Actions -->
-<div class="modal-overlay" id="ownerSelectionModal">
-  <div class="modal-box" style="max-width: 400px;">
-    <div class="modal-header">
-      <div class="modal-title" id="ownerSelectTitle">Select Account</div>
-      <button class="modal-close" onclick="closeModal('ownerSelectionModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px; line-height:1.5" id="ownerSelectDesc">Select which account to add this entry to:</p>
-      
-      <div style="display:flex; flex-direction:column; gap:12px">
-        <button id="ownerSelectMineBtn" class="btn btn-success" style="display:flex; align-items:center; gap:12px; padding:16px 20px; border-radius:12px; background: rgba(99,179,237,0.1); border: 1px solid rgba(99,179,237,0.3); color: var(--text-primary); text-align:left; cursor:pointer; width:100%" onmouseover="this.style.background='rgba(99,179,237,0.2)'" onmouseout="this.style.background='rgba(99,179,237,0.1)'">
-          <span style="font-size:24px">👤</span>
-          <div>
-            <div style="font-weight:700; font-size:15px; color: var(--accent-blue)">My Money</div>
-            <div style="font-size:11px; color: var(--text-muted)">Personal account</div>
-          </div>
-        </button>
-
-        <button id="ownerSelectFatherBtn" class="btn btn-success" style="display:flex; align-items:center; gap:12px; padding:16px 20px; border-radius:12px; background: rgba(183,148,244,0.1); border: 1px solid rgba(183,148,244,0.3); color: var(--text-primary); text-align:left; cursor:pointer; width:100%" onmouseover="this.style.background='rgba(183,148,244,0.2)'" onmouseout="this.style.background='rgba(183,148,244,0.1)'">
-          <span style="font-size:24px">👴</span>
-          <div>
-            <div style="font-weight:700; font-size:15px; color: var(--accent-purple)">Father's Money</div>
-            <div style="font-size:11px; color: var(--text-muted)">Father's account</div>
-          </div>
-        </button>
-      </div>
-    </div>
-    <div class="modal-footer" style="justify-content: flex-end; padding-top: 10px;">
-      <button class="btn btn-ghost" onclick="closeModal('ownerSelectionModal')">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- Toast Container -->
-<div class="toast-container" id="toastContainer"></div>
-
-<!-- ==================== JAVASCRIPT ==================== -->
-<script>
 /* =====================================================
    DATA STORE & PERSISTENCE
 ===================================================== */
-const STORAGE_KEY = 'moneyMgr_v3';
+let STORAGE_KEY = 'moneyMgr_v3';
 
 // Default starting data
 const DEFAULT_DATA = {
@@ -2095,7 +80,7 @@ const DEFAULT_DATA = {
   ],
   editingGoalId: null,
   upiContacts: [
-    { id: 'upi_mummy', name: 'Mummy', upiId: '9891990065@ptyes', emoji: '👩' }
+    // Default contacts removed or empty
   ],
   upiPayments: []
 };
@@ -2104,7 +89,7 @@ let state = {};
 
 // Load from localStorage or use defaults
 function loadState() {
-  const FORCE_RESET_KEY = 'moneyMgr_v3_reconciled_v1';
+  const FORCE_RESET_KEY = 'moneyMgr_v3_reconciled_1780770534';
   if (!localStorage.getItem(FORCE_RESET_KEY)) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
     localStorage.setItem(FORCE_RESET_KEY, 'true');
@@ -2122,7 +107,7 @@ function loadState() {
       if (state.balanceSet === undefined) state.balanceSet = false;
       if (!state.myMoneyLog) state.myMoneyLog = [];
       if (state.myMoneyManualBalance === undefined) state.myMoneyManualBalance = undefined;
-      if (!state.upiContacts) state.upiContacts = [{id:'upi_mummy',name:'Mummy',upiId:'9891990065@ptyes',emoji:'👩'}];
+      if (!state.upiContacts) state.upiContacts = [];
       if (!state.upiPayments) state.upiPayments = [];
       if (!state.fatherMoneyLog) state.fatherMoneyLog = [];
       if (state.fatherMoneyManualBalance === undefined) state.fatherMoneyManualBalance = undefined;
@@ -2148,47 +133,59 @@ function saveState() {
    COMPUTED VALUES
 ===================================================== */
 function compute() {
-  const receivedIncome = state.income
-    .filter(i => i.status === 'received')
-    .reduce((s, i) => s + Number(i.amount), 0);
+  const totalIncome = state.income.filter(i => i.status === 'received').reduce((sum, i) => sum + Number(i.amount), 0);
+  const pendingIncome = state.income.filter(i => i.status === 'pending').reduce((sum, i) => sum + Number(i.amount), 0);
+  
+  const totalExpense = state.expenses.filter(e => e.status !== 'pending').reduce((sum, e) => sum + Number(e.amount), 0);
+  const pendingExpense = state.expenses.filter(e => e.status === 'pending').reduce((sum, e) => sum + Number(e.amount), 0);
+  
+  const totalInvested = state.investments.reduce((sum, i) => sum + Number(i.amount), 0);
+  
+  const initialBal = Number(state.initialMine || 0) + Number(state.initialFather || 0);
+  
+  state.currentBalance = initialBal + totalIncome - totalExpense - totalInvested;
+  
+  // Distribute balance among banks
+  let remaining = state.currentBalance;
+  if (state.banks && state.banks.length > 0) {
+    for (let i = 1; i < state.banks.length; i++) {
+      remaining -= Number(state.banks[i].balance || 0);
+    }
+    state.banks[0].balance = Math.max(0, remaining);
+  }
 
-  const pendingIncome = state.income
-    .filter(i => i.status === 'pending')
-    .reduce((s, i) => s + Number(i.amount), 0);
-
-  const totalExpenses = state.expenses.reduce((s, e) => s + Number(e.amount), 0);
-
-  const bizInvested = state.investments.reduce((s, i) => s + Number(i.amount), 0);
-
-  // Available balance = initial pool + received income - expenses
-  const totalAvailable = state.initialMine + state.initialFather + state.initialShared + receivedIncome - totalExpenses;
-
-  const expectedBalance = totalAvailable + pendingIncome;
-
-  // Owner-wise income received
-  const myReceivedIncome = state.income.filter(i => i.status === 'received' && i.owner === 'mine').reduce((s,i) => s+Number(i.amount), 0);
-  const fatherReceivedIncome = state.income.filter(i => i.status === 'received' && i.owner === 'father').reduce((s,i) => s+Number(i.amount), 0);
-
-  // Owner-wise expenses
-  const myExpenses = state.expenses.filter(e => e.owner === 'mine').reduce((s,e) => s+Number(e.amount), 0);
-  const fatherExpenses = state.expenses.filter(e => e.owner === 'father').reduce((s,e) => s+Number(e.amount), 0);
-  const sharedExpenses = state.expenses.filter(e => e.owner === 'shared').reduce((s,e) => s+Number(e.amount), 0);
-
-  // My net worth = initial mine + my received income - my expenses + my pending
-  const myPending = state.income.filter(i => i.status === 'pending' && i.owner === 'mine').reduce((s,i) => s+Number(i.amount), 0);
-  const myNetWorth = state.initialMine + myReceivedIncome - myExpenses + myPending;
-  const fatherNetWorth = state.initialFather + fatherReceivedIncome - fatherExpenses;
-
-  // My money currently = initial + received - expenses
-  const myMoney = state.initialMine + myReceivedIncome - myExpenses;
-  const fatherMoney = state.initialFather + fatherReceivedIncome - fatherExpenses;
-  const sharedMoney = state.initialShared - sharedExpenses;
-
+  const elCurBal = document.getElementById('dashCurBal');
+  if (elCurBal) elCurBal.innerText = '₹' + state.currentBalance.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  
+  const elTotAvailable = document.getElementById('dashTotAvailable');
+  if (elTotAvailable) elTotAvailable.innerText = '₹' + state.currentBalance.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  
+  const elExpected = document.getElementById('dashExpected');
+  if (elExpected) elExpected.innerText = '₹' + (state.currentBalance + pendingIncome).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  
+  const elTotExp = document.getElementById('dashTotExp');
+  if (elTotExp) elTotExp.innerText = '₹' + totalExpense.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  
+  const elPendInc = document.getElementById('dashPendInc');
+  if (elPendInc) elPendInc.innerText = '₹' + pendingIncome.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  
+  const elBizInvested = document.getElementById('dashBizInvested');
+  if (elBizInvested) elBizInvested.innerText = '₹' + totalInvested.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  
+  const bizBudgetLeft = (state.businessBudget || 10000) - totalInvested;
+  const elBizLeft = document.getElementById('bizBudgetLeft');
+  if (elBizLeft) elBizLeft.innerText = '₹' + Math.max(0, bizBudgetLeft).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  
+  const elMyMoney = document.getElementById('dashMyMoney');
+  if (elMyMoney) elMyMoney.innerText = '₹' + state.currentBalance.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  
+  // Return dummy object just in case legacy code expects it
   return {
-    receivedIncome, pendingIncome, totalExpenses, bizInvested,
-    totalAvailable, expectedBalance, myMoney, fatherMoney, sharedMoney,
-    myNetWorth, fatherNetWorth, bizRemaining: state.businessBudget - bizInvested,
-    myExpenses, fatherExpenses
+    receivedIncome: totalIncome, pendingIncome, totalExpenses: totalExpense, bizInvested: totalInvested,
+    totalAvailable: state.currentBalance, expectedBalance: state.currentBalance + pendingIncome,
+    myMoney: state.currentBalance, fatherMoney: state.currentBalance,
+    myNetWorth: state.currentBalance, fatherNetWorth: state.currentBalance, bizRemaining: bizBudgetLeft,
+    myExpenses: totalExpense, fatherExpenses: totalExpense
   };
 }
 
@@ -2305,26 +302,35 @@ function closeModal(id) {
 
 let editingIncomeId = null;
 
-function openIncomeModal(id = null, defaultOwner = 'mine') {
+function populateBankSelect(selectId, defaultBankId) {
+  const sel = document.getElementById(selectId);
+  if (!sel) return;
+  sel.innerHTML = state.banks.map(b => `<option value="${b.id}">${b.bank_name} (₹${Number(b.balance || 0).toLocaleString('en-IN')})</option>`).join('');
+  if (defaultBankId) sel.value = defaultBankId;
+}
+
+function openIncomeModal(id = null, defaultOwner = 'mine', bankId = null) {
   editingIncomeId = id;
   if (id) {
     const inc = state.income.find(i => i.id === id);
     if (!inc) return;
     document.getElementById('incAmount').value = inc.amount;
     document.getElementById('incSource').value = inc.source;
-    document.getElementById('incOwner').value = inc.owner;
+    
     document.getElementById('incDate').value = inc.date || today();
     document.getElementById('incStatus').value = inc.status;
     document.getElementById('incNotes').value = inc.notes || '';
+    populateBankSelect('incBank', inc.bank_id || bankId || state.banks[0]?.id);
     document.getElementById('incomeModalTitle').textContent = '✏️ Edit Income';
     document.getElementById('incomeSaveBtn').textContent = 'Update Income';
   } else {
     document.getElementById('incAmount').value = '';
     document.getElementById('incSource').value = '';
-    document.getElementById('incOwner').value = defaultOwner;
+    
     document.getElementById('incDate').value = today();
     document.getElementById('incStatus').value = 'received';
     document.getElementById('incNotes').value = '';
+    populateBankSelect('incBank', bankId || state.banks[0]?.id);
     document.getElementById('incomeModalTitle').textContent = '💰 Add Income';
     document.getElementById('incomeSaveBtn').textContent = 'Save Income';
   }
@@ -2333,25 +339,26 @@ function openIncomeModal(id = null, defaultOwner = 'mine') {
 
 let editingExpenseId = null;
 
-function openExpenseModal(id = null, defaultOwner = 'mine') {
+function openExpenseModal(id = null, defaultOwner = 'mine', bankId = null) {
   editingExpenseId = id;
   if (id) {
     const exp = state.expenses.find(e => e.id === id);
     if (!exp) return;
     document.getElementById('expAmount').value = exp.amount;
     document.getElementById('expCategory').value = exp.category;
-    document.getElementById('expOwner').value = exp.owner;
+    
     document.getElementById('expDate').value = exp.date || today();
     document.getElementById('expNotes').value = exp.notes || '';
     document.getElementById('expBizPlatform').value = exp.bizPlatform || '';
     document.getElementById('expBizPurpose').value = exp.bizPurpose || '';
+    populateBankSelect('expBank', exp.bank_id || bankId || state.banks[0]?.id);
     document.getElementById('expenseModalTitle').textContent = '✏️ Edit Expense';
     document.getElementById('expenseSaveBtn').textContent = 'Update Expense';
     handleExpCategoryChange();
   } else {
     document.getElementById('expAmount').value = '';
     document.getElementById('expCategory').value = 'Personal';
-    document.getElementById('expOwner').value = defaultOwner;
+    
     document.getElementById('expDate').value = today();
     document.getElementById('expNotes').value = '';
     document.getElementById('expBizPlatform').value = '';
@@ -2359,6 +366,7 @@ function openExpenseModal(id = null, defaultOwner = 'mine') {
     document.getElementById('expBizPlatformGroup').style.display = 'none';
     document.getElementById('expBizPurposeGroup').style.display = 'none';
     document.getElementById('expBizNote').style.display = 'none';
+    populateBankSelect('expBank', bankId || state.banks[0]?.id);
     document.getElementById('expenseModalTitle').textContent = '💸 Add Expense';
     document.getElementById('expenseSaveBtn').textContent = 'Save Expense';
   }
@@ -2436,8 +444,9 @@ function saveIncome() {
   if (!amount || amount <= 0) { toast('Enter a valid amount', 'error'); return; }
   if (!source) { toast('Enter income source', 'error'); return; }
 
-  const owner = document.getElementById('incOwner').value;
+  const owner = 'mine';
   const status = document.getElementById('incStatus').value;
+  const bankId = document.getElementById('incBank').value;
 
   if (editingIncomeId) {
     const idx = state.income.findIndex(i => i.id === editingIncomeId);
@@ -2446,25 +455,55 @@ function saveIncome() {
       // If was received, reverse old amount from currentBalance
       if (old.status === 'received') {
         state.currentBalance = (state.currentBalance || 0) - Number(old.amount);
+        if (old.bank_id) {
+          const bIdx = state.banks.findIndex(b => b.id === old.bank_id);
+          if (bIdx !== -1) state.banks[bIdx].balance -= Number(old.amount);
+        }
       }
-      state.income[idx] = { ...old, amount, source, owner, date: document.getElementById('incDate').value || today(), status, notes: document.getElementById('incNotes').value.trim() };
+      state.income[idx] = { ...old, amount, source, owner, bank_id: bankId, date: document.getElementById('incDate').value || today(), status, notes: document.getElementById('incNotes').value.trim() };
       // If now received, add new amount
       if (status === 'received') {
         state.currentBalance = (state.currentBalance || 0) + amount;
         state.balanceSet = true;
+        if (bankId) {
+          const bIdx = state.banks.findIndex(b => b.id === bankId);
+          if (bIdx !== -1) {
+            state.banks[bIdx].balance += amount;
+            if (window.supabaseClient && window.currentUserId) {
+              window.supabaseClient.from('user_banks').update({ balance: state.banks[bIdx].balance }).eq('id', bankId).then();
+            }
+          }
+        }
         // Log in myMoney if mine
         if (owner === 'mine') logMyMoney('add', amount, `💰 Income: ${source}`, document.getElementById('incDate').value || today());
+      }
+      
+      // Update old bank if it changed and was received
+      if (old.status === 'received' && old.bank_id && old.bank_id !== bankId) {
+        const oldBIdx = state.banks.findIndex(b => b.id === old.bank_id);
+        if (oldBIdx !== -1 && window.supabaseClient && window.currentUserId) {
+           window.supabaseClient.from('user_banks').update({ balance: state.banks[oldBIdx].balance }).eq('id', old.bank_id).then();
+        }
       }
     }
     toast('Income updated ✅');
     editingIncomeId = null;
   } else {
-    const entry = { id: uid(), amount, source, owner, date: document.getElementById('incDate').value || today(), status, notes: document.getElementById('incNotes').value.trim(), createdAt: new Date().toISOString() };
+    const entry = { id: uid(), amount, source, owner, bank_id: bankId, date: document.getElementById('incDate').value || today(), status, notes: document.getElementById('incNotes').value.trim(), createdAt: new Date().toISOString() };
     state.income.push(entry);
     // If directly received, update currentBalance
     if (status === 'received') {
       state.currentBalance = (state.currentBalance || 0) + amount;
       state.balanceSet = true;
+      if (bankId) {
+        const bIdx = state.banks.findIndex(b => b.id === bankId);
+        if (bIdx !== -1) {
+          state.banks[bIdx].balance += amount;
+          if (window.supabaseClient && window.currentUserId) {
+            window.supabaseClient.from('user_banks').update({ balance: state.banks[bIdx].balance }).eq('id', bankId).then();
+          }
+        }
+      }
       if (owner === 'mine') logMyMoney('add', amount, `💰 Income: ${source}`, entry.date);
       if (owner === 'father') warnPapaChange('income added', amount);
     }
@@ -2485,7 +524,8 @@ function saveExpense() {
   if (!amount || amount <= 0) { toast('Enter a valid amount', 'error'); return; }
 
   const category = document.getElementById('expCategory').value;
-  const owner = document.getElementById('expOwner').value;
+  const owner = 'mine';
+  const bankId = document.getElementById('expBank').value;
   const isBiz = category === 'Business' || category === 'Advertising';
   const bizPlatform = document.getElementById('expBizPlatform').value.trim();
   const bizPurpose = document.getElementById('expBizPurpose').value.trim();
@@ -2493,42 +533,77 @@ function saveExpense() {
   if (editingExpenseId) {
     const idx = state.expenses.findIndex(e => e.id === editingExpenseId);
     if (idx !== -1) {
-      const oldAmt = Number(state.expenses[idx].amount);
-      const diff = amount - oldAmt;
-      if (diff > 0) {
-        // Spending more — check my money has enough
+      const old = state.expenses[idx];
+      const diff = amount - Number(old.amount);
+      if (diff > 0 && owner === 'mine') {
         const myBal = getMyMoneyBalance();
         if (myBal < diff) {
-          toast(`❌ Nahi ho sakta! Tumhare paas sirf ${fmt(myBal)} hai, ${fmt(diff)} aur chahiye. Papa ki money use nahi hogi!`, 'error');
+          toast(`❌ Nahi ho sakta! Tumhare paas sirf ${fmt(myBal)} hai.`, 'error');
           return;
         }
       }
       state.currentBalance = (state.currentBalance || 0) - diff;
       state.balanceSet = true;
-      if (diff > 0) logMyMoney('spend', diff, `✏️ Expense edit: ${category}`, document.getElementById('expDate').value || today());
-      if (diff < 0) logMyMoney('add', Math.abs(diff), `✏️ Expense reduced: ${category}`, document.getElementById('expDate').value || today());
-      state.expenses[idx] = { ...state.expenses[idx], amount, category, owner: 'mine', date: document.getElementById('expDate').value || today(), notes: document.getElementById('expNotes').value.trim(), bizPlatform: isBiz ? bizPlatform : '', bizPurpose: isBiz ? bizPurpose : '' };
+      
+      // Revert old bank and apply to new bank
+      if (old.bank_id) {
+        const obIdx = state.banks.findIndex(b => b.id === old.bank_id);
+        if (obIdx !== -1) state.banks[obIdx].balance += Number(old.amount);
+      }
+      if (bankId) {
+        const nbIdx = state.banks.findIndex(b => b.id === bankId);
+        if (nbIdx !== -1) state.banks[nbIdx].balance -= amount;
+      }
+      
+      // Persist both to DB
+      if (window.supabaseClient && window.currentUserId) {
+         if (old.bank_id && old.bank_id !== bankId) {
+            const obIdx = state.banks.findIndex(b => b.id === old.bank_id);
+            if (obIdx !== -1) window.supabaseClient.from('user_banks').update({ balance: state.banks[obIdx].balance }).eq('id', old.bank_id).then();
+         }
+         if (bankId) {
+            const nbIdx = state.banks.findIndex(b => b.id === bankId);
+            if (nbIdx !== -1) window.supabaseClient.from('user_banks').update({ balance: state.banks[nbIdx].balance }).eq('id', bankId).then();
+         }
+      }
+
+      if (diff > 0 && owner === 'mine') logMyMoney('spend', diff, `✏️ Expense edit: ${category}`, document.getElementById('expDate').value || today());
+      if (diff < 0 && owner === 'mine') logMyMoney('add', Math.abs(diff), `✏️ Expense reduced: ${category}`, document.getElementById('expDate').value || today());
+      
+      state.expenses[idx] = { ...old, amount, category, owner, bank_id: bankId, date: document.getElementById('expDate').value || today(), notes: document.getElementById('expNotes').value.trim(), bizPlatform: isBiz ? bizPlatform : '', bizPurpose: isBiz ? bizPurpose : '' };
     }
     toast('Expense updated ✅');
     editingExpenseId = null;
   } else {
-    // NEW EXPENSE — hard check against My Money balance
-    const myBal = getMyMoneyBalance();
-    if (myBal < amount) {
-      toast(`❌ BLOCKED! Tumhare paas sirf ${fmt(myBal)} hai — ${fmt(amount)} nahi nikal sakte. Papa ki money use nahi hogi!`, 'error');
-      // Flash the my money balance red for 2s
-      const el = document.getElementById('mmHeroAmount');
-      if (el) { el.style.color = 'var(--accent-red)'; setTimeout(() => el.style.color = '', 2000); }
-      return;
+    // NEW EXPENSE
+    if (owner === 'mine') {
+      const myBal = getMyMoneyBalance();
+      if (myBal < amount) {
+        toast(`❌ BLOCKED! Tumhare paas sirf ${fmt(myBal)} hai.`, 'error');
+        const el = document.getElementById('mmHeroAmount');
+        if (el) { el.style.color = 'var(--accent-red)'; setTimeout(() => el.style.color = '', 2000); }
+        return;
+      }
     }
 
-    const entry = { id: uid(), amount, category, owner: 'mine', date: document.getElementById('expDate').value || today(), notes: document.getElementById('expNotes').value.trim(), bizPlatform: isBiz ? bizPlatform : '', bizPurpose: isBiz ? bizPurpose : '', createdAt: new Date().toISOString() };
+    const entry = { id: uid(), amount, category, owner, bank_id: bankId, date: document.getElementById('expDate').value || today(), notes: document.getElementById('expNotes').value.trim(), bizPlatform: isBiz ? bizPlatform : '', bizPurpose: isBiz ? bizPurpose : '', createdAt: new Date().toISOString() };
     state.expenses.push(entry);
     state.currentBalance = (state.currentBalance || 0) - amount;
     state.balanceSet = true;
-    logMyMoney('spend', amount, `💸 Expense: ${category}${entry.notes ? ' — ' + entry.notes : ''}`, entry.date);
+    
+    if (bankId) {
+      const bIdx = state.banks.findIndex(b => b.id === bankId);
+      if (bIdx !== -1) {
+        state.banks[bIdx].balance -= amount;
+        if (window.supabaseClient && window.currentUserId) {
+          window.supabaseClient.from('user_banks').update({ balance: state.banks[bIdx].balance }).eq('id', bankId).then();
+        }
+      }
+    }
 
-    if (isBiz) {
+    if (owner === 'mine') logMyMoney('spend', amount, `💸 Expense: ${category}${entry.notes ? ' — ' + entry.notes : ''}`, entry.date);
+
+    if (isBiz && owner === 'mine') {
       state.investments.push({ id: uid(), amount, platform: bizPlatform || category, purpose: bizPurpose || entry.notes || category, date: entry.date, notes: `[Auto from Expense] ${entry.notes || ''}`.trim(), createdAt: new Date().toISOString() });
       toast(`${fmt(amount)} business mein lagaya 🚀`);
     } else {
@@ -2997,10 +1072,47 @@ function renderDashboard() {
   // Also update sidebar to show real currentBalance
   document.getElementById('sidebarBalance').textContent = fmt(state.currentBalance || 0);
 
-  // Owner breakdown
+  // Role-based visibility
+  const curBalCard = document.getElementById('currentBalanceCard');
+  const myNetWorthCard = document.getElementById('myNetWorthCard');
+  const fatherNetWorthLabel = document.getElementById('fatherNetWorthLabel');
+  const statCardMyMoney = document.getElementById('statCardMyMoney');
+  const statCardFatherMoney = document.getElementById('statCardFatherMoney');
+  const moneyDistCard = document.getElementById('moneyDistributionCard');
+
+  if (selectedRole === 'papa') {
+    // Papa's account: hide personal items, rename Father references
+    if (curBalCard) curBalCard.style.display = 'none';
+    if (myNetWorthCard) myNetWorthCard.style.display = 'none';
+    if (fatherNetWorthLabel) fatherNetWorthLabel.textContent = "Net Worth";
+    if (statCardMyMoney) statCardMyMoney.style.display = 'none';
+    if (moneyDistCard) moneyDistCard.style.display = 'none';
+
+    // Rename Father's Money → My Funds
+    const lbl = document.getElementById('statLabelFatherMoney');
+    const sub = document.getElementById('statSubFatherMoney');
+    const ico = document.getElementById('statIconFather');
+    if (lbl) lbl.textContent = "My Funds";
+    if (sub) sub.textContent = "Available balance";
+    if (ico) ico.textContent = "💼";
+  } else {
+    // Normal user: show everything
+    if (curBalCard) curBalCard.style.display = 'flex';
+    if (myNetWorthCard) myNetWorthCard.style.display = 'block';
+    if (fatherNetWorthLabel) fatherNetWorthLabel.textContent = "Father's Net Worth";
+    if (statCardMyMoney) statCardMyMoney.style.display = '';
+    if (moneyDistCard) moneyDistCard.style.display = '';
+
+    const lbl = document.getElementById('statLabelFatherMoney');
+    const sub = document.getElementById('statSubFatherMoney');
+    const ico = document.getElementById('statIconFather');
+    if (lbl) lbl.textContent = "Father's Money";
+    if (sub) sub.textContent = "Father's funds";
+    if (ico) ico.textContent = "👴";
+  }
+
   document.getElementById('myNetWorth').textContent = fmt(c.myNetWorth);
   document.getElementById('fatherNetWorth').textContent = fmt(c.fatherNetWorth);
-  document.getElementById('sharedFunds').textContent = fmt(c.sharedMoney);
 
   document.getElementById('myInitial').textContent = fmt(state.initialMine);
   document.getElementById('fatherInitial').textContent = fmt(state.initialFather);
@@ -3009,6 +1121,31 @@ function renderDashboard() {
   renderRecentTxns();
   renderDashPending();
   renderCurrentBalance();
+  renderDashboardBanks();
+}
+
+function renderDashboardBanks() {
+  const container = document.getElementById('dashboardBanksContainer');
+  if (!container) return;
+  if (!state.banks || state.banks.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  container.style.display = 'grid';
+  container.innerHTML = state.banks.map((b, i) => {
+    const isCash = b.bank_name === 'Cash';
+    const label = isCash ? 'Cash on Hand' : `Bank ${i+1}: ${b.bank_name}`;
+    const borderCol = isCash ? 'var(--accent-teal)' : 'var(--accent-blue)';
+    return `
+    <div class="glass-card" style="padding: 15px; border-left: 4px solid ${borderCol};">
+      <div class="stat-label">${label}</div>
+      <div class="stat-value" style="font-size: 20px; color: var(--text-primary); margin-bottom: 10px;">₹${Number(b.balance || 0).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-success btn-xs" onclick="promptOwnerSelection('income', '${b.id}')">+ Income</button>
+        <button class="btn btn-danger btn-xs" onclick="promptOwnerSelection('expense', '${b.id}')">- Expense</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function renderRecentTxns() {
@@ -3410,10 +1547,10 @@ function renderCharts() {
   charts.owner = new Chart(document.getElementById('ownerChart'), {
     type: 'doughnut',
     data: {
-      labels: ['My Money', "Father's Money", 'Shared'],
+      labels: ['My Money', "Father's Money"],
       datasets: [{
-        data: [Math.max(0, c.myMoney), Math.max(0, c.fatherMoney), Math.max(0, c.sharedMoney)],
-        backgroundColor: ['rgba(99,179,237,0.8)', 'rgba(183,148,244,0.8)', 'rgba(56,217,169,0.8)'],
+        data: [Math.max(0, c.myMoney), Math.max(0, c.fatherMoney)],
+        backgroundColor: ['rgba(99,179,237,0.8)', 'rgba(183,148,244,0.8)'],
         borderWidth: 0
       }]
     },
@@ -3579,6 +1716,16 @@ function openMyMoneyModal(type) {
   document.getElementById('mmAmount').value = '';
   document.getElementById('mmDesc').value = '';
   document.getElementById('mmDate').value = today();
+
+  const bankGrp = document.getElementById('mmBankSelectGroup');
+  const bankSel = document.getElementById('mmBankSelect');
+  if (type === 'set') {
+    bankGrp.style.display = 'none';
+  } else {
+    bankGrp.style.display = 'block';
+    bankSel.innerHTML = (state.banks || []).map(b => `<option value="${b.id}">${b.bank_name}</option>`).join('');
+  }
+
   document.getElementById('myMoneyModal').classList.add('open');
 }
 
@@ -3586,13 +1733,13 @@ function saveMyMoneyTxn() {
   const amt = parseFloat(document.getElementById('mmAmount').value);
   const desc = document.getElementById('mmDesc').value.trim() || (mmModalType === 'add' ? 'Money Added' : mmModalType === 'spend' ? 'Expense' : 'Balance Set');
   const date = document.getElementById('mmDate').value || today();
+  const bankId = document.getElementById('mmBankSelect') ? document.getElementById('mmBankSelect').value : null;
 
   if (!amt || amt <= 0) { toast('Enter a valid amount', 'error'); return; }
 
   if (!state.myMoneyLog) state.myMoneyLog = [];
 
   if (mmModalType === 'set') {
-    // Set: update currentBalance difference too
     const oldMyBal = getMyMoneyBalance();
     const diff = amt - oldMyBal;
     state.currentBalance = (state.currentBalance || 0) + diff;
@@ -3609,20 +1756,39 @@ function saveMyMoneyTxn() {
     }
     state.currentBalance = (state.currentBalance || 0) - amt;
     state.balanceSet = true;
-    state.myMoneyLog.unshift({ id: 'mm_' + Date.now(), type: 'spend', amt, desc, date, createdAt: new Date().toISOString() });
+    state.myMoneyLog.unshift({ id: 'mm_' + Date.now(), type: 'spend', amt, desc, date, bankId, createdAt: new Date().toISOString() });
+
+    // Deduct from selected bank
+    if (bankId) {
+      const bIdx = (state.banks || []).findIndex(b => b.id === bankId);
+      if (bIdx !== -1) {
+        state.banks[bIdx].balance = Number(state.banks[bIdx].balance) - amt;
+        if (window.supabaseClient) supabaseClient.from('user_banks').update({ balance: state.banks[bIdx].balance }).eq('id', bankId).then();
+      }
+    }
     toast(`${fmt(amt)} deduct hua — My Money & Current Balance dono update 💸`, 'success');
 
   } else {
-    // Add: increase currentBalance too
     state.currentBalance = (state.currentBalance || 0) + amt;
     state.balanceSet = true;
-    state.myMoneyLog.unshift({ id: 'mm_' + Date.now(), type: 'add', amt, desc, date, createdAt: new Date().toISOString() });
-    toast(fmt(amt) + ' added — My Money & Current Balance dono mein add hua 💰', 'success');
+    state.myMoneyLog.unshift({ id: 'mm_' + Date.now(), type: 'add', amt, desc, date, bankId, createdAt: new Date().toISOString() });
+
+    // Add to selected bank
+    if (bankId) {
+      const bIdx = (state.banks || []).findIndex(b => b.id === bankId);
+      if (bIdx !== -1) {
+        state.banks[bIdx].balance = Number(state.banks[bIdx].balance) + amt;
+        if (window.supabaseClient) supabaseClient.from('user_banks').update({ balance: state.banks[bIdx].balance }).eq('id', bankId).then();
+      }
+    }
+    toast(fmt(amt) + ' My Money me add ho gaye! 📈', 'success');
   }
 
   saveState();
   renderMyMoneySection();
+  if (typeof renderDashboardBanks === 'function') renderDashboardBanks();
   renderDashboard();
+  renderAll();
   closeModal('myMoneyModal');
 }
 
@@ -3751,6 +1917,16 @@ function openFatherMoneyModal(type) {
   document.getElementById('fmAmount').value = '';
   document.getElementById('fmDesc').value = '';
   document.getElementById('fmDate').value = today();
+
+  const bankGrp = document.getElementById('fmBankSelectGroup');
+  const bankSel = document.getElementById('fmBankSelect');
+  if (type === 'set') {
+    bankGrp.style.display = 'none';
+  } else {
+    bankGrp.style.display = 'block';
+    bankSel.innerHTML = (state.banks || []).map(b => `<option value="${b.id}">${b.bank_name}</option>`).join('');
+  }
+
   document.getElementById('fatherMoneyModal').classList.add('open');
 }
 
@@ -3773,6 +1949,7 @@ function saveFatherMoneyTxn() {
   const amt = parseFloat(document.getElementById('fmAmount').value);
   const desc = document.getElementById('fmDesc').value.trim() || (fmModalType === 'add' ? 'Money Added' : fmModalType === 'spend' ? 'Expense' : 'Balance Set');
   const date = document.getElementById('fmDate').value || today();
+  const bankId = document.getElementById('fmBankSelect') ? document.getElementById('fmBankSelect').value : null;
 
   if (!amt || amt <= 0) { toast('Enter a valid amount', 'error'); return; }
 
@@ -3785,39 +1962,56 @@ function saveFatherMoneyTxn() {
     state.balanceSet = true;
     state.fatherMoneyManualBalance = amt;
     state.fatherMoneyLog.unshift({ id: 'fm_' + Date.now(), type: 'set', amt, desc, date, createdAt: new Date().toISOString() });
-    toast("Father's balance set to " + fmt(amt), 'success');
+    toast("Balance set to " + fmt(amt), 'success');
 
   } else if (fmModalType === 'spend') {
     const fBal = getFatherMoneyBalance();
     if (fBal < amt) {
-      toast(`❌ Father ke paas sirf ${fmt(fBal)} hai — ${fmt(amt)} nahi nikal sakte!`, 'error');
+      toast(`❌ Sirf ${fmt(fBal)} hai — ${fmt(amt)} nahi nikal sakte!`, 'error');
       return;
     }
     state.currentBalance = (state.currentBalance || 0) - amt;
     state.balanceSet = true;
-    // Also log as expense under father
     state.expenses.push({
       id: uid(), amount: amt, category: 'Personal', owner: 'father',
-      date, notes: `👴 ${desc}`, createdAt: new Date().toISOString()
+      date, notes: `💼 ${desc}`, createdAt: new Date().toISOString()
     });
-    state.fatherMoneyLog.unshift({ id: 'fm_' + Date.now(), type: 'spend', amt, desc, date, createdAt: new Date().toISOString() });
-    toast(`${fmt(amt)} deducted from Father's Money 💸`, 'success');
+    state.fatherMoneyLog.unshift({ id: 'fm_' + Date.now(), type: 'spend', amt, desc, date, bankId, createdAt: new Date().toISOString() });
+
+    // Deduct from selected bank
+    if (bankId) {
+      const bIdx = (state.banks || []).findIndex(b => b.id === bankId);
+      if (bIdx !== -1) {
+        state.banks[bIdx].balance = Number(state.banks[bIdx].balance) - amt;
+        if (window.supabaseClient) supabaseClient.from('user_banks').update({ balance: state.banks[bIdx].balance }).eq('id', bankId).then();
+      }
+    }
+    toast(`${fmt(amt)} deducted 💸`, 'success');
 
   } else {
     state.currentBalance = (state.currentBalance || 0) + amt;
     state.balanceSet = true;
-    // Also log as income under father
     state.income.push({
       id: uid(), amount: amt, source: desc, owner: 'father',
-      date, status: 'received', notes: '👴 Father income',
+      date, status: 'received', notes: '💼 Income',
       createdAt: new Date().toISOString()
     });
-    state.fatherMoneyLog.unshift({ id: 'fm_' + Date.now(), type: 'add', amt, desc, date, createdAt: new Date().toISOString() });
-    toast(fmt(amt) + " added to Father's Money 💰", 'success');
+    state.fatherMoneyLog.unshift({ id: 'fm_' + Date.now(), type: 'add', amt, desc, date, bankId, createdAt: new Date().toISOString() });
+
+    // Add to selected bank
+    if (bankId) {
+      const bIdx = (state.banks || []).findIndex(b => b.id === bankId);
+      if (bIdx !== -1) {
+        state.banks[bIdx].balance = Number(state.banks[bIdx].balance) + amt;
+        if (window.supabaseClient) supabaseClient.from('user_banks').update({ balance: state.banks[bIdx].balance }).eq('id', bankId).then();
+      }
+    }
+    toast(fmt(amt) + " added 💰", 'success');
   }
 
   saveState();
   renderFatherMoneySection();
+  if (typeof renderDashboardBanks === 'function') renderDashboardBanks();
   renderDashboard();
   renderAll();
   closeModal('fatherMoneyModal');
@@ -3967,6 +2161,11 @@ function deleteContact(id) {
   saveState();
   renderQuickPay();
   toast('Contact deleted', 'info');
+
+  // Also delete from Supabase
+  if (window.supabaseClient && currentUserId) {
+    supabaseClient.from('upi_contacts').delete().eq('user_id', currentUserId).eq('local_id', id).then();
+  }
 }
 
 function setQuickPayAmt(contactId, amt) {
@@ -3978,7 +2177,7 @@ function setQuickPayAmt(contactId, amt) {
   if (btn) btn.classList.add('active');
 }
 
-function promptOwnerSelection(actionType) {
+function promptOwnerSelection(actionType, bankId = null) {
   if (actionType === 'income') {
     document.getElementById('ownerSelectTitle').textContent = '💰 Add Income';
     document.getElementById('ownerSelectDesc').textContent = 'Select which account received this income:';
@@ -3987,12 +2186,12 @@ function promptOwnerSelection(actionType) {
     document.getElementById('ownerSelectMineBtn').onclick = function() {
       closeModal('ownerSelectionModal');
       showSection('income');
-      openIncomeModal(null, 'mine');
+      openIncomeModal(null, 'mine', bankId);
     };
     document.getElementById('ownerSelectFatherBtn').onclick = function() {
       closeModal('ownerSelectionModal');
       showSection('income');
-      openIncomeModal(null, 'father');
+      openIncomeModal(null, 'father', bankId);
     };
   } else if (actionType === 'expense') {
     document.getElementById('ownerSelectTitle').textContent = '💸 Record Expense';
@@ -4002,12 +2201,12 @@ function promptOwnerSelection(actionType) {
     document.getElementById('ownerSelectMineBtn').onclick = function() {
       closeModal('ownerSelectionModal');
       showSection('expenses');
-      openExpenseModal(null, 'mine');
+      openExpenseModal(null, 'mine', bankId);
     };
     document.getElementById('ownerSelectFatherBtn').onclick = function() {
       closeModal('ownerSelectionModal');
       showSection('expenses');
-      openExpenseModal(null, 'father');
+      openExpenseModal(null, 'father', bankId);
     };
   }
 }
@@ -4343,16 +2542,29 @@ function initPWA() {
   } catch(e) {}
 
   // Service Worker (offline cache)
-  
-  // FORCE UNREGISTER ALL SERVICE WORKERS TO BREAK CACHE
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      for(let registration of registrations) {
-        registration.unregister();
-      }
-    });
+    const swCode = `
+      const CACHE = 'moneymgr-v1';
+      self.addEventListener('install', e => self.skipWaiting());
+      self.addEventListener('activate', e => e.waitUntil(clients.claim()));
+      self.addEventListener('fetch', e => {
+        e.respondWith(
+          caches.match(e.request).then(r => r || fetch(e.request).then(res => {
+            if (res && res.status === 200 && e.request.method === 'GET') {
+              const clone = res.clone();
+              caches.open(CACHE).then(c => c.put(e.request, clone));
+            }
+            return res;
+          }))
+        );
+      });
+    `;
+    try {
+      const swBlob = new Blob([swCode], { type: 'application/javascript' });
+      const swURL = URL.createObjectURL(swBlob);
+      navigator.serviceWorker.register(swURL).catch(() => {});
+    } catch(e) {}
   }
-
 
   // Listen for install prompt
   window.addEventListener('beforeinstallprompt', (e) => {
@@ -4387,7 +2599,7 @@ function installPWA() {
    INIT
 ===================================================== */
 document.addEventListener('DOMContentLoaded', () => {
-  // Set today's date as default for date inputs
+// Set today's date as default for date inputs
   const inputs = document.querySelectorAll('input[type="date"]');
   inputs.forEach(inp => { if (!inp.value) inp.value = today(); });
 
@@ -4395,9 +2607,18 @@ document.addEventListener('DOMContentLoaded', () => {
   renderAll();
   initPWA();
 
+  // Real-time clock
+  setInterval(() => {
+    const el = document.getElementById('topbarRealTime');
+    if(el) {
+      const now = new Date();
+      el.innerText = now.toLocaleString('en-IN', {
+        weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
+        hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true
+      });
+    }
+  }, 1000);
+
   // Initial section: dashboard
   showSection('dashboard');
 });
-</script>
-</body>
-</html>
