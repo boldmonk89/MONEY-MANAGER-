@@ -1102,6 +1102,36 @@ tr.row-soon td { background: rgba(246,173,85,0.04); }
         </div>
       </div>
 
+      <div class="glass-card mb-3" style="padding:14px 16px">
+        <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+          <div>
+            <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px">FROM DATE</label>
+            <input type="date" id="incFilterFrom" class="form-control" style="height:34px;font-size:13px;width:140px" onchange="renderIncomeSection()">
+          </div>
+          <div>
+            <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px">TO DATE</label>
+            <input type="date" id="incFilterTo" class="form-control" style="height:34px;font-size:13px;width:140px" onchange="renderIncomeSection()">
+          </div>
+          <div>
+            <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px">OWNER</label>
+            <select id="incFilterOwner" class="form-control" style="height:34px;font-size:13px;width:110px" onchange="renderIncomeSection()">
+              <option value="">All</option>
+              <option value="mine">Mine</option>
+              <option value="father">Father</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px">STATUS</label>
+            <select id="incFilterStatus" class="form-control" style="height:34px;font-size:13px;width:120px" onchange="renderIncomeSection()">
+              <option value="">All</option>
+              <option value="received">Received</option>
+              <option value="pending">Pending</option>
+            </select>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="clearIncFilter()" style="height:34px;font-size:12px">✕ Clear</button>
+          <div id="incFilterCount" style="margin-left:auto;font-size:12px;color:var(--text-muted);align-self:center"></div>
+        </div>
+      </div>
       <div class="glass-card">
         <div class="table-wrapper">
           <table>
@@ -1146,6 +1176,37 @@ tr.row-soon td { background: rgba(246,173,85,0.04); }
         </div>
       </div>
 
+      <div class="glass-card mb-3" style="padding:14px 16px">
+        <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+          <div>
+            <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px">FROM DATE</label>
+            <input type="date" id="expFilterFrom" class="form-control" style="height:34px;font-size:13px;width:140px" onchange="renderExpenseSection()">
+          </div>
+          <div>
+            <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px">TO DATE</label>
+            <input type="date" id="expFilterTo" class="form-control" style="height:34px;font-size:13px;width:140px" onchange="renderExpenseSection()">
+          </div>
+          <div>
+            <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px">OWNER</label>
+            <select id="expFilterOwner" class="form-control" style="height:34px;font-size:13px;width:110px" onchange="renderExpenseSection()">
+              <option value="">All</option>
+              <option value="mine">Mine</option>
+              <option value="father">Father</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px">CATEGORY</label>
+            <select id="expFilterCat" class="form-control" style="height:34px;font-size:13px;width:120px" onchange="renderExpenseSection()">
+              <option value="">All</option>
+              <option>Personal</option><option>Food</option><option>Shopping</option>
+              <option>Business</option><option>Software</option><option>Travel</option>
+              <option>UPI Transfer</option><option>Other</option>
+            </select>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="clearExpFilter()" style="height:34px;font-size:12px">✕ Clear</button>
+          <div id="expFilterCount" style="margin-left:auto;font-size:12px;color:var(--text-muted);align-self:center"></div>
+        </div>
+      </div>
       <div class="glass-card">
         <div class="table-wrapper">
           <table>
@@ -2024,509 +2085,144 @@ const DEFAULT_DATA = {
   "initialFather": 34008,
   "initialShared": 0,
   "businessBudget": 10000,
-  "currentBalance": 38401,
+  "currentBalance": 34865,
   "balanceNote": "Total Cash + Bank",
   "balanceSet": true,
   "myMoneyLog": [
-    {
-      "id": "mm_auto_exp_exp_1",
-      "type": "spend",
-      "amt": 19,
-      "desc": "Expense: Personal",
-      "date": "2026-06-05",
-      "createdAt": "2026-06-05T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_2",
-      "type": "spend",
-      "amt": 19,
-      "desc": "Expense: Personal",
-      "date": "2026-06-05",
-      "createdAt": "2026-06-05T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_3",
-      "type": "spend",
-      "amt": 352,
-      "desc": "Expense: Food",
-      "date": "2026-06-05",
-      "createdAt": "2026-06-05T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_4",
-      "type": "spend",
-      "amt": 13,
-      "desc": "Expense: Personal",
-      "date": "2026-06-05",
-      "createdAt": "2026-06-05T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_5a",
-      "type": "spend",
-      "amt": 2000,
-      "desc": "Expense: Personal",
-      "date": "2026-06-05",
-      "createdAt": "2026-06-05T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_inc_inc_r2",
-      "type": "add",
-      "amt": 389,
-      "desc": "Income: Razorpay",
-      "date": "2026-06-04",
-      "createdAt": "2026-06-04T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_6",
-      "type": "spend",
-      "amt": 30,
-      "desc": "Expense: Food",
-      "date": "2026-06-04",
-      "createdAt": "2026-06-04T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_inc_inc_p1",
-      "type": "add",
-      "amt": 779,
-      "desc": "Income: Razorpay",
-      "date": "2026-06-03",
-      "createdAt": "2026-06-03T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_inc_inc_p2",
-      "type": "add",
-      "amt": 1000,
-      "desc": "Income: Client",
-      "date": "2026-06-03",
-      "createdAt": "2026-06-03T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_inc_inc_r1",
-      "type": "add",
-      "amt": 1000,
-      "desc": "Income: Client",
-      "date": "2026-06-03",
-      "createdAt": "2026-06-03T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_inc_inc_r3",
-      "type": "add",
-      "amt": 389,
-      "desc": "Income: Razorpay",
-      "date": "2026-06-03",
-      "createdAt": "2026-06-03T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_7",
-      "type": "spend",
-      "amt": 2764,
-      "desc": "Expense: Shopping",
-      "date": "2026-06-03",
-      "createdAt": "2026-06-03T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_8",
-      "type": "spend",
-      "amt": 226,
-      "desc": "Expense: Food",
-      "date": "2026-06-03",
-      "createdAt": "2026-06-03T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_9",
-      "type": "spend",
-      "amt": 3,
-      "desc": "Expense: Personal",
-      "date": "2026-06-03",
-      "createdAt": "2026-06-03T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_inc_inc_r4",
-      "type": "add",
-      "amt": 1558,
-      "desc": "Income: Razoapy",
-      "date": "2026-06-02",
-      "createdAt": "2026-06-02T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_10",
-      "type": "spend",
-      "amt": 730,
-      "desc": "Expense: Other",
-      "date": "2026-06-01",
-      "createdAt": "2026-06-01T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_11",
-      "type": "spend",
-      "amt": 50,
-      "desc": "Expense: Personal",
-      "date": "2026-06-01",
-      "createdAt": "2026-06-01T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_12",
-      "type": "spend",
-      "amt": 30,
-      "desc": "Expense: Food",
-      "date": "2026-06-01",
-      "createdAt": "2026-06-01T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_inc_inc_r5",
-      "type": "add",
-      "amt": 1000,
-      "desc": "Income: Mummy",
-      "date": "2026-05-31",
-      "createdAt": "2026-05-31T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_5b",
-      "type": "spend",
-      "amt": 2000,
-      "desc": "Expense: Business",
-      "date": "2026-05-31",
-      "createdAt": "2026-05-31T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_13",
-      "type": "spend",
-      "amt": 568,
-      "desc": "Expense: Food",
-      "date": "2026-05-31",
-      "createdAt": "2026-05-31T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_14",
-      "type": "spend",
-      "amt": 40,
-      "desc": "Expense: Food",
-      "date": "2026-05-31",
-      "createdAt": "2026-05-31T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_16",
-      "type": "spend",
-      "amt": 3975,
-      "desc": "Expense: Shopping",
-      "date": "2026-05-31",
-      "createdAt": "2026-05-31T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_17",
-      "type": "spend",
-      "amt": 443,
-      "desc": "Expense: Personal",
-      "date": "2026-05-31",
-      "createdAt": "2026-05-31T12:00:00Z"
-    },
-    {
-      "id": "mm_auto_exp_exp_15",
-      "type": "spend",
-      "amt": 19,
-      "desc": "Expense: Software",
-      "date": "2026-05-30",
-      "createdAt": "2026-05-30T12:00:00Z"
-    }
+    {"id":"mm_13jun_del_personal","type":"add","amt":940,"desc":"Expense deleted: Personal","date":"2026-06-13","createdAt":"2026-06-13T09:00:00Z"},
+    {"id":"mm_13jun_exp_food_airport","type":"spend","amt":940,"desc":"Expense: Personal — Food airport","date":"2026-06-13","createdAt":"2026-06-13T08:50:00Z"},
+    {"id":"mm_12jun_recharge1","type":"spend","amt":19,"desc":"Expense: Personal — Recharge","date":"2026-06-12","createdAt":"2026-06-12T12:00:00Z"},
+    {"id":"mm_12jun_recharge2","type":"spend","amt":19,"desc":"Expense: Personal — Recharge","date":"2026-06-12","createdAt":"2026-06-12T12:01:00Z"},
+    {"id":"mm_11jun_software","type":"spend","amt":1771,"desc":"Expense: Software — Boat headphones","date":"2026-06-11","createdAt":"2026-06-11T12:00:00Z"},
+    {"id":"mm_11jun_personal","type":"spend","amt":54,"desc":"Expense: Personal","date":"2026-06-11","createdAt":"2026-06-11T12:01:00Z"},
+    {"id":"mm_10jun_rzp1","type":"add","amt":389,"desc":"Income received: Razorpay","date":"2026-06-10","createdAt":"2026-06-10T12:00:00Z"},
+    {"id":"mm_10jun_rm2","type":"add","amt":389,"desc":"Income: RECORD MATCH","date":"2026-06-10","createdAt":"2026-06-10T12:01:00Z"},
+    {"id":"mm_10jun_rzp3","type":"add","amt":389,"desc":"Income received: Razorpay","date":"2026-06-10","createdAt":"2026-06-10T12:02:00Z"},
+    {"id":"mm_8jun_auto","type":"spend","amt":70,"desc":"Expense: Personal — Auto","date":"2026-06-08","createdAt":"2026-06-08T12:00:00Z"},
+    {"id":"mm_8jun_food","type":"spend","amt":150,"desc":"Expense: Food","date":"2026-06-08","createdAt":"2026-06-08T12:01:00Z"},
+    {"id":"mm_7jun_personal","type":"spend","amt":141,"desc":"Expense: Personal","date":"2026-06-07","createdAt":"2026-06-07T12:00:00Z"},
+    {"id":"mm_6jun_recharges","type":"spend","amt":102,"desc":"Expense: Personal — Recharges","date":"2026-06-06","createdAt":"2026-06-06T12:00:00Z"},
+    {"id":"mm_6jun_razorpay","type":"add","amt":779,"desc":"Income received: Razorpay","date":"2026-06-06","createdAt":"2026-06-06T12:01:00Z"},
+    {"id":"mm_auto_exp_exp_1","type":"spend","amt":19,"desc":"Expense: Personal","date":"2026-06-05","createdAt":"2026-06-05T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_2","type":"spend","amt":19,"desc":"Expense: Personal","date":"2026-06-05","createdAt":"2026-06-05T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_3","type":"spend","amt":352,"desc":"Expense: Food","date":"2026-06-05","createdAt":"2026-06-05T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_4","type":"spend","amt":13,"desc":"Expense: Personal","date":"2026-06-05","createdAt":"2026-06-05T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_5a","type":"spend","amt":2000,"desc":"Expense: Personal","date":"2026-06-05","createdAt":"2026-06-05T12:00:00Z"},
+    {"id":"mm_auto_inc_inc_r2","type":"add","amt":389,"desc":"Income: Razorpay","date":"2026-06-04","createdAt":"2026-06-04T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_6","type":"spend","amt":30,"desc":"Expense: Food","date":"2026-06-04","createdAt":"2026-06-04T12:00:00Z"},
+    {"id":"mm_auto_inc_inc_p1","type":"add","amt":779,"desc":"Income: Razorpay","date":"2026-06-03","createdAt":"2026-06-03T12:00:00Z"},
+    {"id":"mm_auto_inc_inc_p2","type":"add","amt":1000,"desc":"Income: Client","date":"2026-06-03","createdAt":"2026-06-03T12:00:00Z"},
+    {"id":"mm_auto_inc_inc_r1","type":"add","amt":1000,"desc":"Income: Client","date":"2026-06-03","createdAt":"2026-06-03T12:00:00Z"},
+    {"id":"mm_auto_inc_inc_r3","type":"add","amt":389,"desc":"Income: Razorpay","date":"2026-06-03","createdAt":"2026-06-03T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_7","type":"spend","amt":2764,"desc":"Expense: Shopping","date":"2026-06-03","createdAt":"2026-06-03T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_8","type":"spend","amt":226,"desc":"Expense: Food","date":"2026-06-03","createdAt":"2026-06-03T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_9","type":"spend","amt":3,"desc":"Expense: Personal","date":"2026-06-03","createdAt":"2026-06-03T12:00:00Z"},
+    {"id":"mm_auto_inc_inc_r4","type":"add","amt":1558,"desc":"Income: Razoapy","date":"2026-06-02","createdAt":"2026-06-02T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_10","type":"spend","amt":730,"desc":"Expense: Other","date":"2026-06-01","createdAt":"2026-06-01T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_11","type":"spend","amt":50,"desc":"Expense: Personal","date":"2026-06-01","createdAt":"2026-06-01T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_12","type":"spend","amt":30,"desc":"Expense: Food","date":"2026-06-01","createdAt":"2026-06-01T12:00:00Z"},
+    {"id":"mm_auto_inc_inc_r5","type":"add","amt":1000,"desc":"Income: Mummy","date":"2026-05-31","createdAt":"2026-05-31T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_5b","type":"spend","amt":2000,"desc":"Expense: Business","date":"2026-05-31","createdAt":"2026-05-31T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_13","type":"spend","amt":568,"desc":"Expense: Food","date":"2026-05-31","createdAt":"2026-05-31T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_14","type":"spend","amt":40,"desc":"Expense: Food","date":"2026-05-31","createdAt":"2026-05-31T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_16","type":"spend","amt":3975,"desc":"Expense: Shopping","date":"2026-05-31","createdAt":"2026-05-31T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_17","type":"spend","amt":443,"desc":"Expense: Personal","date":"2026-05-31","createdAt":"2026-05-31T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_15","type":"spend","amt":19,"desc":"Expense: Software","date":"2026-05-30","createdAt":"2026-05-30T12:00:00Z"}
   ],
   "myMoneyManualBalance": null,
   "fatherMoneyLog": [
-    {
-      "id": "mm_auto_exp_exp_f1",
-      "type": "spend",
-      "amt": 8000,
-      "desc": "Expense: UPI Transfer",
-      "date": "2026-06-04",
-      "createdAt": "2026-06-04T12:00:00Z"
-    }
+    {"id":"fm_13jun_food","type":"spend","amt":940,"desc":"Food","date":"2026-06-13","createdAt":"2026-06-13T12:00:00Z"},
+    {"id":"fm_13jun_cab","type":"spend","amt":930,"desc":"Cab","date":"2026-06-13","createdAt":"2026-06-13T12:01:00Z"},
+    {"id":"fm_13jun_chips","type":"spend","amt":480,"desc":"Food chips for plane","date":"2026-06-13","createdAt":"2026-06-13T12:02:00Z"},
+    {"id":"fm_11jun_food","type":"spend","amt":515,"desc":"Food","date":"2026-06-11","createdAt":"2026-06-11T12:00:00Z"},
+    {"id":"fm_11jun_rm","type":"add","amt":54,"desc":"Record match","date":"2026-06-11","createdAt":"2026-06-11T12:01:00Z"},
+    {"id":"fm_10jun_food1","type":"spend","amt":375,"desc":"Food","date":"2026-06-10","createdAt":"2026-06-10T12:00:00Z"},
+    {"id":"fm_10jun_rm","type":"add","amt":1610,"desc":"Record match","date":"2026-06-10","createdAt":"2026-06-10T12:01:00Z"},
+    {"id":"fm_10jun_food2","type":"spend","amt":165,"desc":"Food","date":"2026-06-10","createdAt":"2026-06-10T12:02:00Z"},
+    {"id":"fm_10jun_upi","type":"spend","amt":800,"desc":"UPI → Mummy: Auto aeroplane","date":"2026-06-10","createdAt":"2026-06-10T12:03:00Z"},
+    {"id":"fm_8jun_cab","type":"spend","amt":615,"desc":"Cab","date":"2026-06-08","createdAt":"2026-06-08T12:00:00Z"},
+    {"id":"mm_auto_exp_exp_f1","type":"spend","amt":8000,"desc":"Expense: UPI Transfer","date":"2026-06-04","createdAt":"2026-06-04T12:00:00Z"}
   ],
   "fatherMoneyManualBalance": null,
   "income": [
-    {
-      "id": "inc_p1",
-      "amount": 779,
-      "source": "Razorpay",
-      "owner": "mine",
-      "date": "2026-06-03",
-      "status": "pending",
-      "notes": ""
-    },
-    {
-      "id": "inc_p2",
-      "amount": 1000,
-      "source": "Client",
-      "owner": "mine",
-      "date": "2026-06-03",
-      "status": "pending",
-      "notes": ""
-    },
-    {
-      "id": "inc_r1",
-      "amount": 1000,
-      "source": "Client",
-      "owner": "mine",
-      "date": "2026-06-03",
-      "status": "received",
-      "notes": ""
-    },
-    {
-      "id": "inc_r2",
-      "amount": 389,
-      "source": "Razorpay",
-      "owner": "mine",
-      "date": "2026-06-04",
-      "status": "received",
-      "notes": ""
-    },
-    {
-      "id": "inc_r3",
-      "amount": 389,
-      "source": "Razorpay",
-      "owner": "mine",
-      "date": "2026-06-03",
-      "status": "received",
-      "notes": ""
-    },
-    {
-      "id": "inc_r4",
-      "amount": 1558,
-      "source": "Razoapy",
-      "owner": "mine",
-      "date": "2026-06-02",
-      "status": "received",
-      "notes": ""
-    },
-    {
-      "id": "inc_r5",
-      "amount": 1000,
-      "source": "Mummy",
-      "owner": "mine",
-      "date": "2026-05-31",
-      "status": "received",
-      "notes": ""
-    }
+    {"id":"inc_13jun_client","amount":1000,"source":"Client","owner":"mine","date":"2026-06-13","status":"pending","notes":""},
+    {"id":"inc_10jun_rm1","amount":389,"source":"RECORD MATCH","owner":"mine","date":"2026-06-10","status":"received","notes":""},
+    {"id":"inc_10jun_rzp2","amount":389,"source":"Razorpay","owner":"mine","date":"2026-06-10","status":"received","notes":""},
+    {"id":"inc_10jun_rzp3","amount":389,"source":"Razorpay","owner":"mine","date":"2026-06-10","status":"received","notes":""},
+    {"id":"inc_11jun_rm_f","amount":54,"source":"Record match","owner":"father","date":"2026-06-11","status":"received","notes":""},
+    {"id":"inc_10jun_rm_f","amount":1610,"source":"Record match","owner":"father","date":"2026-06-10","status":"received","notes":""},
+    {"id":"inc_p1","amount":779,"source":"Razorpay","owner":"mine","date":"2026-06-03","status":"received","notes":""},
+    {"id":"inc_p2","amount":1000,"source":"Client","owner":"mine","date":"2026-06-03","status":"pending","notes":""},
+    {"id":"inc_r1","amount":1000,"source":"Client","owner":"mine","date":"2026-06-03","status":"received","notes":""},
+    {"id":"inc_r2","amount":389,"source":"Razorpay","owner":"mine","date":"2026-06-04","status":"received","notes":""},
+    {"id":"inc_r3","amount":389,"source":"Razorpay","owner":"mine","date":"2026-06-03","status":"received","notes":""},
+    {"id":"inc_r4","amount":1558,"source":"Razoapy","owner":"mine","date":"2026-06-02","status":"received","notes":""},
+    {"id":"inc_r5","amount":1000,"source":"Mummy","owner":"mine","date":"2026-05-31","status":"received","notes":""}
   ],
   "expenses": [
-    {
-      "id": "exp_f1",
-      "amount": 8000,
-      "category": "UPI Transfer",
-      "owner": "father",
-      "date": "2026-06-04",
-      "notes": "quick pay to mummy"
-    },
-    {
-      "id": "exp_1",
-      "amount": 19,
-      "category": "Personal",
-      "owner": "mine",
-      "date": "2026-06-05",
-      "notes": ""
-    },
-    {
-      "id": "exp_2",
-      "amount": 19,
-      "category": "Personal",
-      "owner": "mine",
-      "date": "2026-06-05",
-      "notes": ""
-    },
-    {
-      "id": "exp_3",
-      "amount": 352,
-      "category": "Food",
-      "owner": "mine",
-      "date": "2026-06-05",
-      "notes": ""
-    },
-    {
-      "id": "exp_4",
-      "amount": 13,
-      "category": "Personal",
-      "owner": "mine",
-      "date": "2026-06-05",
-      "notes": ""
-    },
-    {
-      "id": "exp_5a",
-      "amount": 2000,
-      "category": "Personal",
-      "owner": "mine",
-      "date": "2026-06-05",
-      "notes": ""
-    },
-    {
-      "id": "exp_5b",
-      "amount": 2000,
-      "category": "Business",
-      "owner": "mine",
-      "date": "2026-05-31",
-      "notes": "ADD AGENCY",
-      "bizPlatform": "ADD AGENCY",
-      "bizPurpose": "Business"
-    },
-    {
-      "id": "exp_6",
-      "amount": 30,
-      "category": "Food",
-      "owner": "mine",
-      "date": "2026-06-04",
-      "notes": ""
-    },
-    {
-      "id": "exp_7",
-      "amount": 2764,
-      "category": "Shopping",
-      "owner": "mine",
-      "date": "2026-06-03",
-      "notes": ""
-    },
-    {
-      "id": "exp_8",
-      "amount": 226,
-      "category": "Food",
-      "owner": "mine",
-      "date": "2026-06-03",
-      "notes": ""
-    },
-    {
-      "id": "exp_9",
-      "amount": 3,
-      "category": "Personal",
-      "owner": "mine",
-      "date": "2026-06-03",
-      "notes": ""
-    },
-    {
-      "id": "exp_10",
-      "amount": 730,
-      "category": "Other",
-      "owner": "mine",
-      "date": "2026-06-01",
-      "notes": ""
-    },
-    {
-      "id": "exp_11",
-      "amount": 50,
-      "category": "Personal",
-      "owner": "mine",
-      "date": "2026-06-01",
-      "notes": ""
-    },
-    {
-      "id": "exp_12",
-      "amount": 30,
-      "category": "Food",
-      "owner": "mine",
-      "date": "2026-06-01",
-      "notes": ""
-    },
-    {
-      "id": "exp_13",
-      "amount": 568,
-      "category": "Food",
-      "owner": "mine",
-      "date": "2026-05-31",
-      "notes": ""
-    },
-    {
-      "id": "exp_14",
-      "amount": 40,
-      "category": "Food",
-      "owner": "mine",
-      "date": "2026-05-31",
-      "notes": ""
-    },
-    {
-      "id": "exp_15",
-      "amount": 19,
-      "category": "Software",
-      "owner": "mine",
-      "date": "2026-05-30",
-      "notes": ""
-    },
-    {
-      "id": "exp_16",
-      "amount": 3975,
-      "category": "Shopping",
-      "owner": "mine",
-      "date": "2026-05-31",
-      "notes": ""
-    },
-    {
-      "id": "exp_17",
-      "amount": 443,
-      "category": "Personal",
-      "owner": "mine",
-      "date": "2026-05-31",
-      "notes": ""
-    }
+    {"id":"exp_13jun_f_food","amount":940,"category":"Personal","owner":"father","date":"2026-06-13","notes":"Food"},
+    {"id":"exp_13jun_f_cab","amount":930,"category":"Personal","owner":"father","date":"2026-06-13","notes":"Cab"},
+    {"id":"exp_13jun_f_chips","amount":480,"category":"Personal","owner":"father","date":"2026-06-13","notes":"Food chips for plane"},
+    {"id":"exp_12jun_recharge1","amount":19,"category":"Personal","owner":"mine","date":"2026-06-12","notes":"Recharge"},
+    {"id":"exp_12jun_recharge2","amount":19,"category":"Personal","owner":"mine","date":"2026-06-12","notes":"Recharge"},
+    {"id":"exp_11jun_software","amount":1771,"category":"Software","owner":"mine","date":"2026-06-11","notes":"Boat headphones"},
+    {"id":"exp_11jun_f_food","amount":515,"category":"Personal","owner":"father","date":"2026-06-11","notes":"Food"},
+    {"id":"exp_11jun_personal","amount":54,"category":"Personal","owner":"mine","date":"2026-06-11","notes":""},
+    {"id":"exp_10jun_f_food1","amount":375,"category":"Personal","owner":"father","date":"2026-06-10","notes":"Food"},
+    {"id":"exp_10jun_f_food2","amount":165,"category":"Personal","owner":"father","date":"2026-06-10","notes":"Food"},
+    {"id":"exp_10jun_f_upi","amount":800,"category":"UPI Transfer","owner":"father","date":"2026-06-10","notes":"UPI → Mummy: Auto aeroplane"},
+    {"id":"exp_8jun_f_cab","amount":615,"category":"Personal","owner":"father","date":"2026-06-08","notes":"Cab"},
+    {"id":"exp_8jun_auto","amount":70,"category":"Personal","owner":"mine","date":"2026-06-08","notes":"Auto"},
+    {"id":"exp_8jun_food","amount":150,"category":"Food","owner":"mine","date":"2026-06-08","notes":""},
+    {"id":"exp_7jun_personal","amount":141,"category":"Personal","owner":"mine","date":"2026-06-07","notes":""},
+    {"id":"exp_6jun_recharges","amount":102,"category":"Personal","owner":"mine","date":"2026-06-06","notes":"Recharges"},
+    {"id":"exp_f1","amount":8000,"category":"UPI Transfer","owner":"father","date":"2026-06-04","notes":"quick pay to mummy"},
+    {"id":"exp_1","amount":19,"category":"Personal","owner":"mine","date":"2026-06-05","notes":""},
+    {"id":"exp_2","amount":19,"category":"Personal","owner":"mine","date":"2026-06-05","notes":""},
+    {"id":"exp_3","amount":352,"category":"Food","owner":"mine","date":"2026-06-05","notes":""},
+    {"id":"exp_4","amount":13,"category":"Personal","owner":"mine","date":"2026-06-05","notes":""},
+    {"id":"exp_5a","amount":2000,"category":"Personal","owner":"mine","date":"2026-06-05","notes":""},
+    {"id":"exp_5b","amount":2000,"category":"Business","owner":"mine","date":"2026-05-31","notes":"ADD AGENCY","bizPlatform":"ADD AGENCY","bizPurpose":"Business"},
+    {"id":"exp_6","amount":30,"category":"Food","owner":"mine","date":"2026-06-04","notes":""},
+    {"id":"exp_7","amount":2764,"category":"Shopping","owner":"mine","date":"2026-06-03","notes":""},
+    {"id":"exp_8","amount":226,"category":"Food","owner":"mine","date":"2026-06-03","notes":""},
+    {"id":"exp_9","amount":3,"category":"Personal","owner":"mine","date":"2026-06-03","notes":""},
+    {"id":"exp_10","amount":730,"category":"Other","owner":"mine","date":"2026-06-01","notes":""},
+    {"id":"exp_11","amount":50,"category":"Personal","owner":"mine","date":"2026-06-01","notes":""},
+    {"id":"exp_12","amount":30,"category":"Food","owner":"mine","date":"2026-06-01","notes":""},
+    {"id":"exp_13","amount":568,"category":"Food","owner":"mine","date":"2026-05-31","notes":""},
+    {"id":"exp_14","amount":40,"category":"Food","owner":"mine","date":"2026-05-31","notes":""},
+    {"id":"exp_15","amount":19,"category":"Software","owner":"mine","date":"2026-05-30","notes":""},
+    {"id":"exp_16","amount":3975,"category":"Shopping","owner":"mine","date":"2026-05-31","notes":""},
+    {"id":"exp_17","amount":443,"category":"Personal","owner":"mine","date":"2026-05-31","notes":""}
+  ],
+  "pendingPayments": [
+    {"id":"pend_client_1","source":"Client","amount":1000,"owner":"mine","expectedDate":"2026-06-03","status":"overdue"},
+    {"id":"pend_client_2","source":"Client","amount":1000,"owner":"mine","expectedDate":"2026-06-13","status":"overdue"}
   ],
   "investments": [
-    {
-      "id": "inv_1",
-      "amount": 2000,
-      "platform": "ADD AGENCY",
-      "purpose": "Business",
-      "date": "2026-05-31",
-      "notes": "Auto from Expense"
-    }
+    {"id":"inv_1","amount":2000,"platform":"ADD AGENCY","purpose":"Business","date":"2026-05-31","notes":"Auto from Expense"}
   ],
   "goals": [
-    {
-      "id": "goal_emergency",
-      "name": "Emergency Fund",
-      "target": 50000,
-      "current": 0,
-      "icon": "\ud83d\udee1\ufe0f",
-      "desc": "For unexpected expenses"
-    },
-    {
-      "id": "goal_business",
-      "name": "Business Fund",
-      "target": 25000,
-      "current": 0,
-      "icon": "\ud83d\udcbc",
-      "desc": "Grow the business"
-    },
-    {
-      "id": "goal_laptop",
-      "name": "Laptop Fund",
-      "target": 80000,
-      "current": 0,
-      "icon": "\ud83d\udcbb",
-      "desc": "New laptop upgrade"
-    }
+    {"id":"goal_emergency","name":"Emergency Fund","target":50000,"current":0,"icon":"🛡️","desc":"For unexpected expenses"},
+    {"id":"goal_business","name":"Business Fund","target":25000,"current":0,"icon":"💼","desc":"Grow the business"},
+    {"id":"goal_laptop","name":"Laptop Fund","target":80000,"current":0,"icon":"💻","desc":"New laptop upgrade"}
   ],
   "editingGoalId": null,
   "upiContacts": [
-    {
-      "id": "cont_mummy",
-      "name": "Mummy",
-      "upiId": "9891990065@ptyes",
-      "createdAt": "2026-06-01T12:00:00Z"
-    }
+    {"id":"cont_mummy","name":"Mummy","upiId":"9891990065@ptyes","createdAt":"2026-06-01T12:00:00Z"}
   ],
   "upiPayments": [
-    {
-      "id": "upi_pay_mummy",
-      "contactId": "cont_mummy",
-      "contactName": "Mummy",
-      "amount": 8000,
-      "note": "Transfer",
-      "owner": "father",
-      "status": "completed",
-      "date": "2026-06-04",
-      "createdAt": "2026-06-04T12:00:00Z"
-    }
+    {"id":"upi_pay_mummy_10jun","contactId":"cont_mummy","contactName":"Mummy","amount":800,"note":"Auto aeroplane","owner":"father","status":"completed","date":"2026-06-10","createdAt":"2026-06-10T12:00:00Z"},
+    {"id":"upi_pay_mummy","contactId":"cont_mummy","contactName":"Mummy","amount":8000,"note":"Transfer","owner":"father","status":"completed","date":"2026-06-04","createdAt":"2026-06-04T12:00:00Z"}
   ]
-};
+}
 
 let state = {};
 
 // Load from localStorage or use defaults
 function loadState() {
-  const FORCE_RESET_KEY = 'moneyMgr_v3_reconciled_1780773953';
+  const FORCE_RESET_KEY = 'moneyMgr_v3_pdf_final_v2';
   if (!localStorage.getItem(FORCE_RESET_KEY)) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
     localStorage.setItem(FORCE_RESET_KEY, 'true');
@@ -3464,7 +3160,10 @@ function renderRecentTxns() {
   const allTxns = [
     ...state.income.filter(i => i.status === 'received').map(i => ({ ...i, type: 'income' })),
     ...state.expenses.map(e => ({ ...e, type: 'expense' }))
-  ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6);
+  ].sort((a, b) => {
+    const da = a.date || a.createdAt || '', db = b.date || b.createdAt || '';
+    if (da > db) return -1; if (da < db) return 1; return 0;
+  }).slice(0, 6);
 
   if (allTxns.length === 0) {
     container.innerHTML = '<div class="empty-state" style="padding:24px 0"><div class="empty-icon">📋</div><div class="empty-text">No transactions yet</div></div>';
@@ -3516,6 +3215,22 @@ function renderDashPending() {
 /* =====================================================
    RENDER INCOME TABLE
 ===================================================== */
+function clearIncFilter() {
+  ['incFilterFrom','incFilterTo','incFilterOwner','incFilterStatus'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  renderIncomeSection();
+}
+
+function clearExpFilter() {
+  ['expFilterFrom','expFilterTo','expFilterOwner','expFilterCat'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  renderExpenseSection();
+}
+
 function renderIncomeSection() {
   const tbody = document.getElementById('incomeTableBody');
   const empty = document.getElementById('incomeEmpty');
@@ -3539,7 +3254,36 @@ function renderIncomeSection() {
   empty.style.display = 'none';
   tbody.closest('.table-wrapper').style.display = 'block';
 
-  const sorted = [...state.income].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const fromInc = document.getElementById('incFilterFrom')?.value || '';
+  const toInc   = document.getElementById('incFilterTo')?.value || '';
+  const ownerInc  = document.getElementById('incFilterOwner')?.value || '';
+  const statusInc = document.getElementById('incFilterStatus')?.value || '';
+
+  let filtered = [...state.income].sort((a, b) => {
+    const da = a.date || a.createdAt || '', db = b.date || b.createdAt || '';
+    if (da > db) return -1; if (da < db) return 1; return 0;
+  });
+  if (fromInc) filtered = filtered.filter(i => (i.date || '') >= fromInc);
+  if (toInc)   filtered = filtered.filter(i => (i.date || '') <= toInc);
+  if (ownerInc)  filtered = filtered.filter(i => i.owner === ownerInc);
+  if (statusInc) filtered = filtered.filter(i => i.status === statusInc);
+
+  const countEl = document.getElementById('incFilterCount');
+  if (countEl) {
+    const total = filtered.reduce((s,i) => s+Number(i.amount),0);
+    countEl.textContent = filtered.length < state.income.length
+      ? `${filtered.length} of ${state.income.length} entries · ₹${total.toLocaleString('en-IN')}`
+      : `${filtered.length} entries`;
+  }
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px">No entries match the filter</td></tr>';
+    empty.style.display = 'none';
+    tbody.closest('.table-wrapper').style.display = 'block';
+    return;
+  }
+
+  const sorted = filtered;
   tbody.innerHTML = sorted.map(i => `
     <tr>
       <td>${fmtDate(i.date)}</td>
@@ -3595,7 +3339,36 @@ function renderExpenseSection() {
     Repairs: '#f6ad55', Gifts: '#f687b3', Other: 'var(--text-secondary)'
   };
 
-  const sorted = [...state.expenses].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const fromExp = document.getElementById('expFilterFrom')?.value || '';
+  const toExp   = document.getElementById('expFilterTo')?.value || '';
+  const ownerExp = document.getElementById('expFilterOwner')?.value || '';
+  const catExp   = document.getElementById('expFilterCat')?.value || '';
+
+  let filteredExp = [...state.expenses].sort((a, b) => {
+    const da = a.date || a.createdAt || '', db = b.date || b.createdAt || '';
+    if (da > db) return -1; if (da < db) return 1; return 0;
+  });
+  if (fromExp)   filteredExp = filteredExp.filter(e => (e.date || '') >= fromExp);
+  if (toExp)     filteredExp = filteredExp.filter(e => (e.date || '') <= toExp);
+  if (ownerExp)  filteredExp = filteredExp.filter(e => e.owner === ownerExp);
+  if (catExp)    filteredExp = filteredExp.filter(e => e.category === catExp);
+
+  const expCountEl = document.getElementById('expFilterCount');
+  if (expCountEl) {
+    const total = filteredExp.reduce((s,e) => s+Number(e.amount),0);
+    expCountEl.textContent = filteredExp.length < state.expenses.length
+      ? `${filteredExp.length} of ${state.expenses.length} entries · ₹${total.toLocaleString('en-IN')}`
+      : `${filteredExp.length} entries`;
+  }
+
+  if (filteredExp.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px">No entries match the filter</td></tr>';
+    empty.style.display = 'none';
+    tbody.closest('.table-wrapper').style.display = 'block';
+    return;
+  }
+
+  const sorted = filteredExp;
   tbody.innerHTML = sorted.map(e => `
     <tr>
       <td>${fmtDate(e.date)}</td>
@@ -3617,7 +3390,12 @@ function renderExpenseSection() {
 function renderPendingSection() {
   const tbody = document.getElementById('pendingTableBody');
   const empty = document.getElementById('pendingEmpty');
-  const pending = state.income.filter(i => i.status === 'pending');
+  const pending = state.income
+    .filter(i => i.status === 'pending')
+    .sort((a, b) => {
+      const da = a.date || '', db = b.date || '';
+      if (da > db) return -1; if (da < db) return 1; return 0;
+    });
 
   if (pending.length === 0) {
     tbody.innerHTML = '';
@@ -4079,7 +3857,7 @@ function getMyMoneyBalance() {
   if (!state.myMoneyLog) return state.initialMine;
   const c = compute();
   let logBal = null;
-  const sortedLog = [...state.myMoneyLog].sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const sortedLog = [...state.myMoneyLog].sort((a,b) => { const da=a.date||a.createdAt||'',db=b.date||b.createdAt||''; return da>db?-1:da<db?1:0; });
   for (const entry of sortedLog) {
     if (entry.type === 'set') logBal = entry.amt;
     else if (logBal !== null) logBal = entry.type === 'add' ? logBal + entry.amt : logBal - entry.amt;
@@ -4106,7 +3884,7 @@ function renderMyMoneySection() {
   // Apply log entries on top of computed base
   // If a 'set' entry exists, use that as the base and apply subsequent entries
   let logBal = null;
-  const sortedLog = [...state.myMoneyLog].sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const sortedLog = [...state.myMoneyLog].sort((a,b) => { const da=a.date||a.createdAt||'',db=b.date||b.createdAt||''; return da>db?-1:da<db?1:0; });
   for (const entry of sortedLog) {
     if (entry.type === 'set') {
       logBal = entry.amt;
@@ -4209,7 +3987,7 @@ function getFatherMoneyBalance() {
   }
   const c = compute();
   let logBal = null;
-  const sortedLog = [...state.fatherMoneyLog].sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const sortedLog = [...state.fatherMoneyLog].sort((a,b) => { const da=a.date||a.createdAt||'',db=b.date||b.createdAt||''; return da>db?-1:da<db?1:0; });
   for (const entry of sortedLog) {
     if (entry.type === 'set') logBal = entry.amt;
     else if (logBal !== null) logBal = entry.type === 'add' ? logBal + entry.amt : logBal - entry.amt;
@@ -4304,7 +4082,7 @@ function renderFatherMoneySection() {
   if (!state.fatherMoneyLog) state.fatherMoneyLog = [];
 
   let logBal = null;
-  const sortedLog = [...state.fatherMoneyLog].sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const sortedLog = [...state.fatherMoneyLog].sort((a,b) => { const da=a.date||a.createdAt||'',db=b.date||b.createdAt||''; return da>db?-1:da<db?1:0; });
   for (const entry of sortedLog) {
     if (entry.type === 'set') logBal = entry.amt;
     else if (logBal !== null) logBal = entry.type === 'add' ? logBal + entry.amt : logBal - entry.amt;
